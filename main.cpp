@@ -78,6 +78,10 @@ int main() {
         choice = inputInt("Выберите пункт меню: ");
 
         switch (choice) {
+             case 0: {
+                cout << "Выход из программы. До свидания!\n";
+                break;
+             }
             case 1: {
                 system.printAllRoutes();
                 break;
@@ -94,10 +98,6 @@ int main() {
                 bus1->setCapacity(30);
                 bus1->setDriver(driver2);
                 bus1->printVehicleInformation();
-            }
-            case 0: {
-                cout << "Выход из программы. До свидания!\n";
-                break;
             }
             default: {
                 cout << "Неверный пункт меню. Попробуйте снова.\n";
