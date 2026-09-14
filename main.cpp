@@ -93,11 +93,13 @@ int main() {
             case 3: {
                 route1->addVehicle(bus3);
                 route1->printRouteInformation();
+                break;
             }
             case 4: {
                 bus1->setCapacity(30);
                 bus1->setDriver(driver2);
                 bus1->printVehicleInformation();
+                break;
             }
             default: {
                 cout << "Неверный пункт меню. Попробуйте снова.\n";
