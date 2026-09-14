@@ -61,7 +61,7 @@ int main() {
 
     TransportSystem system;
 
-    Driver driver4("Иванов Иван Иванович", 15);  
+    Driver driver4("Иванов Иван Иванович", 15);
     auto driver1 = make_shared<Driver>("Иванов Иван Иванович", 15);
     auto driver2 = make_shared<Driver>("Петров Пётр Петрович", 8);
     auto driver3 = make_shared<Driver>("Сидоров Сидор Сидорович", 22);
@@ -88,114 +88,124 @@ int main() {
         printMenu();
         choice = inputInt("Выберите пункт меню: ");
 
-        if (choice == 1) {
-            system.printAllRoutes();
-        }
-        else if (choice == 2) {
-            system.printAllVehicles();
-        }
-        else if (choice == 3) {
-            if (system.getRoutes().empty()) {
-                cout << "Список маршрутов пуст!\n";
-            } else {
+        switch (choice) {
+            case 1: {
                 system.printAllRoutes();
-                int num = inputInt("Введите номер маршрута: ");
-                auto route = system.findRouteByNumber(num);
-                if (route) {
-                    route->printRouteInformation();
-                } else {
-                    cout << "Маршрут с таким номером не найден!\n";
-                }
+                break;
             }
-        }
-        else if (choice == 4) {
-            if (system.getVehicles().empty() || system.getRoutes().empty()) {
-                cout << "Сначала добавьте транспорт и маршруты!\n";
-            } else {
-                cout << "\n--- Доступный транспорт ---\n";
-                const auto& vehicles = system.getVehicles();
-                for (size_t i = 0; i < vehicles.size(); ++i) {
-                    cout << i + 1 << ". ";
-                    vehicles[i]->printVehicleInformation();
-                }
-
-                int vIdx = inputInt("Введите номер ТС из списка: ");
-                if (vIdx < 1 || vIdx > (int)vehicles.size()) {
-                    cout << "Неверный выбор!\n";
+            case 2: {
+                system.printAllVehicles();
+                break;
+            }
+            case 3: {
+                if (system.getRoutes().empty()) {
+                    cout << "Список маршрутов пуст!\n";
                 } else {
-                    cout << "\n--- Доступные маршруты ---\n";
-                    const auto& routes = system.getRoutes();
-                    for (size_t i = 0; i < routes.size(); ++i) {
-                        cout << i + 1 << ". Маршрут №" << routes[i]->getNumber()
-                             << " \"" << routes[i]->getName()
-                             << "\" (мин. " << routes[i]->getMinCapacity() << " чел.)\n";
+                    system.printAllRoutes();
+                    int num = inputInt("Введите номер маршрута: ");
+                    auto route = system.findRouteByNumber(num);
+                    if (route) {
+                        route->printRouteInformation();
+                    } else {
+                        cout << "Маршрут с таким номером не найден!\n";
+                    }
+                }
+                break;
+            }
+            case 4: {
+                if (system.getVehicles().empty() || system.getRoutes().empty()) {
+                    cout << "Сначала добавьте транспорт и маршруты!\n";
+                } else {
+                    cout << "\n--- Доступный транспорт ---\n";
+                    const auto& vehicles = system.getVehicles();
+                    for (size_t i = 0; i < vehicles.size(); ++i) {
+                        cout << i + 1 << ". ";
+                        vehicles[i]->printVehicleInformation();
                     }
 
-                    int rIdx = inputInt("Введите номер маршрута из списка: ");
-                    if (rIdx < 1 || rIdx > (int)routes.size()) {
+                    int vIdx = inputInt("Введите номер ТС из списка: ");
+                    if (vIdx < 1 || vIdx > (int)vehicles.size()) {
                         cout << "Неверный выбор!\n";
                     } else {
-                        routes[rIdx - 1]->addVehicle(vehicles[vIdx - 1]);
+                        cout << "\n--- Доступные маршруты ---\n";
+                        const auto& routes = system.getRoutes();
+                        for (size_t i = 0; i < routes.size(); ++i) {
+                            cout << i + 1 << ". Маршрут №" << routes[i]->getNumber()
+                                 << " \"" << routes[i]->getName()
+                                 << "\" (мин. " << routes[i]->getMinCapacity() << " чел.)\n";
+                        }
+
+                        int rIdx = inputInt("Введите номер маршрута из списка: ");
+                        if (rIdx < 1 || rIdx > (int)routes.size()) {
+                            cout << "Неверный выбор!\n";
+                        } else {
+                            routes[rIdx - 1]->addVehicle(vehicles[vIdx - 1]);
+                        }
                     }
                 }
+                break;
             }
-        }
-        else if (choice == 5) {
-            if (system.getVehicles().empty()) {
-                cout << "Список транспорта пуст!\n";
-            } else {
-                system.printAllVehicles();
-                int vIdx = inputInt("Введите номер ТС (по списку): ");
-                if (vIdx < 1 || vIdx > (int)system.getVehicles().size()) {
-                    cout << "Неверный выбор!\n";
+            case 5: {
+                if (system.getVehicles().empty()) {
+                    cout << "Список транспорта пуст!\n";
                 } else {
-                    auto vehicle = system.getVehicles()[vIdx - 1];
-
-                    cout << "1. Изменить год выпуска\n";
-                    cout << "2. Изменить вместимость\n";
-                    int sub = inputInt("Выбор: ");
-
-                    if (sub == 1) {
-                        int newYear = inputInt("Введите новый год: ");
-                        vehicle->setYear(newYear);
-                        cout << "Год изменён!\n";
-                    } else if (sub == 2) {
-                        int newCap = inputInt("Введите новую вместимость: ");
-                        vehicle->setCapacity(newCap);
-                        cout << "Вместимость изменена!\n";
-                    } else {
+                    system.printAllVehicles();
+                    int vIdx = inputInt("Введите номер ТС (по списку): ");
+                    if (vIdx < 1 || vIdx > (int)system.getVehicles().size()) {
                         cout << "Неверный выбор!\n";
+                    } else {
+                        auto vehicle = system.getVehicles()[vIdx - 1];
+
+                        cout << "1. Изменить год выпуска\n";
+                        cout << "2. Изменить вместимость\n";
+                        int sub = inputInt("Выбор: ");
+
+                        if (sub == 1) {
+                            int newYear = inputInt("Введите новый год: ");
+                            vehicle->setYear(newYear);
+                            cout << "Год изменён!\n";
+                        } else if (sub == 2) {
+                            int newCap = inputInt("Введите новую вместимость: ");
+                            vehicle->setCapacity(newCap);
+                            cout << "Вместимость изменена!\n";
+                        } else {
+                            cout << "Неверный выбор!\n";
+                        }
+
+                        vehicle->printVehicleInformation();
                     }
-
-                    vehicle->printVehicleInformation();
                 }
+                break;
             }
-        }
-        else if (choice == 6) {
-            if (system.getVehicles().empty()) {
-                cout << "Список транспорта пуст!\n";
-            } else {
-                system.printAllVehicles();
-                int vIdx = inputInt("Введите номер ТС (по списку): ");
-                if (vIdx < 1 || vIdx > (int)system.getVehicles().size()) {
-                    cout << "Неверный выбор!\n";
+            case 6: {
+                if (system.getVehicles().empty()) {
+                    cout << "Список транспорта пуст!\n";
                 } else {
-                    auto vehicle = system.getVehicles()[vIdx - 1];
+                    system.printAllVehicles();
+                    int vIdx = inputInt("Введите номер ТС (по списку): ");
+                    if (vIdx < 1 || vIdx > (int)system.getVehicles().size()) {
+                        cout << "Неверный выбор!\n";
+                    } else {
+                        auto vehicle = system.getVehicles()[vIdx - 1];
 
-                    string fio = inputString("Введите ФИО нового водителя: ");
-                    int exp = inputInt("Введите стаж (лет): ");
-                    auto newDriver = make_shared<Driver>(fio, exp);
-                    vehicle->setDriver(newDriver);
-                    cout << "Водитель заменён!\n";
-                    vehicle->printVehicleInformation();
+                        string fio = inputString("Введите ФИО нового водителя: ");
+                        int exp = inputInt("Введите стаж (лет): ");
+                        auto newDriver = make_shared<Driver>(fio, exp);
+                        vehicle->setDriver(newDriver);
+                        cout << "Водитель заменён!\n";
+                        vehicle->printVehicleInformation();
+                    }
                 }
+                break;
             }
-        }
-        else if (choice == 0) {
-            cout << "Выход из программы. До свидания!\n";
-        }
-        else {
-            cout << "Неверный пункт меню. Попробуйте снова.\n";
+            case 0: {
+                cout << "Выход из программы. До свидания!\n";
+                break;
+            }
+            default: {
+                cout << "Неверный пункт меню. Попробуйте снова.\n";
+                break;
+            }
         }
 
     } while (choice != 0);
