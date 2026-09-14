@@ -11,7 +11,6 @@ public:
     void addRoute(std::shared_ptr<Route> route);
     void addVehicle(std::shared_ptr<Vehicle> vehicle);
     std::shared_ptr<Route> findRouteByNumber(int number) const;
-    std::shared_ptr<Vehicle> findVehicleByRegNumber(std::string_view regNumber) const;
     const std::vector<std::shared_ptr<Route>>& getRoutes() const;
     const std::vector<std::shared_ptr<Vehicle>>& getVehicles() const;
     void printAllRoutes() const;

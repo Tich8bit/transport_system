@@ -19,12 +19,12 @@ void Route::setMinCapacity(int newMinCapacity) { _minCapacity = newMinCapacity; 
 
 bool Route::addVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "[ОШИБКА] Пустой указатель на транспорт!" << std::endl;
+        std::cout << "ОШИБКА! Пустой указатель на транспорт!" << std::endl;
         return false;
     }
 
     if (vehicle->getCapacity() < _minCapacity) {
-        std::cout << "[ОШИБКА] ТС \"" << vehicle->getModel()
+        std::cout << "ОШИБКА ТС \"" << vehicle->getModel()
                   << "\" (вместимость " << vehicle->getCapacity()
                   << ") не подходит для маршрута №" << _number
                   << " (требуется минимум " << _minCapacity << ")!" << std::endl;
@@ -32,7 +32,7 @@ bool Route::addVehicle(std::shared_ptr<Vehicle> vehicle) {
     }
 
     _assignedVehicles.push_back(vehicle);
-    std::cout << "[УСПЕХ] ТС \"" << vehicle->getModel()
+    std::cout << "ОТЛИЧНО! ТС \"" << vehicle->getModel()
               << "\" закреплено за маршрутом №" << _number
               << " \"" << _name << "\"." << std::endl;
     return true;

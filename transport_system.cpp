@@ -24,14 +24,6 @@ TransportSystem::findRouteByNumber(int number) const {
     return nullptr;
 }
 
-std::shared_ptr<Vehicle>
-TransportSystem::findVehicleByRegNumber(std::string_view regNumber) const {
-    for (const auto& v : _vehicles) {
-        if (v->getRegNumber() == regNumber) return v;
-    }
-    return nullptr;
-}
-
 const std::vector<std::shared_ptr<Route>>&
 TransportSystem::getRoutes() const { return _routes; }
 
