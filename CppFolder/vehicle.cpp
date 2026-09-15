@@ -22,15 +22,16 @@ std::shared_ptr<Driver> Vehicle::getDriver() const { return _driver; }
 void Vehicle::setYear(int newYear) { _year = newYear; }
 void Vehicle::setCapacity(int newCapacity) { _capacity = newCapacity; }
 void Vehicle::setDriver(std::shared_ptr<Driver> newDriver) { _driver = newDriver; }
+void Vehicle::setRegNumber(std::string_view newRegNumber){ _regNumber = newRegNumber; }
 void Vehicle::printVehicleInformation() const {
-    std::cout << "ТС: " << _model
-              << " | Госномер: " << _regNumber
-              << " | Год выпуска: " << _year
-              << " | Вместимость: " << _capacity << " чел." << std::endl;
+std::cout << "ТС: " << _model << std::endl;
+std::cout << "Госномер: " << _regNumber << std::endl;
+std::cout << "Год выпуска: " << _year << std::endl;
+std::cout << "Вместимость: " << _capacity << " чел." << std::endl;
     if (_driver) {
         std::cout << "  ";
         _driver->printDriverInformation();
     } else {
-        std::cout << "  Водитель не назначен." << std::endl;
+        std::cout << "Водитель не назначен!" << std::endl;
     }
 }

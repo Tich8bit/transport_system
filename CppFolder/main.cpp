@@ -27,6 +27,8 @@ void printMenu() {
     cout << "|_____________________________________________|\n";
     cout << "|4. Изменить данные транспорта                |\n";
     cout << "|_____________________________________________|\n";
+    cout << "|5. Изменить данные маршрута                  |\n";
+    cout << "|_____________________________________________|\n";
     cout << "|0. Выход                                     |\n";
     cout << "|_____________________________________________|\n";
 }
@@ -90,14 +92,22 @@ int main() {
                 break;
             }
             case 3: {
-                route1->addVehicle(bus3);
-                route1->printRouteInformation();
+                route2->addVehicle(bus3);
+                route2->printRouteInformation();
                 break;
             }
             case 4: {
                 bus1->setCapacity(40);
                 bus1->setDriver(driver2);
+                bus1->setRegNumber("550501");
                 bus1->printVehicleInformation();
+                break;
+            }
+            case 5: {
+                route2->setStartStop("Петровщина");
+                route2->setEndStop("Уручье");
+                route2->setMinCapacity(120);
+                route2->printRouteInformation();
                 break;
             }
             default: {

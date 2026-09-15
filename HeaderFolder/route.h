@@ -16,6 +16,7 @@ public:
     std::string_view getEndStop() const;
     int getMinCapacity() const;
     void setName(std::string_view newName);
+    void setStartStop(std::string_view newStartStop);
     void setEndStop(std::string_view newEndStop);
     void setMinCapacity(int newMinCapacity);
     bool addVehicle(std::shared_ptr<Vehicle> vehicle);

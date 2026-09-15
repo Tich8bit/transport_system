@@ -35,6 +35,9 @@ void TransportSystem::printAllRoutes() const {
         std::cout << "Список маршрутов пуст." << std::endl;
         return;
     }
+    std::cout << "_______________________________________________\n";
+    std::cout << "|            СПИСОК МАРШРУТОВ                 |\n";
+    std::cout << "|_____________________________________________|\n";
     for (const auto& r : _routes) 
         r->printRouteInformation();
     
@@ -45,9 +48,11 @@ void TransportSystem::printAllVehicles() const {
         std::cout << "Список транспорта пуст." << std::endl;
         return;
     }
-    std::cout << "\n=== СПИСОК ТРАНСПОРТА ===" << std::endl;
+    std::cout << "_______________________________________________\n";
+    std::cout << "|            СПИСОК ТРАНСПОРТА                |\n";
+    std::cout << "|_____________________________________________|\n";
     for (const auto& v : _vehicles) {
         v->printVehicleInformation();
-        std::cout << "-------------------" << std::endl;
+        std::cout << "-----------------------------------------------" << std::endl;
     }
 }

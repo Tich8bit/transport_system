@@ -16,6 +16,7 @@ public:
     std::shared_ptr<Driver> getDriver() const;
     void setYear(int newYear);
     void setCapacity(int newCapacity);
+    void setRegNumber(std::string_view newRegNumber);
     void setDriver(std::shared_ptr<Driver> newDriver);
     void printVehicleInformation() const;
 private:
