@@ -50,7 +50,6 @@ int main() {
 
     TransportSystem system;
 
-    Driver driver4("Иванов Иван Иванович", 15);
     auto driver1 = make_shared<Driver>("Иванов Иван Иванович", 15);
     auto driver2 = make_shared<Driver>("Петров Пётр Петрович", 8);
     auto driver3 = make_shared<Driver>("Сидоров Сидор Сидорович", 22);
@@ -96,7 +95,7 @@ int main() {
                 break;
             }
             case 4: {
-                bus1->setCapacity(30);
+                bus1->setCapacity(40);
                 bus1->setDriver(driver2);
                 bus1->printVehicleInformation();
                 break;
