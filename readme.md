@@ -33,4 +33,4 @@
 
 ## Качество кода
 
-Статический анализ кода выполнен с помощью **SonarCloud** — все замечания устранены.
+Статический анализ кода выполнен с помощью [SonarCloud](https://sonarcloud.io/organizations/Tich8bit/projects).
