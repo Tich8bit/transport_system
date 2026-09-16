@@ -9,11 +9,17 @@
 
 ## Структура проекта
 
+## Файлы проекта
+
 - [Driver.h](HeaderFolder/driver.h) — класс «Водитель»
+- [Driver.cpp](CppFolder/driver.cpp) — реализация методов класса «Водитель»
 - [Vehicle.h](HeaderFolder/vehicle.h) — класс «Транспортное средство»
+- [Vehicle.cpp](CppFolder/vehicle.cpp) — реализация методов класса «Транспортное средство»
 - [Route.h](HeaderFolder/route.h) — класс «Маршрут»
+- [Route.cpp](CppFolder/route.cpp) — реализация методов класса «Маршрут»
 - [TransportSystem.h](HeaderFolder/transport_system.h) — класс-менеджер
-- [main.cpp](CppFolder/main.cpp) —  меню пользователя
+- [TransportSystem.cpp](CppFolder/transport_system.cpp) — реализация методов класса-менеджера
+- [main.cpp](CppFolder/main.cpp) — меню пользователя
 
 ## Основной функционал
 
