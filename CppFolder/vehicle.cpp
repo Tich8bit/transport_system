@@ -23,15 +23,41 @@ void Vehicle::setYear(int newYear) { _year = newYear; }
 void Vehicle::setCapacity(int newCapacity) { _capacity = newCapacity; }
 void Vehicle::setDriver(std::shared_ptr<Driver> newDriver) { _driver = newDriver; }
 void Vehicle::setRegNumber(std::string_view newRegNumber){ _regNumber = newRegNumber; }
-void Vehicle::printVehicleInformation() const {
-std::cout << "ТС: " << _model << std::endl;
-std::cout << "Госномер: " << _regNumber << std::endl;
-std::cout << "Год выпуска: " << _year << std::endl;
-std::cout << "Вместимость: " << _capacity << " чел." << std::endl;
-    if (_driver) {
-        std::cout << "  ";
-        _driver->printDriverInformation();
+bool Vehicle::operator==(const Vehicle& other) const{
+    return _regNumber == other._regNumber; 
+}
+bool Vehicle::operator<(const Vehicle& other) const{
+    return _capacity == other._capacity; 
+}
+std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
+    os << "ТС: " << vehicle._model
+       << " | Госномер: " << vehicle._regNumber
+       << " | Год выпуска: " << vehicle._year
+       << " | Вместимость: " << vehicle._capacity << " чел.";
+    if (vehicle._driver) {
+        os << " | Водитель: " << vehicle._driver->getFullName();
     } else {
-        std::cout << "Водитель не назначен!" << std::endl;
+        os << " | Водитель не назначен";
     }
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Vehicle& vehicle) {
+    std::cout << "Введите госномер: ";
+    is >> vehicle._regNumber;
+    
+    std::cout << "Введите модель: ";
+    is >> vehicle._model;
+    
+    std::cout << "Введите год выпуска: ";
+    is >> vehicle._year;
+    
+    std::cout << "Введите вместимость: ";
+    is >> vehicle._capacity;
+    
+    return is;
+}
+
+bool isNewer(const Vehicle& a, const Vehicle& b) {
+    return a._year > b._year;
 }

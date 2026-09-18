@@ -18,7 +18,11 @@ public:
     void setCapacity(int newCapacity);
     void setRegNumber(std::string_view newRegNumber);
     void setDriver(std::shared_ptr<Driver> newDriver);
-    void printVehicleInformation() const;
+    bool operator==(const Vehicle& other) const;
+    bool operator<(const Vehicle& other) const;
+    friend std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle);
+    friend std::istream& operator>>(std::istream& is, Vehicle& vehicle);
+    friend bool isNewer(const Vehicle& a, const Vehicle& b);
 private:
     std::string _regNumber;
     std::string _model;
