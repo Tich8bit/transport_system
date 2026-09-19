@@ -53,34 +53,34 @@ void TransportSystem::printAllVehicles() const {
     std::cout << "|_____________________________________________|\n";
     for (const auto& v : _vehicles) {
         std::cout << *v;
-        std::cout << "-----------------------------------------------" << std::endl;
+        std::cout << "\n-----------------------------------------------" << std::endl;
     }
 }
 
 TransportSystem& TransportSystem::operator+=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "[ОШИБКА] Пустой указатель!\n";
+        std::cout << "ОШИБКА! Пустой указатель!\n";
         return *this;
     }
     _vehicles.push_back(vehicle);
-    std::cout << "[УСПЕХ] ТС \"" << vehicle->getModel() << "\" добавлено в систему.\n";
+    std::cout << "УСПЕХ! ТС \"" << vehicle->getModel() << "\" добавлено в систему.\n";
     return *this;
 }
 
 TransportSystem& TransportSystem::operator-=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "[ОШИБКА] Пустой указатель!\n";
+        std::cout << "ОШИБКА! Пустой указатель!\n";
         return *this;
     }
     
     for (auto it = _vehicles.begin(); it != _vehicles.end(); ++it) {
         if (*it == vehicle) {
             _vehicles.erase(it);
-            std::cout << "[УСПЕХ] ТС \"" << vehicle->getModel() << "\" удалено из системы.\n";
+            std::cout << "УСПЕХ! ТС \"" << vehicle->getModel() << "\" удалено из системы.\n";
             return *this;
         }
     }
     
-    std::cout << "[ОШИБКА] ТС не найдено в системе!\n";
+    std::cout << "ОШИБКА! ТС не найдено в системе!\n";
     return *this;
 }

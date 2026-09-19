@@ -82,7 +82,7 @@ int main() {
     auto driver2 = make_shared<Driver>("Петров Пётр Петрович", 8);
     auto driver3 = make_shared<Driver>("Сидоров Сидор Сидорович", 22);
 
-    auto bus1 = make_shared<Vehicle>("А123ВС", "ПАЗ-3205", 2015, 30, 80, driver1);
+    auto bus1 = make_shared<Vehicle>("А123ВС", "ПАЗ-3205", 2015, 30, 20, driver1);
     auto bus2 = make_shared<Vehicle>("В456ЕК", "ЛиАЗ-5292", 2018, 50, 90, driver2);
     auto bus3 = make_shared<Vehicle>("С789МН", "Volgabus", 2020, 100, 110, driver3);
     auto bus4 = make_shared<Vehicle>("", "", 0, 0, 0, nullptr);
@@ -149,7 +149,7 @@ int main() {
             }
             case 4: {
                 *route1 -= bus2;
-                cout << "ТС успешно откреплен от маршрута! \n";
+                // *route2 -= bus1;
                 route1->printRouteInformation();
                 break;
             }
@@ -157,8 +157,7 @@ int main() {
                 cout << *bus1 << endl;
                 cout << *bus2 << endl;
                 check = *bus1 == *bus2;
-                if (check) cout << "True";
-                else cout << "False";
+                cout << "Рег. номер ожинаковый у bus1 и bus2?: " << (check ? "True" : "False") << endl;
                 break;
             }
             case 6: {
@@ -185,9 +184,9 @@ int main() {
             case 8: {
                 system.printAllVehicles();
                 cout << "\n";
-                cout << "Is the first bus1 newer than the bus2?: "  << (isNewer(*bus1, *bus2) ? "True" : "False") << endl;
-                cout << "Is the first bus2 newer than the bus1?: "  << (isNewer(*bus2, *bus1) ? "True" : "False") << endl;
-                cout << "Is the first bus3 newer than the bus1?: "  << (isNewer(*bus3, *bus1) ? "True" : "False") << endl;
+                cout << "bus1 новее чем bus2?: "  << (isNewer(*bus1, *bus2) ? "True" : "False") << endl;
+                cout << "bus2 новее чем bus1?: "  << (isNewer(*bus2, *bus1) ? "True" : "False") << endl;
+                cout << "bus3 новее чем bus1?: "  << (isNewer(*bus3, *bus1) ? "True" : "False") << endl;
                 break;
             }
             default: {
