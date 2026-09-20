@@ -38,7 +38,7 @@ std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
     if (vehicle._driver) {
         os << " | Водитель: " << vehicle._driver->getFullName();
     } else {
-        os << " | Водитель не назначен";
+        os << " | Водитель не назначен\n";
     }
     return os;
 }

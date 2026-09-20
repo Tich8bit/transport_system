@@ -85,29 +85,8 @@ int main() {
                 system.printAllVehicles();
                 break;
             }
-            // case 3: {
-            //     route2->addVehicle(bus3);
-            //     route2->printRouteInformation();
-            //     break;
-            // }
-            // case 4: {
-            //     bus1->setCapacity(40);
-            //     bus1->setDriver(driver2);
-            //     bus1->setRegNumber("550501");
-            //     cout << *bus1 << endl;
-            //     break;
-            // }
-            // case 5: {
-            //     route2->setStartStop("Петровщина");
-            //     route2->setEndStop("Уручье");
-            //     route2->setMinCapacity(120);
-            //     route2->printRouteInformation();
-            //     break;
-            //}
             case 3: {
-                cout << *bus1 << endl;
-                cout << *bus2 << endl;
-                cout << *bus3 << endl;
+                system.printAllVehicles();
                 *route1 += bus2; 
                 *route1 += bus3;
                 *route1 += bus1;
@@ -124,7 +103,7 @@ int main() {
                 cout << *bus1 << endl;
                 cout << *bus2 << endl;
                 check = *bus1 == *bus2;
-                cout << "Рег. номер ожинаковый у bus1 и bus2?: " << (check ? "True" : "False") << endl;
+                cout << "Рег. номер одинаковый?: " << (check ? "True" : "False") << endl;
                 break;
             }
             case 6: {
@@ -132,8 +111,7 @@ int main() {
                 cout << *bus4;
                 cout << *bus1;
                 check = *bus1 != *bus4;
-                if (check) cout << "True";
-                else cout << "False";
+                cout << "Рег. номер не одинаковый?: " << (check ? "True" : "False") << endl;
                 break;
             }
             case 7: {
