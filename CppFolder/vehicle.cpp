@@ -59,3 +59,4 @@ std::istream& operator>>(std::istream& is, Vehicle& vehicle) {
     vehicle._maxSpeed  = inputInt("Введите скорость: ");
     return is;
 }
+

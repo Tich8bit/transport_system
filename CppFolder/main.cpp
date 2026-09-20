@@ -101,7 +101,7 @@ int main() {
                 cout << *bus4;
                 cout << *bus1;
                 check = *bus1 == *bus4;
-                cout << "Рег. номер одинаковый?: " << (check ? "True" : "False") << endl;
+                cout << "\nРег. номер одинаковый?: " << (check ? "True" : "False") << endl;
                 break;
             }
             case 6: {
