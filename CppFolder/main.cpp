@@ -120,8 +120,6 @@ int main() {
                 system.printAllVehicles();
                 cout << "\n";
                 cout << "bus1 новее чем bus2?: "  << (isNewer(*bus1, *bus2) ? "True" : "False") << endl;
-                cout << "bus2 новее чем bus1?: "  << (isNewer(*bus2, *bus1) ? "True" : "False") << endl;
-                cout << "bus3 новее чем bus1?: "  << (isNewer(*bus3, *bus1) ? "True" : "False") << endl;
                 break;
             }
             default: {
