@@ -29,20 +29,21 @@ void Route::setMinCapacity(int newMinCapacity) { _minCapacity = newMinCapacity; 
 void Route::setMinSpeed(int newSpeed) { _minSpeed = newSpeed; }
 bool Route::addVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "ОШИБКА! Пустой указатель на транспорт!" << std::endl;
+        std::cout << "\nОШИБКА! Пустой указатель на транспорт!" << std::endl;
         return false;
     }
      else if ((vehicle->getCapacity() >= _minCapacity && vehicle->getMaxSpeed() >= _minSpeed*0.7) ||
               (vehicle->getCapacity() < _minCapacity && vehicle->getMaxSpeed() >= _minSpeed*1.2)) {
         _assignedVehicles.push_back(vehicle);
-        std::cout << "УСПЕХ! ТС \"" << vehicle->getModel() << "\"" << std::endl;
+        std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel() << "\"" << std::endl;
         std::cout << "Госномер:  " << vehicle->getRegNumber() << std::endl;
         std::cout << "Маршрут №" << _number << " \"" << _name << "\"" << std::endl;
         std::cout << "Вместимость ТС: " << vehicle->getCapacity() << " чел." << std::endl;
+        std::cout << "Скорость ТС: " << vehicle->getMaxSpeed() << " км/ч." << std::endl;
     return true;
     }
     else {
-        std::cout << "ОШИБКА! ТС \"" << vehicle->getModel() << "\"" << std::endl;
+        std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel() << "\"" << std::endl;
         std::cout << "Вместимость: " << vehicle->getCapacity() << " чел." << std::endl;
         std::cout << "Скорость: " << vehicle->getMaxSpeed() << " км/ч." << std::endl;
         std::cout << "Маршрут №" << _number << " \"" << _name << "\"" << std::endl;
@@ -81,22 +82,21 @@ Route& Route::operator-=(std::shared_ptr<Vehicle> vehicle) {
 }
 
 bool Route::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
-    // 1. Проверка на пустой указатель
     if (!vehicle) {
-        std::cout << "[ОШИБКА] Пустой указатель на транспорт!\n";
+        std::cout << "\nОШИБКА! Пустой указатель на транспорт!\n";
         return false;
     }
     for (auto it = _assignedVehicles.begin(); it != _assignedVehicles.end(); ++it) {
         if (*it == vehicle) {
             _assignedVehicles.erase(it);
-            std::cout << "[УСПЕХ] ТС \"" << vehicle->getModel()
+            std::cout << "УСПЕХ! ТС \"" << vehicle->getModel()
                       << "\" (" << vehicle->getRegNumber() << ")" << std::endl;
             std::cout << "  Откреплено от маршрута №" << _number
                       << " \"" << _name << "\"\n";
             return true;
         }
-    }
-    std::cout << "[ОШИБКА] ТС \"" << vehicle->getModel()
+    } 
+    std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
               << "\" не закреплено за маршрутом №" << _number << "!\n";
     return false;
 }

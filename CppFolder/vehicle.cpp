@@ -1,5 +1,6 @@
 #include "vehicle.h"
 #include "driver.h"
+#include "basefunction.h"
 #include <iostream>
 
 Vehicle::Vehicle(std::string_view regNumber,
@@ -43,16 +44,11 @@ std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
 }
 
 std::istream& operator>>(std::istream& is, Vehicle& vehicle) {
-    std::cout << "Введите госномер: ";
-    is >> vehicle._regNumber;
-    std::cout << "Введите модель: ";
-    is >> vehicle._model;
-    std::cout << "Введите год выпуска: ";
-    is >> vehicle._year;
-    std::cout << "Введите вместимость: ";
-    is >> vehicle._capacity;
-    std::cout << "Введите скорость: ";
-    is >> vehicle._maxSpeed;
+    vehicle._regNumber = inputString("Введите госномер: ");
+    vehicle._model     = inputString("Введите модель: ");
+    vehicle._year      = inputInt("Введите год выпуска: ");
+    vehicle._capacity  = inputInt("Введите вместимость: ");
+    vehicle._maxSpeed  = inputInt("Введите скорость: ");
     return is;
 }
 

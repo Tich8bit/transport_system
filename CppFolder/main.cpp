@@ -11,6 +11,7 @@
 #include "vehicle.h"
 #include "route.h"
 #include "transport_system.h"
+#include "basefunction.h"
 
 using namespace std;
 
@@ -37,40 +38,6 @@ void printMenu() {
     cout << "|_____________________________________________|\n";
     cout << "|0. Выход                                     |\n";
     cout << "|_____________________________________________|\n";
-}
-
-string inputString(string_view message) {
-    string input;
-    cout << message.data();
-    getline(cin, input);
-    return input;
-}
-
-unsigned int inputUnsignedInt(string_view message) {
-    string input;
-    int number;
-    char extra;
-    while (true) {
-        cout << message.data();
-        getline(cin, input);
-        if (stringstream ss(input); ss >> number && !(ss >> extra) && number > 0) {
-            return static_cast<unsigned int>(number);
-        }
-        cout << "Ошибка! Введите положительное целое число.\n";
-    }
-}
-int inputInt(string_view message) {
-    string input;
-    int number;
-    char extra;
-    while (true) {
-        cout << message.data();
-        getline(cin, input);
-        if (stringstream ss(input); ss >> number && !(ss >> extra)) {
-            return number;
-        }
-        cout << "Ошибка! Введите целое число.\n";
-    }
 }
 
 int main() {
@@ -200,4 +167,4 @@ int main() {
     return 0;
 }
 
-//g++ CppFolder/main.cpp CppFolder/driver.cpp CppFolder/vehicle.cpp CppFolder/route.cpp CppFolder/transport_system.cpp -IHeaderFolder -o transport.exe
+//g++ CppFolder/main.cpp CppFolder/driver.cpp CppFolder/vehicle.cpp CppFolder/route.cpp CppFolder/transport_system.cpp CppFolder/basefunction.cpp -IHeaderFolder -o transport.exe

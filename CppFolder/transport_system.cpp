@@ -32,7 +32,7 @@ TransportSystem::getVehicles() const { return _vehicles; }
 
 void TransportSystem::printAllRoutes() const {
     if (_routes.empty()) {
-        std::cout << "Список маршрутов пуст." << std::endl;
+        std::cout << "\nСписок маршрутов пуст." << std::endl;
         return;
     }
     std::cout << "_______________________________________________\n";
@@ -45,7 +45,7 @@ void TransportSystem::printAllRoutes() const {
 
 void TransportSystem::printAllVehicles() const {
     if (_vehicles.empty()) {
-        std::cout << "Список транспорта пуст." << std::endl;
+        std::cout << "\nСписок транспорта пуст." << std::endl;
         return;
     }
     std::cout << "_______________________________________________\n";
@@ -59,28 +59,28 @@ void TransportSystem::printAllVehicles() const {
 
 TransportSystem& TransportSystem::operator+=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "ОШИБКА! Пустой указатель!\n";
+        std::cout << "\nОШИБКА! Пустой указатель!\n";
         return *this;
     }
     _vehicles.push_back(vehicle);
-    std::cout << "УСПЕХ! ТС \"" << vehicle->getModel() << "\" добавлено в систему.\n";
+    std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel() << "\" добавлено в систему.\n";
     return *this;
 }
 
 TransportSystem& TransportSystem::operator-=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "ОШИБКА! Пустой указатель!\n";
+        std::cout << "\nОШИБКА! Пустой указатель!\n";
         return *this;
     }
     
     for (auto it = _vehicles.begin(); it != _vehicles.end(); ++it) {
         if (*it == vehicle) {
             _vehicles.erase(it);
-            std::cout << "УСПЕХ! ТС \"" << vehicle->getModel() << "\" удалено из системы.\n";
+            std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel() << "\" удалено из системы.\n";
             return *this;
         }
     }
     
-    std::cout << "ОШИБКА! ТС не найдено в системе!\n";
+    std::cout << "\nОШИБКА! ТС не найдено в системе!\n";
     return *this;
 }
