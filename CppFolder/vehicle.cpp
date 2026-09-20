@@ -60,10 +60,6 @@ bool Vehicle::operator==(const Vehicle& other) const {
     return _regNumber == other._regNumber;
 }
 
-bool Vehicle::operator!=(const Vehicle& other) const {
-    return _regNumber != other._regNumber;
-}
-
 bool Vehicle::operator<(const Vehicle& other) const {
     return _maxSpeed < other._maxSpeed;
 }

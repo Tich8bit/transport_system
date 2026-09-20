@@ -30,11 +30,9 @@ void printMenu() {
     cout << "|_____________________________________________|\n";
     cout << "|5. (==) Сравненить транспорта по рег. номеру |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|6. (!=) Сравненить транспорта по рег. номеру |\n";
+    cout << "|6. (</<=/>/>=) Сравненить тc. по скорости    |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|7. ()Сравненить транспорта по скорости       |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|8. Сравнение транспорта году выпуска         |\n";
+    cout << "|7. Сравнение транспорта году выпуска         |\n";
     cout << "|_____________________________________________|\n";
     cout << "|0. Выход                                     |\n";
     cout << "|_____________________________________________|\n";
@@ -95,26 +93,18 @@ int main() {
             }
             case 4: {
                 *route1 -= bus2;
-                // *route2 -= bus1;
                 route1->printRouteInformation();
                 break;
             }
             case 5: {
-                cout << *bus1 << endl;
-                cout << *bus2 << endl;
-                check = *bus1 == *bus2;
+                cin >> *bus4;
+                cout << *bus4;
+                cout << *bus1;
+                check = *bus1 == *bus4;
                 cout << "Рег. номер одинаковый?: " << (check ? "True" : "False") << endl;
                 break;
             }
             case 6: {
-                cin >> *bus4;
-                cout << *bus4;
-                cout << *bus1;
-                check = *bus1 != *bus4;
-                cout << "Рег. номер не одинаковый?: " << (check ? "True" : "False") << endl;
-                break;
-            }
-            case 7: {
                 system.printAllVehicles();
                 check = (*bus1 > *bus2);
                 cout << "bus1 > bus2: " << (check ? "True" : "False") << endl;
@@ -126,7 +116,7 @@ int main() {
                 cout << "bus1 <= bus3: " << (check ? "True" : "False") << endl;
                 break;
             }
-            case 8: {
+            case 7: {
                 system.printAllVehicles();
                 cout << "\n";
                 cout << "bus1 новее чем bus2?: "  << (isNewer(*bus1, *bus2) ? "True" : "False") << endl;

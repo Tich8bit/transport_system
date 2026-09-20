@@ -26,7 +26,6 @@ public:
     friend std::istream& operator>>(std::istream& is, Vehicle& vehicle);
     friend bool isNewer(const Vehicle& a, const Vehicle& b);
     bool operator==(const Vehicle& other) const;
-    bool operator!=(const Vehicle& other) const;
     bool operator<(const Vehicle& other) const;
     bool operator<=(const Vehicle& other) const;
     bool operator>(const Vehicle& other) const;
