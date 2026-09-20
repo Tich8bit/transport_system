@@ -2,6 +2,7 @@
 #include "driver.h"
 #include "basefunction.h"
 #include <iostream>
+#include <compare>
 
 Vehicle::Vehicle(std::string_view regNumber,
                  std::string_view model,
@@ -60,18 +61,7 @@ bool Vehicle::operator==(const Vehicle& other) const {
     return _regNumber == other._regNumber;
 }
 
-bool Vehicle::operator<(const Vehicle& other) const {
-    return _maxSpeed < other._maxSpeed;
-}
-
-bool Vehicle::operator<=(const Vehicle& other) const {
-    return _maxSpeed <= other._maxSpeed;
-}
-
-bool Vehicle::operator>(const Vehicle& other) const {
-    return _maxSpeed > other._maxSpeed;
-}
-
-bool Vehicle::operator>=(const Vehicle& other) const {
-    return _maxSpeed >= other._maxSpeed;
-}
+bool Vehicle::operator<(const Vehicle& other) const { return _maxSpeed < other._maxSpeed; }
+bool Vehicle::operator<=(const Vehicle& other) const { return _maxSpeed <= other._maxSpeed; }
+bool Vehicle::operator>(const Vehicle& other) const { return _maxSpeed > other._maxSpeed; }
+bool Vehicle::operator>=(const Vehicle& other) const { return _maxSpeed >= other._maxSpeed; }

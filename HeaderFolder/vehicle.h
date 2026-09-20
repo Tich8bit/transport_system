@@ -3,6 +3,8 @@
 #include <string>
 #include <string_view>
 #include <memory>
+#include <compare>
+#include <iosfwd>
 
 class Driver;
 
@@ -15,8 +17,6 @@ public:
     int getCapacity() const;
     int getMaxSpeed() const;
     std::shared_ptr<Driver> getDriver() const;
-    std::string inputString(std::string_view message);
-    int inputInt(std::string_view message);
     void setYear(int newYear);
     void setCapacity(int newCapacity);
     void setRegNumber(std::string_view newRegNumber);
@@ -29,7 +29,7 @@ public:
     bool operator<(const Vehicle& other) const;
     bool operator<=(const Vehicle& other) const;
     bool operator>(const Vehicle& other) const;
-    bool operator>=(const Vehicle& other) const;
+    bool operator>=(const Vehicle& other) const; 
 private:
     std::string _regNumber;
     std::string _model;
