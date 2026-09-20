@@ -20,19 +20,21 @@ void printMenu() {
     cout << "_______________________________________________\n";
     cout << "|                   МЕНЮ                      |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|1. Показать все маршруты                     |\n";
+    cout << "|1. (<<) Показать весь транспорт              |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|2. (<<) Показать весь транспорт              |\n";
+    cout << "|2. (+=) Закрепить транспорт за маршрутом     |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|3. (+=) Закрепить транспорт за маршрутом     |\n";
+    cout << "|3. (-=) Открепить транспорт от маршрута      |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|4. (-=) Открепить транспорт от маршрута      |\n";
+    cout << "|4. (+=) Добавить ТС в систему                |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|5. (==) Сравненить транспорта по рег. номеру |\n";
+    cout << "|5. (-=) Удалить ТС из системы                |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|6. (</<=/>/>=) Сравненить тc. по скорости    |\n";
+    cout << "|6. (==) Сравненить транспорта по рег. номеру |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|7. Сравнение транспорта году выпуска         |\n";
+    cout << "|7. (</<=/>/>=) Сравненить тc. по скорости    |\n";
+    cout << "|_____________________________________________|\n";
+    cout << "|8. Сравнение транспорта году выпуска         |\n";
     cout << "|_____________________________________________|\n";
     cout << "|0. Выход                                     |\n";
     cout << "|_____________________________________________|\n";
@@ -51,6 +53,8 @@ int main() {
     auto bus2 = make_shared<Vehicle>("В456ЕК", "ЛиАЗ-5292", 2018, 50, 90, driver2);
     auto bus3 = make_shared<Vehicle>("С789МН", "Volgabus", 2020, 100, 110, driver3);
     auto bus4 = make_shared<Vehicle>("", "", 0, 0, 0, nullptr);
+    auto bus5 = make_shared<Vehicle>("М222ОР", "БКМ-321", 2023, 80, 95, driver2);
+    auto bus6 = make_shared<Vehicle>("Н333СТ", "ГАЗель-Next", 2019, 20, 85, driver1);
 
     system.addVehicle(bus1);
     system.addVehicle(bus2);
@@ -76,14 +80,10 @@ int main() {
                 break;
              }
             case 1: {
-                system.printAllRoutes();
-                break;
-            }
-            case 2: {
                 system.printAllVehicles();
                 break;
             }
-            case 3: {
+            case 2: {
                 system.printAllVehicles();
                 *route1 += bus2; 
                 *route1 += bus3;
@@ -91,12 +91,26 @@ int main() {
                 route1->printRouteInformation();
                 break;
             }
-            case 4: {
+            case 3: {
                 *route1 -= bus2;
                 route1->printRouteInformation();
                 break;
             }
+            case 4: {
+                system.printAllVehicles();
+                system += bus5;
+                system += bus6;
+                system.printAllVehicles();
+                break;
+            }
             case 5: {
+                system.printAllVehicles();
+                system -= bus5;
+                system -= bus6;
+                system.printAllVehicles();
+                break;
+            }
+            case 6: {
                 cin >> *bus4;
                 cout << *bus4;
                 cout << *bus1;
@@ -104,7 +118,7 @@ int main() {
                 cout << "\nРег. номер одинаковый?: " << (check ? "True" : "False") << endl;
                 break;
             }
-            case 6: {
+            case 7: {
                 system.printAllVehicles();
                 check = (*bus1 > *bus2);
                 cout << "bus1 > bus2: " << (check ? "True" : "False") << endl;
@@ -116,7 +130,7 @@ int main() {
                 cout << "bus1 <= bus3: " << (check ? "True" : "False") << endl;
                 break;
             }
-            case 7: {
+            case 8: {
                 system.printAllVehicles();
                 cout << "\n";
                 cout << "bus1 новее чем bus2?: "  << (isNewer(*bus1, *bus2) ? "True" : "False") << endl;
