@@ -94,7 +94,7 @@ TransportSystem& TransportSystem::operator-=(std::shared_ptr<Vehicle> vehicle) {
                   << "\" не найдено в системе!\n";
         return *this;
     }
-    for (auto& route : _routes) route->removeVehicle(vehicle);
+    for (const auto& route : _routes) route->removeVehicle(vehicle);
     std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel()
               << "\" удалено из системы и откреплено от всех маршрутов.\n";
     return *this;
