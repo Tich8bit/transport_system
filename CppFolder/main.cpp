@@ -83,11 +83,13 @@ int main() {
                 system.printAllVehicles();
                 break;
             }
-            case 2: {
-                system.printAllVehicles();
-                *route1 += bus2; 
-                *route1 += bus3;
-                *route1 += bus1;
+          case 2: {
+                if (system.findVehicleByRegNumber(bus1->getRegNumber())) *route1 += bus1;
+                 else cout << "\nОШИБКА! ТС \"" << bus1->getModel() << "\" удалено из системы!\n";
+                if (system.findVehicleByRegNumber(bus2->getRegNumber())) *route1 += bus2;
+                 else cout << "ОШИБКА! ТС \"" << bus2->getModel() << "\" удалено из системы!\n";
+                if (system.findVehicleByRegNumber(bus3->getRegNumber())) *route1 += bus3;
+                 else cout << "ОШИБКА! ТС \"" << bus3->getModel() << "\" удалено из системы!\n";
                 route1->printRouteInformation();
                 break;
             }
@@ -97,16 +99,15 @@ int main() {
                 break;
             }
             case 4: {
-                system.printAllVehicles();
                 system += bus5;
                 system += bus6;
                 system.printAllVehicles();
                 break;
             }
             case 5: {
-                system.printAllVehicles();
                 system -= bus5;
                 system -= bus6;
+                system -= bus2;
                 system.printAllVehicles();
                 break;
             }
@@ -133,7 +134,7 @@ int main() {
             case 8: {
                 system.printAllVehicles();
                 cout << "\n";
-                cout << "bus1 новее чем bus2?: "  << (isNewer(*bus1, *bus2) ? "True" : "False") << endl;
+                cout << "bus2 новее чем bus3?: "  << (isNewer(*bus2, *bus3) ? "True" : "False") << endl;
                 break;
             }
             default: {
@@ -143,7 +144,6 @@ int main() {
         }
 
     } while (choice != 0);
-
     return 0;
 }
 

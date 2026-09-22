@@ -13,6 +13,7 @@ public:
     std::shared_ptr<Route> findRouteByNumber(int number) const;
     const std::vector<std::shared_ptr<Route>>& getRoutes() const;
     const std::vector<std::shared_ptr<Vehicle>>& getVehicles() const;
+    std::shared_ptr<Vehicle> findVehicleByRegNumber(std::string_view regNumber) const;
     void printAllRoutes() const;
     void printAllVehicles() const;
     TransportSystem& operator+=(std::shared_ptr<Vehicle> vehicle);

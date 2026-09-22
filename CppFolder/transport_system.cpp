@@ -30,6 +30,15 @@ TransportSystem::getRoutes() const { return _routes; }
 const std::vector<std::shared_ptr<Vehicle>>&
 TransportSystem::getVehicles() const { return _vehicles; }
 
+std::shared_ptr<Vehicle> TransportSystem::findVehicleByRegNumber(std::string_view regNumber) const {
+    for (const auto& v : _vehicles) {
+        if (v->getRegNumber() == regNumber) {
+            return v;
+        }
+    }
+    return nullptr;
+}
+
 void TransportSystem::printAllRoutes() const {
     if (_routes.empty()) {
         std::cout << "\nСписок маршрутов пуст." << std::endl;
@@ -62,8 +71,17 @@ TransportSystem& TransportSystem::operator+=(std::shared_ptr<Vehicle> vehicle) {
         std::cout << "\nОШИБКА! Пустой указатель!\n";
         return *this;
     }
+    for (const auto& v : _vehicles) {
+        if (v == vehicle) {
+            std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
+                      << "\" (" << vehicle->getRegNumber()
+                      << ") уже есть в системе!\n";
+            return *this;
+        }
+    }
     _vehicles.push_back(vehicle);
-    std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel() << "\" добавлено в систему.\n";
+    std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel()
+              << "\" добавлено в систему.\n";
     return *this;
 }
 
@@ -72,15 +90,21 @@ TransportSystem& TransportSystem::operator-=(std::shared_ptr<Vehicle> vehicle) {
         std::cout << "\nОШИБКА! Пустой указатель!\n";
         return *this;
     }
-    
+    bool found = false;
     for (auto it = _vehicles.begin(); it != _vehicles.end(); ++it) {
         if (*it == vehicle) {
             _vehicles.erase(it);
-            std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel() << "\" удалено из системы.\n";
-            return *this;
+            found = true;
+            break;
         }
     }
-    
-    std::cout << "\nОШИБКА! ТС не найдено в системе!\n";
+    if (!found) {
+        std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
+                  << "\" не найдено в системе!\n";
+        return *this;
+    }
+    for (auto& route : _routes) route->removeVehicle(vehicle);
+    std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel()
+              << "\" удалено из системы и откреплено от всех маршрутов.\n";
     return *this;
 }
