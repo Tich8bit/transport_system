@@ -30,15 +30,6 @@ TransportSystem::getRoutes() const { return _routes; }
 const std::vector<std::shared_ptr<Vehicle>>&
 TransportSystem::getVehicles() const { return _vehicles; }
 
-std::shared_ptr<Vehicle> TransportSystem::findVehicleByRegNumber(std::string_view regNumber) const {
-    for (const auto& v : _vehicles) {
-        if (v->getRegNumber() == regNumber) {
-            return v;
-        }
-    }
-    return nullptr;
-}
-
 void TransportSystem::printAllRoutes() const {
     if (_routes.empty()) {
         std::cout << "\nСписок маршрутов пуст." << std::endl;

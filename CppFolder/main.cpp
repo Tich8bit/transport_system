@@ -84,12 +84,9 @@ int main() {
                 break;
             }
           case 2: {
-                if (system.findVehicleByRegNumber(bus1->getRegNumber())) *route1 += bus1;
-                 else cout << "\nОШИБКА! ТС \"" << bus1->getModel() << "\" удалено из системы!\n";
-                if (system.findVehicleByRegNumber(bus2->getRegNumber())) *route1 += bus2;
-                 else cout << "ОШИБКА! ТС \"" << bus2->getModel() << "\" удалено из системы!\n";
-                if (system.findVehicleByRegNumber(bus3->getRegNumber())) *route1 += bus3;
-                 else cout << "ОШИБКА! ТС \"" << bus3->getModel() << "\" удалено из системы!\n";
+                *route1 += bus1;
+                *route1 += bus2;
+                *route1 += bus3;
                 route1->printRouteInformation();
                 break;
             }
@@ -107,7 +104,6 @@ int main() {
             case 5: {
                 system -= bus5;
                 system -= bus6;
-                system -= bus2;
                 system.printAllVehicles();
                 break;
             }
