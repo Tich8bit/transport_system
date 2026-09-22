@@ -104,7 +104,6 @@ bool Route::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
             return true;
         }
     } 
-    return false;
     std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
               << "\" не закреплено за маршрутом №" << _number << "!" << std::endl;
     return false;
