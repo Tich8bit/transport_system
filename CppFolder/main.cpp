@@ -26,9 +26,9 @@ void printMenu() {
     cout << "|_____________________________________________|\n";
     cout << "|3. (-=) Открепить транспорт от маршрута      |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|4. (+=) Добавить ТС в систему                |\n";
+    cout << "|4. (+=) Добавить маршрут в систему           |\n";
     cout << "|_____________________________________________|\n";
-    cout << "|5. (-=) Удалить ТС из системы                |\n";
+    cout << "|5. (-=) Удалить маршрут из систем            |\n";
     cout << "|_____________________________________________|\n";
     cout << "|6. (==) Сравненить транспорта по рег. номеру |\n";
     cout << "|_____________________________________________|\n";
@@ -53,8 +53,6 @@ int main() {
     auto bus2 = make_shared<Vehicle>("В456ЕК", "ЛиАЗ-5292", 2018, 50, 90, driver2);
     auto bus3 = make_shared<Vehicle>("С789МН", "Volgabus", 2020, 100, 110, driver3);
     auto bus4 = make_shared<Vehicle>("", "", 0, 0, 0, nullptr);
-    auto bus5 = make_shared<Vehicle>("М222ОР", "БКМ-321", 2023, 80, 95, driver2);
-    auto bus6 = make_shared<Vehicle>("Н333СТ", "ГАЗель-Next", 2019, 20, 85, driver1);
 
     system.addVehicle(bus1);
     system.addVehicle(bus2);
@@ -63,10 +61,11 @@ int main() {
     auto route1 = make_shared<Route>(1, "Центральный", "Вокзал", "Пл. Мира", 40, 60);
     auto route2 = make_shared<Route>(2, "Экспресс", "Аэропорт", "Автовокзал", 80, 100);
     auto route3 = make_shared<Route>(3, "Ночной", "Депо", "Центр", 25, 50);
+    auto route4 = make_shared<Route>(4, "Пригородный", "Автовокзал", "Сосны", 90, 70);
 
-    system.addRoute(route1);
-    system.addRoute(route2);
-    system.addRoute(route3);
+    system += route1;
+    system += route2;
+    system += route3;
 
     int choice = -1;
     
@@ -96,15 +95,13 @@ int main() {
                 break;
             }
             case 4: {
-                system += bus5;
-                system += bus6;
-                system.printAllVehicles();
+                system += route4;
+                system.printAllRoutes();
                 break;
             }
             case 5: {
-                system -= bus5;
-                system -= bus6;
-                system.printAllVehicles();
+                system -= route4;
+                system.printAllRoutes();
                 break;
             }
             case 6: {

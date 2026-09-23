@@ -37,26 +37,4 @@ bool Vehicle::operator<=(const Vehicle& other) const { return _maxSpeed <= other
 bool Vehicle::operator>(const Vehicle& other) const { return _maxSpeed > other._maxSpeed; }
 bool Vehicle::operator>=(const Vehicle& other) const { return _maxSpeed >= other._maxSpeed; }
 
-std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
-    os << "ТС: " << vehicle._model
-    << " | Госномер: " << vehicle._regNumber
-    << " | Год выпуска: " << vehicle._year
-    << " | Вместимость: " << vehicle._capacity << " чел."
-    << " | Скорость: " << vehicle._maxSpeed << " км/ч.";
-    if (vehicle._driver) {
-        os << " | Водитель: " << vehicle._driver->getFullName();
-    } else {
-        os << " | Водитель не назначен\n";
-    }
-    return os;
-}
-
-std::istream& operator>>(std::istream& is, Vehicle& vehicle) {
-    vehicle._regNumber = inputString("Введите госномер: ");
-    vehicle._model     = inputString("Введите модель: ");
-    vehicle._year      = inputInt("Введите год выпуска: ");
-    vehicle._capacity  = inputInt("Введите вместимость: ");
-    vehicle._maxSpeed  = inputInt("Введите скорость: ");
-    return is;
-}
 

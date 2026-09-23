@@ -15,8 +15,8 @@ public:
     const std::vector<std::shared_ptr<Vehicle>>& getVehicles() const;
     void printAllRoutes() const;
     void printAllVehicles() const;
-    TransportSystem& operator+=(std::shared_ptr<Vehicle> vehicle);
-    TransportSystem& operator-=(std::shared_ptr<Vehicle> vehicle);
+    TransportSystem& operator+=(std::shared_ptr<Route> route);
+    TransportSystem& operator-=(std::shared_ptr<Route> route);
 private:
     std::vector<std::shared_ptr<Route>> _routes;
     std::vector<std::shared_ptr<Vehicle>> _vehicles;

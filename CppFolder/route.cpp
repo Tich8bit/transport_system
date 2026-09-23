@@ -67,7 +67,7 @@ Route::getAssignedVehicles() const {
 }
 
 void Route::printRouteInformation() const {
-    std::cout << "\n=== Маршрут №" << _number << " ===" << std::endl;
+    std::cout << "=== Маршрут №" << _number << " ===" << std::endl;
     std::cout << "Название: " << _name << std::endl;
     std::cout << "Начальная остановка: " << _startStop << std::endl;
     std::cout << "Конечная остановка: " << _endStop << std::endl;

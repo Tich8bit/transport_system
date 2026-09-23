@@ -40,7 +40,6 @@ void TransportSystem::printAllRoutes() const {
     std::cout << "|_____________________________________________|\n";
     for (const auto& r : _routes) 
         r->printRouteInformation();
-    
 }
 
 void TransportSystem::printAllVehicles() const {
@@ -57,45 +56,37 @@ void TransportSystem::printAllVehicles() const {
     }
 }
 
-TransportSystem& TransportSystem::operator+=(std::shared_ptr<Vehicle> vehicle) {
-    if (!vehicle) {
+TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
+    if (!route) {
         std::cout << "\nОШИБКА! Пустой указатель!\n";
         return *this;
     }
-    for (const auto& v : _vehicles) {
-        if (v == vehicle) {
-            std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
-                      << "\" (" << vehicle->getRegNumber()
-                      << ") уже есть в системе!\n";
+    for (const auto& r : _routes) {
+        if (r == route) {
+            std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
+                      << " уже есть в системе!\n";
             return *this;
         }
     }
-    _vehicles.push_back(vehicle);
-    std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel()
-              << "\" добавлено в систему.\n";
+    _routes.push_back(route);
+    std::cout << "\nУСПЕХ! Маршрут №" << route->getNumber()
+              << " \"" << route->getName() << "\" добавлен в систему.\n";
     return *this;
 }
-
-TransportSystem& TransportSystem::operator-=(std::shared_ptr<Vehicle> vehicle) {
-    if (!vehicle) {
+TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
+    if (!route) {
         std::cout << "\nОШИБКА! Пустой указатель!\n";
         return *this;
     }
-    bool found = false;
-    for (auto it = _vehicles.begin(); it != _vehicles.end(); ++it) {
-        if (*it == vehicle) {
-            _vehicles.erase(it);
-            found = true;
-            break;
+    for (auto it = _routes.begin(); it != _routes.end(); ++it) {
+        if (*it == route) {
+            _routes.erase(it);
+            std::cout << "\nУСПЕХ! Маршрут №" << route->getNumber()
+                      << " \"" << route->getName() << "\" удалён из системы.\n";
+            return *this;
         }
     }
-    if (!found) {
-        std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
-                  << "\" не найдено в системе!\n";
-        return *this;
-    }
-    for (const auto& route : _routes) route->removeVehicle(vehicle);
-    std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel()
-              << "\" удалено из системы и откреплено от всех маршрутов.\n";
+    std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
+              << " не найден в системе!\n";
     return *this;
 }
