@@ -1,49 +1,50 @@
-*.d
+# ============================================
+# C++ .gitignore for VS Code + GCC (MinGW)
+# ============================================
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-*.so.*
-
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
+# ===== Compiled files =====
 *.exe
 *.out
 *.app
+*.o
+*.obj
+*.lo
+*.slo
 
-# Build directories
+# ===== Libraries =====
+*.a
+*.lib
+*.la
+*.lai
+*.so
+*.so.*
+*.dll
+*.dylib
+
+# ===== Debug information =====
+*.pdb
+*.ilk
+*.dwo
+
+# ===== Precompiled headers =====
+*.gch
+*.pch
+
+# ===== Temporary files =====
+*.tmp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+
+# ===== Build directories =====
 build/
 Build/
 build-*/
+cmake-build-*/
 
-# CMake generated files
+# ===== CMake =====
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -51,22 +52,19 @@ Makefile
 install_manifest.txt
 compile_commands.json
 
-# Temporary files
-*.tmp
-*.log
-*.bak
-*.swp
+# ===== VS Code =====
+.vscode/
 
-# vcpkg
-vcpkg_installed/
+# ===== Operating system files =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
+# ===== Other =====
 .cache/
-
-.vscode/ipch/
-.vscode/browse.vc.db
-.vscode/*.log
+Testing/
