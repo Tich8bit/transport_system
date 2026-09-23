@@ -32,9 +32,4 @@ void Vehicle::setMaxSpeed(int newMaxSpeed) { _maxSpeed = newMaxSpeed; }
 
 bool isNewer(const Vehicle& a, const Vehicle& b) { return a._year > b._year; }
 bool Vehicle::operator==(const Vehicle& other) const { return _regNumber == other._regNumber; }
-bool Vehicle::operator<(const Vehicle& other) const { return _maxSpeed < other._maxSpeed; }
-bool Vehicle::operator<=(const Vehicle& other) const { return _maxSpeed <= other._maxSpeed; }
-bool Vehicle::operator>(const Vehicle& other) const { return _maxSpeed > other._maxSpeed; }
-bool Vehicle::operator>=(const Vehicle& other) const { return _maxSpeed >= other._maxSpeed; }
-
 

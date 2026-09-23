@@ -46,10 +46,11 @@ public:
     }
     friend bool isNewer(const Vehicle& a, const Vehicle& b);
     bool operator==(const Vehicle& other) const;
-    bool operator<(const Vehicle& other) const;
-    bool operator<=(const Vehicle& other) const;
-    bool operator>(const Vehicle& other) const;
-    bool operator>=(const Vehicle& other) const; 
+    std::strong_ordering operator<=>(const Vehicle& other) const {
+        if (_maxSpeed < other._maxSpeed) return std::strong_ordering::less;
+        if (_maxSpeed > other._maxSpeed) return std::strong_ordering::greater;
+        return std::strong_ordering::equal;
+    }
 private:
     std::string _regNumber;
     std::string _model;
