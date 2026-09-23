@@ -31,5 +31,4 @@ void Vehicle::setRegNumber(std::string_view newRegNumber){ _regNumber = newRegNu
 void Vehicle::setMaxSpeed(int newMaxSpeed) { _maxSpeed = newMaxSpeed; }
 
 bool isNewer(const Vehicle& a, const Vehicle& b) { return a._year > b._year; }
-bool Vehicle::operator==(const Vehicle& other) const { return _regNumber == other._regNumber; }
 

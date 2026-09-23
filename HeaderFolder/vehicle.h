@@ -45,10 +45,12 @@ public:
         return is;
     }
     friend bool isNewer(const Vehicle& a, const Vehicle& b);
-    bool operator==(const Vehicle& other) const;
-    std::strong_ordering operator<=>(const Vehicle& other) const {
-        if (_maxSpeed < other._maxSpeed) return std::strong_ordering::less;
-        if (_maxSpeed > other._maxSpeed) return std::strong_ordering::greater;
+    friend bool operator==(const Vehicle& a, const Vehicle& b) {
+        return a._regNumber == b._regNumber;
+    }
+    friend std::strong_ordering operator<=>(const Vehicle& a, const Vehicle& b) {
+        if (a._maxSpeed < b._maxSpeed) return std::strong_ordering::less;
+        if (a._maxSpeed > b._maxSpeed) return std::strong_ordering::greater;
         return std::strong_ordering::equal;
     }
 private:
