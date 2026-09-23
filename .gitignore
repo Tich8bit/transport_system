@@ -1,6 +1,4 @@
-# Prerequisites
 *.d
-
 
 # Compiled Object files
 *.slo
@@ -68,3 +66,7 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+.vscode/ipch/
+.vscode/browse.vc.db
+.vscode/*.log
