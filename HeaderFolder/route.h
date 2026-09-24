@@ -21,12 +21,10 @@ public:
     void setEndStop(std::string_view newEndStop);
     void setMinCapacity(int newMinCapacity);
     void setMinSpeed(int newMinCapacity);
-    bool addVehicle(std::shared_ptr<Vehicle> vehicle);
     const std::vector<std::shared_ptr<Vehicle>>& getAssignedVehicles() const;
     void printRouteInformation() const;
     Route& operator+=(std::shared_ptr<Vehicle> vehicle);
     Route& operator-=(std::shared_ptr<Vehicle> vehicle);
-    bool removeVehicle(std::shared_ptr<Vehicle> vehicle);
 private:
     int _number;
     std::string _name;
