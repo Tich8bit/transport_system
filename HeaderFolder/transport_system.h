@@ -8,7 +8,8 @@ class Vehicle;
 
 class TransportSystem {
 public:
-    void addRoute(std::shared_ptr<Route> route);
+    bool addRoute(std::shared_ptr<Route> route);   
+    bool removeRoute(std::shared_ptr<Route> route);
     void addVehicle(std::shared_ptr<Vehicle> vehicle);
     std::shared_ptr<Route> findRouteByNumber(int number) const;
     const std::vector<std::shared_ptr<Route>>& getRoutes() const;
