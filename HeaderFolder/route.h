@@ -25,8 +25,6 @@ public:
     void printRouteInformation() const;
     Route& operator+=(std::shared_ptr<Vehicle> vehicle);
     Route& operator-=(std::shared_ptr<Vehicle> vehicle);
-    bool addVehicle(std::shared_ptr<Vehicle> vehicle);      
-    bool removeVehicle(std::shared_ptr<Vehicle> vehicle);
 private:
     static const double SPEED_NORMAL_THRESHOLD;        
     static const double SPEED_COMPENSATION_THRESHOLD;

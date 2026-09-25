@@ -48,70 +48,42 @@ void Route::printRouteInformation() const {
     }
 }
 
-bool Route::addVehicle(std::shared_ptr<Vehicle> vehicle) {
+Route& Route::operator+=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
         std::cout << "\nОШИБКА! Пустой указатель на транспорт!" << std::endl;
-        return false;
+        return *this;
     }
-
     for (const auto& v : _assignedVehicles) {
         if (v == vehicle) {
             std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
                       << "\" (" << vehicle->getRegNumber()
                       << ") уже закреплено за маршрутом №" << _number << "!" << std::endl;
-            return false;
+            return *this;
         }
     }
-
     if ((vehicle->getCapacity() >= _minCapacity && vehicle->getMaxSpeed() >= _minSpeed * SPEED_NORMAL_THRESHOLD) ||
         (vehicle->getCapacity() < _minCapacity && vehicle->getMaxSpeed() >= _minSpeed * SPEED_COMPENSATION_THRESHOLD)) {
         _assignedVehicles.push_back(vehicle);
-        std::cout << "\nУСПЕХ! ТС \"" << vehicle->getModel() << "\"" << std::endl;
-        std::cout << "Госномер:  " << vehicle->getRegNumber() << std::endl;
-        std::cout << "Маршрут №" << _number << " \"" << _name << "\"" << std::endl;
-        std::cout << "Вместимость ТС: " << vehicle->getCapacity() << " чел." << std::endl;
-        std::cout << "Скорость ТС: " << vehicle->getMaxSpeed() << " км/ч." << std::endl;
-        return true;
+        return *this;
     }
     else {
         std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel() << "\"" << std::endl;
-        std::cout << "Вместимость: " << vehicle->getCapacity() << " чел." << std::endl;
-        std::cout << "Скорость: " << vehicle->getMaxSpeed() << " км/ч." << std::endl;
-        std::cout << "Маршрут №" << _number << " \"" << _name << "\"" << std::endl;
-        std::cout << "Требуется вместимость: " << _minCapacity << " чел." << std::endl;
-        std::cout << "Требуется скорость: " << _minSpeed << " км/ч." << std::endl;
-        return false;
+        return *this;
     }
-}
-
-bool Route::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
-    if (!vehicle) {
-        std::cout << "\nОШИБКА! Пустой указатель на транспорт!\n";
-        return false;
-    }
-
-    for (auto it = _assignedVehicles.begin(); it != _assignedVehicles.end(); ++it) {
-        if (*it == vehicle) {
-            _assignedVehicles.erase(it);
-            std::cout << "УСПЕХ! ТС \"" << vehicle->getModel()
-                      << "\" (" << vehicle->getRegNumber() << ")" << std::endl;
-            std::cout << "  Откреплено от маршрута №" << _number
-                      << " \"" << _name << "\"\n";
-            return true;
-        }
-    }
-
-    std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
-              << "\" не закреплено за маршрутом №" << _number << "!" << std::endl;
-    return false;
-}
-
-Route& Route::operator+=(std::shared_ptr<Vehicle> vehicle) {
-    addVehicle(vehicle);
-    return *this;
 }
 
 Route& Route::operator-=(std::shared_ptr<Vehicle> vehicle) {
-    removeVehicle(vehicle);
+    if (!vehicle) {
+        std::cout << "\nОШИБКА! Пустой указатель на транспорт!\n";
+        return *this;
+    }
+    for (auto it = _assignedVehicles.begin(); it != _assignedVehicles.end(); ++it) {
+        if (*it == vehicle) {
+            _assignedVehicles.erase(it);
+            return *this;
+        }
+    }
+    std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
+              << "\" не закреплено за маршрутом №" << _number << "!" << std::endl;
     return *this;
 }

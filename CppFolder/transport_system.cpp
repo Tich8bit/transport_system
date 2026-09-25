@@ -4,44 +4,6 @@
 #include <iostream>
 #include <string_view>
 
-bool TransportSystem::addRoute(std::shared_ptr<Route> route) {
-    if (!route) {
-        std::cout << "\nОШИБКА! Пустой указатель на маршрут!\n";
-        return false;
-    }
-    for (const auto& r : _routes) {
-        if (r == route) {
-            std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
-                      << " уже есть в системе!\n";
-            return false;
-        }
-    }
-    _routes.push_back(route);
-    std::cout << "\nУСПЕХ! Маршрут №" << route->getNumber()
-              << " \"" << route->getName() << "\" добавлен в систему.\n";
-    return true;
-}
-
-bool TransportSystem::removeRoute(std::shared_ptr<Route> route) {
-    if (!route) {
-        std::cout << "\nОШИБКА! Пустой указатель на маршрут!\n";
-        return false;
-    }
-
-    for (auto it = _routes.begin(); it != _routes.end(); ++it) {
-        if (*it == route) {
-            _routes.erase(it);
-            std::cout << "\nУСПЕХ! Маршрут №" << route->getNumber()
-                      << " \"" << route->getName() << "\" удалён из системы.\n";
-            return true;
-        }
-    }
-
-    std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
-              << " не найден в системе!\n";
-    return false;
-}
-
 void TransportSystem::addVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (vehicle) {
         _vehicles.push_back(vehicle);
@@ -89,11 +51,35 @@ void TransportSystem::printAllVehicles() const {
 }
 
 TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
-    addRoute(route);   
+    if (!route) {
+        std::cout << "\nОШИБКА! Пустой указатель на маршрут!\n";
+        return *this;
+    }
+    for (const auto& r : _routes) {
+        if (r == route) {
+            std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
+                      << " уже есть в системе!\n";
+            return *this;
+        }
+    }
+    _routes.push_back(route);
     return *this;
 }
 
 TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
-    removeRoute(route);   
+    if (!route) {
+        std::cout << "\nОШИБКА! Пустой указатель на маршрут!\n";
+        return *this;
+    }
+
+    for (auto it = _routes.begin(); it != _routes.end(); ++it) {
+        if (*it == route) {
+            _routes.erase(it);
+            return *this;
+        }
+    }
+
+    std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
+              << " не найден в системе!\n";
     return *this;
 }
