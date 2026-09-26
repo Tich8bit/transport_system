@@ -8,23 +8,21 @@ Trolleybus::Trolleybus(std::string_view regNumber,
                        int maxSpeed,
                        std::shared_ptr<Driver> driver,
                        int voltage,
-                       bool hasBattery)
-    : Vehicle(regNumber, model, year, capacity, maxSpeed, driver),   
+                       double powerConsumption)
+    : Vehicle(regNumber, model, year, capacity, maxSpeed, driver),
       _voltage(voltage),
-      _hasBattery(hasBattery) {}
+      _powerConsumption(powerConsumption) {}
 
 int Trolleybus::getVoltage() const { return _voltage; }
-bool Trolleybus::hasBattery() const { return _hasBattery; }
+double Trolleybus::getPowerConsumption() const { return _powerConsumption; }
 
 void Trolleybus::setVoltage(int newVoltage) { _voltage = newVoltage; }
-void Trolleybus::setBattery(bool newHasBattery) { _hasBattery = newHasBattery; }
+void Trolleybus::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
 void Trolleybus::printInfo() const {
-    Vehicle::printInfo();   
-    std::cout << "  Напряжение сети: " << _voltage << " В" << std::endl;
-    std::cout << "  Аккумулятор: " << (_hasBattery ? "есть" : "нет") << std::endl;
+    Vehicle::printInfo();
+    std::cout << "  Напряжение: " << _voltage << " В" << std::endl;
+    std::cout << "  Расход: " << _powerConsumption << " кВт·ч/100 км" << std::endl;
 }
 
-std::string Trolleybus::getType() const {
-    return "Троллейбус";
-}
+std::string Trolleybus::getType() const { return "Троллейбус"; }

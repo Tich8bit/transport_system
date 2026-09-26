@@ -7,24 +7,22 @@ Tram::Tram(std::string_view regNumber,
            int capacity,
            int maxSpeed,
            std::shared_ptr<Driver> driver,
-           int trackNumber,
-           bool hasPantograph)
-    : Vehicle(regNumber, model, year, capacity, maxSpeed, driver),   
-      _trackNumber(trackNumber),
-      _hasPantograph(hasPantograph) {}
+           int gauge,
+           double powerConsumption)
+    : Vehicle(regNumber, model, year, capacity, maxSpeed, driver),
+      _gauge(gauge),
+      _powerConsumption(powerConsumption) {}
 
-int Tram::getTrackNumber() const { return _trackNumber; }
-bool Tram::hasPantograph() const { return _hasPantograph; }
+int Tram::getGauge() const { return _gauge; }
+double Tram::getPowerConsumption() const { return _powerConsumption; }
 
-void Tram::setTrackNumber(int newTrackNumber) { _trackNumber = newTrackNumber; }
-void Tram::setPantograph(bool newHasPantograph) { _hasPantograph = newHasPantograph; }
+void Tram::setGauge(int newGauge) { _gauge = newGauge; }
+void Tram::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
 void Tram::printInfo() const {
-    Vehicle::printInfo();   
-    std::cout << "  Номер пути: " << _trackNumber << std::endl;
-    std::cout << "  Пантограф: " << (_hasPantograph ? "есть" : "нет") << std::endl;
+    Vehicle::printInfo();
+    std::cout << "  Колея: " << _gauge << " мм" << std::endl;
+    std::cout << "  Расход: " << _powerConsumption << " кВт·ч/100 км" << std::endl;
 }
 
-std::string Tram::getType() const {
-    return "Трамвай";
-}
+std::string Tram::getType() const { return "Трамвай"; }

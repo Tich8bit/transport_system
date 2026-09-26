@@ -10,19 +10,19 @@ public:
          int capacity,
          int maxSpeed,
          std::shared_ptr<Driver> driver,
-         int trackNumber,           
-         bool hasPantograph);       
+         int gauge,                       
+         double powerConsumption);        
 
-    int getTrackNumber() const;
-    bool hasPantograph() const;
+    int getGauge() const;
+    double getPowerConsumption() const;
 
-    void setTrackNumber(int newTrackNumber);
-    void setPantograph(bool newHasPantograph);
+    void setGauge(int newGauge);
+    void setPowerConsumption(double newConsumption);
 
     void printInfo() const override;
     std::string getType() const override;
 
 private:
-    int _trackNumber;       
-    bool _hasPantograph;    
+    int _gauge;                       
+    double _powerConsumption;         
 };

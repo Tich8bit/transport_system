@@ -10,19 +10,19 @@ public:
                int capacity,
                int maxSpeed,
                std::shared_ptr<Driver> driver,
-               int voltage,            
-               bool hasBattery);       
+               int voltage,                    
+               double powerConsumption);       
 
     int getVoltage() const;
-    bool hasBattery() const;
+    double getPowerConsumption() const;
 
     void setVoltage(int newVoltage);
-    void setBattery(bool newHasBattery);
+    void setPowerConsumption(double newConsumption);
 
     void printInfo() const override;
     std::string getType() const override;
 
 private:
-    int _voltage;       
-    bool _hasBattery;   
+    int _voltage;                    
+    double _powerConsumption;
 };

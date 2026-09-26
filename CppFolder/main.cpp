@@ -7,6 +7,7 @@
 #include "bus.h"
 #include "trolleybus.h"
 #include "tram.h"
+#include "basefunction.h"
 
 using namespace std;
 
@@ -23,92 +24,53 @@ void printMenu() {
 int main() {
     setlocale(LC_ALL, "ru_RU.UTF-8");
 
-    // ===== Водители =====
     auto driver1 = make_shared<Driver>("Иванов Иван Иванович", 15);
     auto driver2 = make_shared<Driver>("Петров Пётр Петрович", 8);
 
-    // ===== Объекты производных классов =====
-    auto bus = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, 80, driver1,
-                                 2, "городской");
-    auto trolley = make_shared<Trolleybus>("В456ЕК", "АКСМ-321", 2018, 90, 70, driver2,
-                                            550, true);
-    auto tram = make_shared<Tram>("С789МН", "БКМ-843", 2020, 150, 60, driver1,
-                                   5, true);
+    auto bus = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, 80, driver1, "Дизель", 100.0);
+    auto trolley = make_shared<Trolleybus>("В456ЕК", "АКСМ-321", 2018, 90, 70, driver2, 550, 45.0);
+    auto tram = make_shared<Tram>("С789МН", "БКМ-843", 2020, 150, 60, driver1, 1524, 60.0);
 
-    // ===== Вектор указателей на БАЗОВЫЙ класс =====
     vector<shared_ptr<Vehicle>> vehicles = {bus, trolley, tram};
 
     int choice = -1;
 
     do {
         printMenu();
-        cout << "Выберите пункт меню: ";
-        cin >> choice;
+        choice = inputInt("Выберите пункт меню: ");
 
         switch (choice) {
-            // ===== 1. Унаследованные поля =====
             case 1: {
-                cout << "\n=== УНАСЛЕДОВАННЫЕ ПОЛЯ (из Vehicle) ===\n";
+                cout << "\n=== УНАСЛЕДОВАННЫЕ ПОЛЯ ===\n";
+                for (const auto& v : vehicles) cout << *v << endl;
+                break;
+            }
+            case 2: {
+                cout << "\n=== СПЕЦИФИЧНЫЕ ПОЛЯ ПРОИЗВОДНЫХ ТИПОВ ===\n";
                 for (const auto& v : vehicles) {
-                    cout << "Госномер: " << v->getRegNumber()
-                         << " | Модель: " << v->getModel()
-                         << " | Год: " << v->getYear()
-                         << " | Вместимость: " << v->getCapacity() << " чел."
-                         << " | Скорость: " << v->getMaxSpeed() << " км/ч"
-                         << endl;
+                    cout << "\n--- " << v->getType() << " ---" << endl;
+                    v->printInfo();   
                 }
                 break;
             }
-
-            // ===== 2. Специфичные поля =====
-            case 2: {
-                cout << "\n=== СПЕЦИФИЧНЫЕ ПОЛЯ ===\n";
-
-                cout << "--- Автобус ---\n";
-                cout << "Госномер: " << bus->getRegNumber() << endl;
-                cout << "Дверей: " << bus->getDoorCount() << endl;
-                cout << "Салон: " << bus->getSalonType() << endl;
-
-                cout << "\n--- Троллейбус ---\n";
-                cout << "Госномер: " << trolley->getRegNumber() << endl;
-                cout << "Напряжение: " << trolley->getVoltage() << " В" << endl;
-                cout << "Аккумулятор: " << (trolley->hasBattery() ? "есть" : "нет") << endl;
-
-                cout << "\n--- Трамвай ---\n";
-                cout << "Госномер: " << tram->getRegNumber() << endl;
-                cout << "Номер пути: " << tram->getTrackNumber() << endl;
-                cout << "Пантограф: " << (tram->hasPantograph() ? "есть" : "нет") << endl;
-                break;
-            }
-
-            // ===== 3. Унаследованный сеттер =====
             case 3: {
                 cout << "\n=== УНАСЛЕДОВАННЫЙ СЕТТЕР ===\n";
-                cout << "Меняем ВМЕСТИМОСТЬ у объектов (унаследованный setCapacity):\n";
-
-                // Изменяем через УНАСЛЕДОВАННЫЙ сеттер
                 bus->setCapacity(35);
                 trolley->setCapacity(95);
                 tram->setCapacity(160);
-
-                cout << "\nПосле изменения:\n";
-                cout << "Автобус: " << bus->getCapacity() << " чел.\n";
-                cout << "Троллейбус: " << trolley->getCapacity() << " чел.\n";
-                cout << "Трамвай: " << tram->getCapacity() << " чел.\n";
+                for (const auto& v : vehicles) {
+                    cout << "\n--- " << v->getType() << " ---" << endl;
+                    v->printInfo();   
+                }   
                 break;
             }
-
-            // ===== 4. Унаследованный геттер =====
             case 4: {
-                cout << "\n=== УНАСЛЕДОВАННЫЙ ГЕТТЕР ===\n";
-                cout << "Получаем ГОД ВЫПУСКА (унаследованный getYear):\n";
-
-                cout << "Автобус: " << bus->getYear() << endl;
-                cout << "Троллейбус: " << trolley->getYear() << endl;
-                cout << "Трамвай: " << tram->getYear() << endl;
+                cout << "\n=== УНАСЛЕДОВАННЫЙ ГЕТТЕР (getYear) ===\n";
+                for (const auto& v : vehicles) {
+                    cout << v->getType() << ": " << v->getYear() << endl;
+                }
                 break;
             }
-
             case 0: {
                 cout << "Выход из программы. До свидания!\n";
                 break;
