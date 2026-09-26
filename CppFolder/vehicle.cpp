@@ -26,9 +26,57 @@ std::shared_ptr<Driver> Vehicle::getDriver() const { return _driver; }
 
 void Vehicle::setYear(int newYear) { _year = newYear; }
 void Vehicle::setCapacity(int newCapacity) { _capacity = newCapacity; }
-void Vehicle::setDriver(std::shared_ptr<Driver> newDriver) { _driver = newDriver; }
-void Vehicle::setRegNumber(std::string_view newRegNumber){ _regNumber = newRegNumber; }
+void Vehicle::setRegNumber(std::string_view newRegNumber) { _regNumber = newRegNumber; }
 void Vehicle::setMaxSpeed(int newMaxSpeed) { _maxSpeed = newMaxSpeed; }
+void Vehicle::setDriver(std::shared_ptr<Driver> newDriver) { _driver = newDriver; }
 
-bool isNewer(const Vehicle& a, const Vehicle& b) { return a._year > b._year; }
+void Vehicle::printInfo() const {
+    std::cout << "ТС: " << _model
+              << " | Госномер: " << _regNumber
+              << " | Год: " << _year
+              << " | Вместимость: " << _capacity << " чел."
+              << " | Скорость: " << _maxSpeed << " км/ч.";
+    if (_driver) {
+        std::cout << " | Водитель: " << _driver->getFullName();
+    } else {
+        std::cout << " | Водитель не назначен";
+    }
+    std::cout << std::endl;
+}
 
+std::string Vehicle::getType() const {
+    return "Транспортное средство";
+}
+
+bool operator==(const Vehicle& a, const Vehicle& b) {
+    return a._regNumber == b._regNumber;
+}
+
+std::strong_ordering operator<=>(const Vehicle& a, const Vehicle& b) {
+    if (a._maxSpeed < b._maxSpeed) return std::strong_ordering::less;
+    if (a._maxSpeed > b._maxSpeed) return std::strong_ordering::greater;
+    return std::strong_ordering::equal;
+}
+
+std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
+    os << "ТС: " << vehicle._model
+       << " | Госномер: " << vehicle._regNumber
+       << " | Год: " << vehicle._year
+       << " | Вместимость: " << vehicle._capacity << " чел."
+       << " | Скорость: " << vehicle._maxSpeed << " км/ч.";
+    if (vehicle._driver) {
+        os << " | Водитель: " << vehicle._driver->getFullName();
+    } else {
+        os << " | Водитель не назначен";
+    }
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Vehicle& vehicle) {
+    vehicle._regNumber = inputString("Введите госномер: ");
+    vehicle._model     = inputString("Введите модель: ");
+    vehicle._year      = inputInt("Введите год выпуска: ");
+    vehicle._capacity  = inputInt("Введите вместимость: ");
+    vehicle._maxSpeed  = inputInt("Введите скорость: ");
+    return is;
+}

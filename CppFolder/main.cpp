@@ -1,135 +1,119 @@
-#include <Windows.h>
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <string>
 #include <locale>
-#include <sstream>
-#include <string_view>
-
 #include "driver.h"
 #include "vehicle.h"
-#include "route.h"
-#include "transport_system.h"
-#include "basefunction.h"
+#include "bus.h"
+#include "trolleybus.h"
+#include "tram.h"
 
 using namespace std;
 
 void printMenu() {
-    cout << "\n";
-    cout << "_______________________________________________\n";
-    cout << "|                   МЕНЮ                      |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|1. (<<) Показать весь транспорт              |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|2. (+=) Закрепить транспорт за маршрутом     |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|3. (-=) Открепить транспорт от маршрута      |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|4. (+=) Добавить маршрут в систему           |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|5. (-=) Удалить маршрут из систем            |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|6. (==) Сравненить транспорта по рег. номеру |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|7. (</<=/>/>=) Сравненить тc. по скорости    |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|8. Сравнение транспорта году выпуска         |\n";
-    cout << "|_____________________________________________|\n";
-    cout << "|0. Выход                                     |\n";
-    cout << "|_____________________________________________|\n";
+    cout << "\n========= МЕНЮ (ЛР №3) =========\n";
+    cout << "1. Показать унаследованные поля всех ТС\n";
+    cout << "2. Показать специфичные поля производных типов\n";
+    cout << "3. Унаследованный сеттер (изменить общее поле)\n";
+    cout << "4. Унаследованный геттер (получить общее поле)\n";
+    cout << "0. Выход\n";
+    cout << "================================\n";
 }
 
 int main() {
     setlocale(LC_ALL, "ru_RU.UTF-8");
-    bool check;
-    TransportSystem system;
 
+    // ===== Водители =====
     auto driver1 = make_shared<Driver>("Иванов Иван Иванович", 15);
     auto driver2 = make_shared<Driver>("Петров Пётр Петрович", 8);
-    auto driver3 = make_shared<Driver>("Сидоров Сидор Сидорович", 22);
 
-    auto bus1 = make_shared<Vehicle>("А123ВС", "ПАЗ-3205", 2015, 30, 20, driver1);
-    auto bus2 = make_shared<Vehicle>("В456ЕК", "ЛиАЗ-5292", 2018, 50, 90, driver2);
-    auto bus3 = make_shared<Vehicle>("С789МН", "Volgabus", 2020, 100, 110, driver3);
-    auto bus4 = make_shared<Vehicle>("", "", 0, 0, 0, nullptr);
+    // ===== Объекты производных классов =====
+    auto bus = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, 80, driver1,
+                                 2, "городской");
+    auto trolley = make_shared<Trolleybus>("В456ЕК", "АКСМ-321", 2018, 90, 70, driver2,
+                                            550, true);
+    auto tram = make_shared<Tram>("С789МН", "БКМ-843", 2020, 150, 60, driver1,
+                                   5, true);
 
-    system.addVehicle(bus1);
-    system.addVehicle(bus2);
-    system.addVehicle(bus3);
-
-    auto route1 = make_shared<Route>(1, "Центральный", "Вокзал", "Пл. Мира", 40, 60);
-    auto route2 = make_shared<Route>(2, "Экспресс", "Аэропорт", "Автовокзал", 80, 100);
-    auto route3 = make_shared<Route>(3, "Ночной", "Депо", "Центр", 25, 50);
-    auto route4 = make_shared<Route>(4, "Пригородный", "Автовокзал", "Сосны", 90, 70);
-
-    system += route1;
-    system += route2;
-    system += route3;
+    // ===== Вектор указателей на БАЗОВЫЙ класс =====
+    vector<shared_ptr<Vehicle>> vehicles = {bus, trolley, tram};
 
     int choice = -1;
-    
+
     do {
         printMenu();
-        choice = inputInt("Выберите пункт меню: ");
+        cout << "Выберите пункт меню: ";
+        cin >> choice;
 
         switch (choice) {
-             case 0: {
+            // ===== 1. Унаследованные поля =====
+            case 1: {
+                cout << "\n=== УНАСЛЕДОВАННЫЕ ПОЛЯ (из Vehicle) ===\n";
+                for (const auto& v : vehicles) {
+                    cout << "Госномер: " << v->getRegNumber()
+                         << " | Модель: " << v->getModel()
+                         << " | Год: " << v->getYear()
+                         << " | Вместимость: " << v->getCapacity() << " чел."
+                         << " | Скорость: " << v->getMaxSpeed() << " км/ч"
+                         << endl;
+                }
+                break;
+            }
+
+            // ===== 2. Специфичные поля =====
+            case 2: {
+                cout << "\n=== СПЕЦИФИЧНЫЕ ПОЛЯ ===\n";
+
+                cout << "--- Автобус ---\n";
+                cout << "Госномер: " << bus->getRegNumber() << endl;
+                cout << "Дверей: " << bus->getDoorCount() << endl;
+                cout << "Салон: " << bus->getSalonType() << endl;
+
+                cout << "\n--- Троллейбус ---\n";
+                cout << "Госномер: " << trolley->getRegNumber() << endl;
+                cout << "Напряжение: " << trolley->getVoltage() << " В" << endl;
+                cout << "Аккумулятор: " << (trolley->hasBattery() ? "есть" : "нет") << endl;
+
+                cout << "\n--- Трамвай ---\n";
+                cout << "Госномер: " << tram->getRegNumber() << endl;
+                cout << "Номер пути: " << tram->getTrackNumber() << endl;
+                cout << "Пантограф: " << (tram->hasPantograph() ? "есть" : "нет") << endl;
+                break;
+            }
+
+            // ===== 3. Унаследованный сеттер =====
+            case 3: {
+                cout << "\n=== УНАСЛЕДОВАННЫЙ СЕТТЕР ===\n";
+                cout << "Меняем ВМЕСТИМОСТЬ у объектов (унаследованный setCapacity):\n";
+
+                // Изменяем через УНАСЛЕДОВАННЫЙ сеттер
+                bus->setCapacity(35);
+                trolley->setCapacity(95);
+                tram->setCapacity(160);
+
+                cout << "\nПосле изменения:\n";
+                cout << "Автобус: " << bus->getCapacity() << " чел.\n";
+                cout << "Троллейбус: " << trolley->getCapacity() << " чел.\n";
+                cout << "Трамвай: " << tram->getCapacity() << " чел.\n";
+                break;
+            }
+
+            // ===== 4. Унаследованный геттер =====
+            case 4: {
+                cout << "\n=== УНАСЛЕДОВАННЫЙ ГЕТТЕР ===\n";
+                cout << "Получаем ГОД ВЫПУСКА (унаследованный getYear):\n";
+
+                cout << "Автобус: " << bus->getYear() << endl;
+                cout << "Троллейбус: " << trolley->getYear() << endl;
+                cout << "Трамвай: " << tram->getYear() << endl;
+                break;
+            }
+
+            case 0: {
                 cout << "Выход из программы. До свидания!\n";
                 break;
-             }
-            case 1: {
-                system.printAllVehicles();
-                break;
             }
-          case 2: {
-                *route1 += bus1;
-                *route1 += bus2;
-                *route1 += bus3;
-                route1->printRouteInformation();
-                break;
-            }
-            case 3: {
-                *route1 -= bus2;
-                route1->printRouteInformation();
-                break;
-            }
-            case 4: {
-                system += route4;
-                system.printAllRoutes();
-                break;
-            }
-            case 5: {
-                system -= route4;
-                system.printAllRoutes();
-                break;
-            }
-            case 6: {
-                cin >> *bus4;
-                cout << *bus4;
-                cout << *bus1;
-                check = *bus1 == *bus4;
-                cout << "\nРег. номер одинаковый?: " << (check ? "True" : "False") << endl;
-                break;
-            }
-            case 7: {
-                system.printAllVehicles();
-                check = (*bus1 > *bus2);
-                cout << "bus1 > bus2: " << (check ? "True" : "False") << endl;
-                check = (*bus1 < *bus3);
-                cout << "bus1 < bus3: " << (check ? "True" : "False") << endl;
-                check = (*bus2 >= *bus1);
-                cout << "bus2 >= bus1: " << (check ? "True" : "False") << endl;
-                check = (*bus1 <= *bus3);
-                cout << "bus1 <= bus3: " << (check ? "True" : "False") << endl;
-                break;
-            }
-            case 8: {
-                system.printAllVehicles();
-                cout << "\n";
-                cout << "bus2 новее чем bus3?: "  << (isNewer(*bus2, *bus3) ? "True" : "False") << endl;
-                break;
-            }
+
             default: {
                 cout << "Неверный пункт меню. Попробуйте снова.\n";
                 break;
@@ -137,7 +121,6 @@ int main() {
         }
 
     } while (choice != 0);
+
     return 0;
 }
-
-//g++ CppFolder/main.cpp CppFolder/driver.cpp CppFolder/vehicle.cpp CppFolder/route.cpp CppFolder/transport_system.cpp CppFolder/basefunction.cpp -IHeaderFolder -o transport.exe
