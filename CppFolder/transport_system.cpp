@@ -10,6 +10,21 @@ void TransportSystem::addVehicle(std::shared_ptr<Vehicle> vehicle) {
     }
 }
 
+bool TransportSystem::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
+    if (!vehicle) {
+        return false;
+    }
+
+    for (auto it = _vehicles.begin(); it != _vehicles.end(); ++it) {
+        if (*it == vehicle) {
+            _vehicles.erase(it);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 std::shared_ptr<Route>
 TransportSystem::findRouteByNumber(int number) const {
     for (const auto& r : _routes) {
@@ -45,6 +60,7 @@ void TransportSystem::printAllVehicles() const {
     std::cout << "|            СПИСОК ТРАНСПОРТА                |\n";
     std::cout << "|_____________________________________________|\n";
     for (const auto& v : _vehicles) {
+        v->printBaseInfo();
         std::cout << *v;
         std::cout << "\n-----------------------------------------------" << std::endl;
     }
@@ -71,14 +87,12 @@ TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
         std::cout << "\nОШИБКА! Пустой указатель на маршрут!\n";
         return *this;
     }
-
     for (auto it = _routes.begin(); it != _routes.end(); ++it) {
         if (*it == route) {
             _routes.erase(it);
             return *this;
         }
     }
-
     std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
               << " не найден в системе!\n";
     return *this;

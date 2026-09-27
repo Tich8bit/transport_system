@@ -30,16 +30,27 @@ void Vehicle::setRegNumber(std::string_view newRegNumber) { _regNumber = newRegN
 void Vehicle::setMaxSpeed(int newMaxSpeed) { _maxSpeed = newMaxSpeed; }
 void Vehicle::setDriver(std::shared_ptr<Driver> newDriver) { _driver = newDriver; }
 
-void Vehicle::printInfo() const {
+void Vehicle::printBaseInfo() const {
     std::cout << "ТС: " << _model
               << " | Госномер: " << _regNumber
               << " | Год: " << _year
               << " | Вместимость: " << _capacity << " чел."
               << " | Скорость: " << _maxSpeed << " км/ч.";
-    if (_driver)  std::cout << " | Водитель: " << _driver->getFullName();
-      else  std::cout << " | Водитель не назначен";
-    std::cout << std::endl;
+    if (_driver)
+        std::cout << " | Водитель: " << _driver->getFullName();
+    else
+        std::cout << " | Водитель не назначен";
 }
 
-std::string Vehicle::getType() const { return "Транспортное средство"; }
-
+void Vehicle::readBaseFrom() {
+    std::cout << "Введите госномер: ";
+    std::getline(std::cin >> std::ws, _regNumber);
+    std::cout << "Введите модель: ";
+    std::getline(std::cin, _model);
+    std::cout << "Введите год выпуска: ";
+    std::cin >> _year;
+    std::cout << "Введите вместимость: ";
+    std::cin >> _capacity;
+    std::cout << "Введите максимальную скорость: ";
+    std::cin >> _maxSpeed;
+}

@@ -19,10 +19,15 @@ public:
     void setGauge(int newGauge);
     void setPowerConsumption(double newConsumption);
 
-    void printInfo() const override;
+    void printInfo(std::ostream& os) const override;
     std::string getType() const override;
-
+    double calculateMetric() const override;
+    void applyEffect(int value) override;
+    bool equals(const Vehicle& other) const override;
+    std::string getMetricName() const override;
+    void readFrom(std::istream& is) override;
 private:
+    static const double MAX_GAUGE;
     int _gauge;                       
     double _powerConsumption;         
 };

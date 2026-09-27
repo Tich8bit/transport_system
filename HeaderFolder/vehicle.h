@@ -31,40 +31,35 @@ public:
     void setRegNumber(std::string_view newRegNumber);
     void setMaxSpeed(int newMaxSpeed);
     void setDriver(std::shared_ptr<Driver> newDriver);
-    virtual void printInfo() const;              
-    virtual std::string getType() const;         
 
-    friend bool operator==(const Vehicle& a, const Vehicle& b) {
-        return a._regNumber == b._regNumber;
-    }
+    void printBaseInfo() const;  
+    void readBaseFrom();
+    
+    virtual void printInfo(std::ostream& os) const = 0;
+    virtual std::string getType() const = 0;         
+    virtual double calculateMetric() const = 0;
+    virtual void applyEffect(int value) = 0;
+    virtual bool equals(const Vehicle& other) const = 0;
+    virtual std::string getMetricName() const = 0;
+    virtual void readFrom(std::istream& is) = 0;
 
     friend std::strong_ordering operator<=>(const Vehicle& a, const Vehicle& b) {
-        if (a._maxSpeed < b._maxSpeed) return std::strong_ordering::less;
-        if (a._maxSpeed > b._maxSpeed) return std::strong_ordering::greater;
+        double metricA = a.calculateMetric();
+        double metricB = b.calculateMetric();
+        if (metricA < metricB) return std::strong_ordering::less;
+        if (metricA > metricB) return std::strong_ordering::greater;
         return std::strong_ordering::equal;
     }
-
     friend std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
-        os << "ТС: " << vehicle._model
-        << " | Госномер: " << vehicle._regNumber
-        << " | Год: " << vehicle._year
-        << " | Вместимость: " << vehicle._capacity << " чел."
-        << " | Скорость: " << vehicle._maxSpeed << " км/ч.";
-        if (vehicle._driver) {
-            os << " | Водитель: " << vehicle._driver->getFullName();
-        } else {
-            os << " | Водитель не назначен";
-        }
+        vehicle.printInfo(os);
         return os;
     }
-
     friend std::istream& operator>>(std::istream& is, Vehicle& vehicle) {
-        vehicle._regNumber = inputString("Введите госномер: ");
-        vehicle._model     = inputString("Введите модель: ");
-        vehicle._year      = inputInt("Введите год выпуска: ");
-        vehicle._capacity  = inputInt("Введите вместимость: ");
-        vehicle._maxSpeed  = inputInt("Введите скорость: ");
+        vehicle.readFrom(is);
         return is;
+    }
+    friend bool operator==(const Vehicle& a, const Vehicle& b) {
+        return a.equals(b);
     }
 protected:                         
     std::string _regNumber;
