@@ -6,6 +6,7 @@ std::string inputString(std::string_view message) {
     std::getline(std::cin, input);
     return input;
 }
+
 int inputInt(std::string_view message, int min, int max) {
     std::string input;
     int number;
@@ -14,9 +15,7 @@ int inputInt(std::string_view message, int min, int max) {
     while (true) {
         std::cout << message.data();
         std::getline(std::cin, input);
-
-        std::stringstream ss(input);
-        if (ss >> number && !(ss >> extra) && number >= min && number <= max) {
+        if (std::stringstream ss(input); ss >> number && !(ss >> extra) && number >= min && number <= max) {
             return number;
         }
 
