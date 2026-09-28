@@ -7,4 +7,4 @@
 #include <string_view>
 
 std::string inputString(std::string_view message);
-int inputInt(std::string_view message);
+int inputInt(std::string_view message, int max, int min);

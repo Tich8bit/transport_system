@@ -7,11 +7,10 @@ Tram::Tram(std::string_view regNumber,
            std::string_view model,
            int year,
            int capacity,
-           int maxSpeed,
            std::shared_ptr<Driver> driver,
            int gauge,
            double powerConsumption)
-    : Vehicle(regNumber, model, year, capacity, maxSpeed, driver),
+    : Vehicle(regNumber, model, year, capacity, driver),
       _gauge(gauge),
       _powerConsumption(powerConsumption) {}
 

@@ -2,21 +2,16 @@
 #include "vehicle.h"
 #include <iostream>
 
-const double Route::SPEED_NORMAL_THRESHOLD = 0.7;
-const double Route::SPEED_COMPENSATION_THRESHOLD = 1.2;
-
 Route::Route(int number,
              std::string_view name,
              std::string_view startStop,
              std::string_view endStop,
-             int minCapacity,
-             int minSpeed)
+             int minCapacity)
     : _number(number),
       _name(name),
       _startStop(startStop),
       _endStop(endStop),
-      _minCapacity(minCapacity),
-      _minSpeed(minSpeed) {}
+      _minCapacity(minCapacity) {}
 
 int Route::getNumber() const { return _number; }
 std::string_view Route::getName() const { return _name; }
@@ -40,9 +35,7 @@ void Route::printRouteInformation() const {
     std::cout << "Название: " << _name << std::endl;
     std::cout << "Начальная остановка: " << _startStop << std::endl;
     std::cout << "Конечная остановка: " << _endStop << std::endl;
-    std::cout << "Минимальная вместимость ТС: " << _minCapacity << " чел." << std::endl;
     std::cout << "Транспорт на маршруте (" << _assignedVehicles.size() << "):" << std::endl;
-
     for (const auto& v : _assignedVehicles) {
         std::cout << "  - " << v->getModel() << " (" << v->getRegNumber() << ")" << std::endl;
     }
@@ -61,8 +54,7 @@ Route& Route::operator+=(std::shared_ptr<Vehicle> vehicle) {
             return *this;
         }
     }
-    if ((vehicle->getCapacity() >= _minCapacity && vehicle->getMaxSpeed() >= _minSpeed * SPEED_NORMAL_THRESHOLD) ||
-        (vehicle->getCapacity() < _minCapacity && vehicle->getMaxSpeed() >= _minSpeed * SPEED_COMPENSATION_THRESHOLD)) {
+    if (vehicle->getCapacity() >= _minCapacity)  {
         _assignedVehicles.push_back(vehicle);
         return *this;
     }

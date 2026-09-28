@@ -8,7 +8,6 @@ public:
          std::string_view model,
          int year,
          int capacity,
-         int maxSpeed,
          std::shared_ptr<Driver> driver,
          int gauge,                       
          double powerConsumption);        

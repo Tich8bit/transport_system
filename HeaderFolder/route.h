@@ -9,7 +9,7 @@ class Vehicle;
 
 class Route {
 public:
-    Route(int number, std::string_view name, std::string_view startStop, std::string_view endStop, int minCapacity, int minSpeed);
+    Route(int number, std::string_view name, std::string_view startStop, std::string_view endStop, int minCapacity);
     int getNumber() const;
     std::string_view getName() const;
     std::string_view getStartStop() const;
@@ -26,8 +26,6 @@ public:
     Route& operator+=(std::shared_ptr<Vehicle> vehicle);
     Route& operator-=(std::shared_ptr<Vehicle> vehicle);
 private:
-    static const double SPEED_NORMAL_THRESHOLD;        
-    static const double SPEED_COMPENSATION_THRESHOLD;
     int _number;
     std::string _name;
     std::string _startStop;

@@ -45,19 +45,16 @@ int main() {
     auto driver3 = make_shared<Driver>("Сидоров Сидор Сидорович", 12);
     auto driver4 = make_shared<Driver>("Кузнецов Кузьма Кузьмич", 5);
 
-    auto bus = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, 80, driver1, "Дизель", 100.0);
-    auto trolley = make_shared<Trolleybus>("В456ЕК", "АКСМ-321", 2018, 90, 70, driver2, 550, 45.0);
-    auto tram = make_shared<Tram>("С789МН", "БКМ-843", 2020, 150, 60, driver3, 1524, 60.0);
-    auto bus1 = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, 80, driver1, "Дизель", 100.0);
+    auto bus = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, driver1, "Дизель", 100.0);
+    auto trolley = make_shared<Trolleybus>("В456ЕК", "АКСМ-321", 2018, 90, driver2, 550, 45.0);
+    auto tram = make_shared<Tram>("С789МН", "БКМ-843", 2020, 150, driver3, 1524, 60.0);
+    auto bus1 = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, driver1, "Дизель", 100.0);
 
     vector<shared_ptr<Vehicle>> vehicles = {bus, trolley, tram};
 
-    auto route1 = make_shared<Route>(1, "Центральный", "Вокзал", "Площадь Победы",
-                                      30, 60);
-    auto route2 = make_shared<Route>(2, "Северный", "Университет", "ТЦ Экспобел",
-                                      20, 50);
-    auto route3 = make_shared<Route>(3, "Южный", "Аэропорт", "ЖД Вокзал",
-                                      50, 70);
+    auto route1 = make_shared<Route>(1, "Центральный", "Вокзал", "Площадь Победы", 30);
+    auto route2 = make_shared<Route>(2, "Северный", "Университет", "ТЦ Экспобел", 50);
+    auto route3 = make_shared<Route>(3, "Южный", "Аэропорт", "ЖД Вокзал", 70);
 
     TransportSystem system;
     system += route1;
@@ -71,7 +68,7 @@ int main() {
 
     do {
         printMenu();
-        choice = inputInt("Выберите пункт меню: ");
+        choice = inputInt("Выберите пункт меню: ", 0, 16);
 
         switch (choice) {
             case 1: {
@@ -105,7 +102,7 @@ int main() {
                 break;
             }
             case 7: {
-                auto bus2 = make_shared<Bus>("А123ВС", "ЛиАЗ-5292", 2022, 110, 90, driver4, "Газ", 250.0);
+                auto bus2 = make_shared<Bus>("А123ВС", "ЛиАЗ-5292", 2022, 110, driver4, "Газ", 250.0);
                 cout << "bus == bus2: "
                     << ((*bus == *bus2) ? "True" : "False") << endl;
                 cout << "bus == tram: "

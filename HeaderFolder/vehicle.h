@@ -14,7 +14,6 @@ public:
             std::string_view model,
             int year,
             int capacity,
-            int maxSpeed,
             std::shared_ptr<Driver> driver);
 
     virtual ~Vehicle() = default;
@@ -23,13 +22,11 @@ public:
     std::string_view getModel() const;
     int getYear() const;
     int getCapacity() const;
-    int getMaxSpeed() const;
     std::shared_ptr<Driver> getDriver() const;
 
     void setYear(int newYear);
     void setCapacity(int newCapacity);
     void setRegNumber(std::string_view newRegNumber);
-    void setMaxSpeed(int newMaxSpeed);
     void setDriver(std::shared_ptr<Driver> newDriver);
 
     void printBaseInfo() const;  
