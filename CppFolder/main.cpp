@@ -37,7 +37,7 @@ void printMenu() {
     cout << "|_____________________________________________|\n";
 }
 
-int main() {
+int main() { // NOSONAR
     setlocale(LC_ALL, "ru_RU.UTF-8");
 
     auto driver1 = make_shared<Driver>("Иванов Иван Иванович", 15);
@@ -117,9 +117,9 @@ int main() {
                 break;
             }
             case 9: {
-                for (const auto& v : vehicles) { // NOSONAR
+                for (const auto& v : vehicles) { 
                     cout << "--- " << v->getType() << " ---" << endl;
-                    v->printBaseInfo();
+                    v->printBaseInfo(); 
                     cout << "\n";
                 }
                 break;

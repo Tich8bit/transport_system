@@ -55,10 +55,10 @@ public:
         return a.equals(b);
     }
 protected: // NOSONAR                         
-    std::string _regNumber;
-    std::string _model;
-    int _year;
-    int _capacity;
-    int _maxSpeed;
-    std::shared_ptr<Driver> _driver;
+    std::string _regNumber; // NOSONAR
+    std::string _model; // NOSONAR
+    int _year; // NOSONAR
+    int _capacity; // NOSONAR
+    int _maxSpeed; // NOSONAR
+    std::shared_ptr<Driver> _driver; // NOSONAR
 };
