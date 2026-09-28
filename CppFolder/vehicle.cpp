@@ -38,12 +38,8 @@ void Vehicle::printBaseInfo() const {
 }
 
 void Vehicle::readBaseFrom() {
-    std::cout << "Введите госномер: ";
-    std::getline(std::cin >> std::ws, _regNumber);
-    std::cout << "Введите модель: ";
-    std::getline(std::cin, _model);
-    std::cout << "Введите год выпуска: ";
-    std::cin >> _year;
-    std::cout << "Введите вместимость: ";
-    std::cin >> _capacity;
+    _regNumber = inputString("Введите госномер: ");
+    _model     = inputString("Введите модель: ");
+    _year      = inputInt("Введите год выпуска: ", 1900, 2100);
+    _capacity  = inputInt("Введите вместимость: ", 1, 500);
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 
 const double Tram::MAX_GAUGE = 1600;
+const double Tram::GAUGE_METRIC_COEF = 0.1;
 
 Tram::Tram(std::string_view regNumber,
            std::string_view model,
@@ -20,15 +21,15 @@ double Tram::getPowerConsumption() const { return _powerConsumption; }
 void Tram::setGauge(int newGauge) { _gauge = newGauge; }
 void Tram::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
-void Tram::printInfo(std::ostream& os) const {
-    os << "\n  Колея: " << _gauge << " мм"
-       << "\n  Расход: " << _powerConsumption << " кВт·ч/100 км";
+void Tram::readFrom() {
+    _gauge = inputInt("Введите колею (мм): ", 1000, 2000);
+    _powerConsumption = inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0);
 }
 
 std::string Tram::getType() const { return "Трамвай"; }
 
 double Tram::calculateMetric() const {
-    return _capacity * 1.5 - _powerConsumption * 0.4;
+    return _capacity + _gauge * GAUGE_METRIC_COEF;
 }
 
 void Tram::applyEffect(int value) {
@@ -56,9 +57,7 @@ std::string Tram::getMetricName() const {
     return "Провозная способность (колея)";
 }
 
-void Tram::readFrom(std::istream& is) {
-    std::cout << "Введите колею (мм): ";
-    is >> _gauge;
-    std::cout << "Введите расход (кВт·ч/100 км): ";
-    is >> _powerConsumption;
+void Tram::printInfo(std::ostream& os) const {
+    os << "\n  Колея: " << _gauge << " мм"
+       << "\n  Расход: " << _powerConsumption << " кВт·ч/100 км";
 }

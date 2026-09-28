@@ -24,9 +24,10 @@ public:
     double calculateMetric() const override;
     void applyEffect(int value) override;
     std::string getMetricName() const override;
-    void readFrom(std::istream& is) override;
+    void readFrom() override;
 private:
     static const double MAX_VOLTAGE;
+    static const double VOLTAGE_METRIC_COEF;
     int _voltage;                    
     double _powerConsumption;
 };

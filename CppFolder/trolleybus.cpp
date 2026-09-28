@@ -2,6 +2,7 @@
 #include <iostream>
 
 const double Trolleybus::MAX_VOLTAGE = 100;
+const double Trolleybus::VOLTAGE_METRIC_COEF = 0.5;
 
 Trolleybus::Trolleybus(std::string_view regNumber,
                        std::string_view model,
@@ -20,14 +21,16 @@ double Trolleybus::getPowerConsumption() const { return _powerConsumption; }
 void Trolleybus::setVoltage(int newVoltage) { _voltage = newVoltage; }
 void Trolleybus::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
-void Trolleybus::printInfo(std::ostream& os) const {
-   os << "\n  Напряжение: " << _voltage << " В"
-       << "\n  Расход: " << _powerConsumption << " кВт·ч/100 км";
+void Trolleybus::readFrom() {
+    _voltage = inputInt("Введите напряжение (В): ", 100, 1500);
+    _powerConsumption = inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0);
 }
 
 std::string Trolleybus::getType() const { return "Троллейбус"; }
 
-double Trolleybus::calculateMetric() const { return _voltage / _powerConsumption; }
+double Trolleybus::calculateMetric() const {
+    return _capacity + _voltage * VOLTAGE_METRIC_COEF;
+}
 
 void Trolleybus::applyEffect(int value) {
     if (value < 0 || value > MAX_VOLTAGE) {
@@ -50,9 +53,7 @@ std::string Trolleybus::getMetricName() const {
     return "Провозная способность (напряжение)";
 }
 
-void Trolleybus::readFrom(std::istream& is) {
-    std::cout << "Введите напряжение (В): ";
-    is >> _voltage;
-    std::cout << "Введите расход (кВт·ч/100 км): ";
-    is >> _powerConsumption;
+void Trolleybus::printInfo(std::ostream& os) const {
+    os << "\n  Напряжение: " << _voltage << " В"
+       << "\n  Расход: " << _powerConsumption << " кВт·ч/100 км";
 }

@@ -25,9 +25,10 @@ public:
     double calculateMetric() const override;      
     void applyEffect(int value) override; 
     std::string getMetricName() const override;
-    void readFrom(std::istream& is) override;
+    void readFrom() override;
 private:
     static const double MAX_FUELTANKCAPACITY;
+    static const double FUEL_METRIC_COEF;
     std::string _fuelType;           
     double _fuelTankCapacity;        
 };

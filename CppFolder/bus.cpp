@@ -2,6 +2,7 @@
 #include <iostream>
 
 const double Bus::MAX_FUELTANKCAPACITY = 100;
+const double Bus::FUEL_METRIC_COEF = 0.5;
 
 Bus::Bus(std::string_view regNumber,
          std::string_view model,
@@ -20,9 +21,9 @@ double Bus::getFuelTankCapacity() const { return _fuelTankCapacity; }
 void Bus::setFuelType(std::string_view newFuelType) { _fuelType = newFuelType; }
 void Bus::setFuelTankCapacity(double newCapacity) { _fuelTankCapacity = newCapacity; }
 
-void Bus::printInfo(std::ostream& os) const {
-    os << "\n  Топливо: " << _fuelType
-       << "\n  Объём бака: " << _fuelTankCapacity << " л";
+void Bus::readFrom() {
+    _fuelType = inputString("Введите тип топлива: ");
+    _fuelTankCapacity = inputDouble("Введите объём бака (л): ", 1.0, 1000.0);
 }
 
 std::string Bus::getType() const {
@@ -30,7 +31,7 @@ std::string Bus::getType() const {
 }
 
 double Bus::calculateMetric() const {
-    return _capacity * 1.0 + _fuelTankCapacity * 0.5;
+    return _capacity + _fuelTankCapacity * FUEL_METRIC_COEF;
 }
 
 void Bus::applyEffect(int value) {
@@ -52,9 +53,7 @@ std::string Bus::getMetricName() const {
     return "Провозная способность (топливо)";
 }
 
-void Bus::readFrom(std::istream& is) {
-    std::cout << "Введите тип топлива: ";
-    std::getline(is >> std::ws, _fuelType);
-    std::cout << "Введите объём бака (л): ";
-    is >> _fuelTankCapacity;
+void Bus::printInfo(std::ostream& os) const {
+    os << "\n  Топливо: " << _fuelType
+       << "\n  Объём бака: " << _fuelTankCapacity << " л\n";
 }

@@ -38,7 +38,7 @@ public:
     virtual void applyEffect(int value) = 0;
     virtual bool equals(const Vehicle& other) const = 0;
     virtual std::string getMetricName() const = 0;
-    virtual void readFrom(std::istream& is) = 0;
+    virtual void readFrom() = 0;
 
     friend std::strong_ordering operator<=>(const Vehicle& a, const Vehicle& b) {
         double metricA = a.calculateMetric();
@@ -50,10 +50,6 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
         vehicle.printInfo(os);
         return os;
-    }
-    friend std::istream& operator>>(std::istream& is, Vehicle& vehicle) {
-        vehicle.readFrom(is);
-        return is;
     }
     friend bool operator==(const Vehicle& a, const Vehicle& b) {
         return a.equals(b);

@@ -24,3 +24,20 @@ int inputInt(std::string_view message, int min, int max) {
                   << " до " << max << ".\n";
     }
 }
+
+double inputDouble(std::string_view message, double min, double max) {
+    std::string input;
+    double number;
+    char extra;
+
+    while (true) {
+        std::cout << message.data();
+        std::getline(std::cin, input);
+        if (std::stringstream ss(input); ss >> number && !(ss >> extra)
+                                         && number >= min && number <= max) {
+            return number;
+        }
+        std::cout << "Ошибка! Введите число от " << min
+                  << " до " << max << ".\n";
+    }
+}
