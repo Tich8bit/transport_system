@@ -32,6 +32,26 @@ void printMenu() {
     cout << "|_____________________________________________|\n";
 }
 
+void findBestVehicle(const vector<shared_ptr<Vehicle>>& vehicles) {
+    if (vehicles.empty()) {
+        cout << "Список пуст.\n";
+        return;
+    }
+
+    auto best = vehicles[0];
+    for (const auto& v : vehicles) {
+        if (v->calculateMetric() > best->calculateMetric()) {
+            best = v;
+        }
+    }
+
+    cout << "Лучшее ТС:\n";
+    cout << "  Тип: " << best->getType() << endl;
+    cout << "  " << best->getMetricName() << ": "
+         << best->calculateMetric() << endl;
+    cout << *best << endl;
+}
+
 int main() {  
     setlocale(LC_ALL, "ru_RU.UTF-8");
 
@@ -120,20 +140,8 @@ int main() {
                 break;
             }
             case 10: {
-                if (vehicles.empty()) { 
-                    cout << "Список пуст.\n";
-                    break;
-                }
-                auto best = vehicles[0];
-                for (const auto& v : vehicles)
-                    if (v->calculateMetric() > best->calculateMetric()) 
-                        best = v;
-                cout << "Лучшее ТС:\n";
-                cout << "  Тип: " << best->getType() << endl;
-                cout << "  " << best->getMetricName() << ": "
-                     << best->calculateMetric() << endl;
-                cout << *best << endl;
-                break; 
+                findBestVehicle(vehicles);  
+                 break; 
             }
             case 11: {
                 for (const auto& v : vehicles) {
