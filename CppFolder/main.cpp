@@ -28,16 +28,11 @@ void printMenu() {
     cout << "|10. Специфичные геттеры (уникальные)         |\n";
     cout << "|11. Унаследованный сеттер                    |\n";
     cout << "|12. Специфичный сеттер                       |\n";
-    cout << "|             ЛР №4 — Полиморфизм             |\n";
-    cout << "|13. Полиморфный подсчёт метрик               |\n";
-    cout << "|14. Поиск самого результативного ТС          |\n";
-    cout << "|15. Массовое обслуживание всех ТС            |\n";
-    cout << "|16. Добавить новое ТС (полиморфный ввод)     |\n";
     cout << "|0. Выход                                     |\n";
     cout << "|_____________________________________________|\n";
 }
 
-int main() { // NOSONAR
+int main() {  
     setlocale(LC_ALL, "ru_RU.UTF-8");
 
     auto driver1 = make_shared<Driver>("Иванов Иван Иванович", 15);
@@ -104,16 +99,16 @@ int main() { // NOSONAR
             case 7: {
                 auto bus2 = make_shared<Bus>("А123ВС", "ЛиАЗ-5292", 2022, 110, driver4, "Газ", 250.0);
                 cout << "bus == bus2: "
-                    << ((*bus == *bus2) ? "True" : "False") << endl; // NOSONAR
+                    << ((*bus == *bus2) ? "True" : "False") << endl;  
                 cout << "bus == tram: "
-                    << ((*bus == *tram) ? "True" : "False") << endl; // NOSONAR
+                    << ((*bus == *tram) ? "True" : "False") << endl;  
                 break;
             }
             case 8: {
                 bool check = (*bus > *trolley);
-                cout << "bus > trolley: " << (check ? "True" : "False") << endl; // NOSONAR
+                cout << "bus > trolley: " << (check ? "True" : "False") << endl;  
                 check = (*bus < *tram);
-                cout << "bus < tram: " << (check ? "True" : "False") << endl; // NOSONAR
+                cout << "bus < tram: " << (check ? "True" : "False") << endl;  
                 break;
             }
             case 9: {
@@ -139,7 +134,7 @@ int main() { // NOSONAR
                 bus->setCapacity(35);
                 trolley->setCapacity(95);
                 tram->setCapacity(160);
-                for (const auto& v : vehicles) { // NOSONAR
+                for (const auto& v : vehicles) {  
                     cout << "  " << v->getType() << ": "
                          << v->getCapacity() << " чел." << endl;
                 }
@@ -149,48 +144,9 @@ int main() { // NOSONAR
                     bus->setFuelType("Газ");
                     trolley->setVoltage(600);
                     tram->setGauge(1435);
-                    for (const auto& v : vehicles) // NOSONAR
+                    for (const auto& v : vehicles)  
                         cout << "--- " << v->getType() << " ---" << *v << endl; 
                     break;
-            }
-            case 13: {
-                for (const auto& v : vehicles) { // NOSONAR
-                    double metric = v->calculateMetric();
-                    cout << v->getType() << " (" << v->getRegNumber() << "):\n";
-                    cout << "  " << v->getMetricName() << " = " << metric << endl;
-                }
-                break;
-            }
-            case 14: {
-                if (vehicles.empty()) { // NOSONAR
-                    cout << "Список пуст.\n";
-                    break;
-                }
-                auto best = vehicles[0];
-                for (const auto& v : vehicles) // NOSONAR
-                    if (v->calculateMetric() > best->calculateMetric()) // NOSONAR
-                        best = v;
-                cout << "Лучшее ТС:\n";
-                cout << "  Тип: " << best->getType() << endl;
-                cout << "  " << best->getMetricName() << ": "
-                     << best->calculateMetric() << endl;
-                cout << *best << endl;
-                break; 
-            }
-            case 15: {
-                for (const auto& v : vehicles) { // NOSONAR
-                    cout << "\n(" << v->getType() << ")" << endl;
-                    v->applyEffect(10);
-                }
-                break;
-            }
-            case 16: {
-                bus1->readBaseFrom();
-                bus1->readFrom();
-                bus1->printBaseInfo();
-                cout << *bus1;
-                system.addVehicle(bus1);
-                break;
             }
             case 0: {
                 cout << "Выход из программы. До свидания!\n";
