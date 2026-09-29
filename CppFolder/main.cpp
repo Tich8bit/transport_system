@@ -23,11 +23,11 @@ void printMenu() {
     cout << "|6. (-=) Удалить маршрут из системы           |\n"; 
     cout << "|7. (==) Сравнить ТС по рег. номеру           |\n";
     cout << "|8. (<=>) Сравнить ТС по метрике              |\n";
-    cout << "|             ЛР №3 — Наследование            |\n";
-    cout << "|9.  Унаследованные геттеры (общие)           |\n";
-    cout << "|10. Специфичные геттеры (уникальные)         |\n";
-    cout << "|11. Унаследованный сеттер                    |\n";
-    cout << "|12. Специфичный сеттер                       |\n";
+    cout << "|             ЛР №4 — Полиморфизм             |\n";
+    cout << "|9. Полиморфный подсчёт метрик               |\n";
+    cout << "|10. Поиск самого результативного ТС          |\n";
+    cout << "|11. Массовое обслуживание всех ТС            |\n";
+    cout << "|12. Добавить новое ТС (полиморфный ввод)     |\n";
     cout << "|0. Выход                                     |\n";
     cout << "|_____________________________________________|\n";
 }
@@ -113,42 +113,44 @@ int main() {
             }
             case 9: {
                 for (const auto& v : vehicles) { 
-                    cout << "--- " << v->getType() << " ---" << endl;
-                    v->printBaseInfo(); 
-                    cout << "\n";
+                    double metric = v->calculateMetric();
+                    cout << v->getType() << " (" << v->getRegNumber() << "):\n";
+                    cout << "  " << v->getMetricName() << " = " << metric << endl;
                 }
                 break;
             }
             case 10: {
-                cout << bus->getType() << ": топливо=" << bus->getFuelType()
-                     << ", бак=" << bus->getFuelTankCapacity() << " л\n";
-                cout << trolley->getType() << ": напряжение=" << trolley->getVoltage()
-                     << " В, расход=" << trolley->getPowerConsumption()
-                     << " кВт·ч/100 км\n";
-                cout << tram->getType() << ": колея=" << tram->getGauge()
-                     << " мм, расход=" << tram->getPowerConsumption()
-                     << " кВт·ч/100 км\n";
-                break;
+                if (vehicles.empty()) { 
+                    cout << "Список пуст.\n";
+                    break;
+                }
+                auto best = vehicles[0];
+                for (const auto& v : vehicles)
+                    if (v->calculateMetric() > best->calculateMetric()) 
+                        best = v;
+                cout << "Лучшее ТС:\n";
+                cout << "  Тип: " << best->getType() << endl;
+                cout << "  " << best->getMetricName() << ": "
+                     << best->calculateMetric() << endl;
+                cout << *best << endl;
+                break; 
             }
             case 11: {
-                bus->setCapacity(35);
-                trolley->setCapacity(95);
-                tram->setCapacity(160);
-                for (const auto& v : vehicles) {  
-                    cout << "  " << v->getType() << ": "
-                         << v->getCapacity() << " чел." << endl;
+                for (const auto& v : vehicles) {
+                    cout << "\n(" << v->getType() << ")" << endl;
+                    v->applyEffect(10);
                 }
                 break;
             }
             case 12: {
-                    bus->setFuelType("Газ");
-                    trolley->setVoltage(600);
-                    tram->setGauge(1435);
-                    for (const auto& v : vehicles)  
-                        cout << "--- " << v->getType() << " ---" << *v << endl; 
-                    break;
+                bus1->readBaseFrom();
+                bus1->readFrom();
+                bus1->printBaseInfo();
+                cout << *bus1;
+                system.addVehicle(bus1);
+                break;
             }
-            case 0: {
+             case 0: {
                 cout << "Выход из программы. До свидания!\n";
                 break;
             }

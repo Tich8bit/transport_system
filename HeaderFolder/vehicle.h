@@ -8,7 +8,7 @@
 
 class Driver;
 
-class Vehicle { // NOSONAR
+class Vehicle { 
 public:
     Vehicle(std::string_view regNumber,
             std::string_view model,
@@ -54,7 +54,7 @@ public:
     friend bool operator==(const Vehicle& a, const Vehicle& b) {
         return a.equals(b);
     }
-protected: // NOSONAR  
+protected: 
     std::string _regNumber; 
     std::string _model; 
     int _year; 
