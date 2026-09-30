@@ -24,7 +24,7 @@ public:
     void applyEffect(int value) override;
     bool equals(const Vehicle& other) const override;
     std::string getMetricName() const override;
-    void readFrom() override;
+    void inputVehicle() override;
 private:
     static const double MAX_GAUGE;
     static const double GAUGE_METRIC_COEF;

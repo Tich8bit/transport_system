@@ -21,7 +21,11 @@ double Trolleybus::getPowerConsumption() const { return _powerConsumption; }
 void Trolleybus::setVoltage(int newVoltage) { _voltage = newVoltage; }
 void Trolleybus::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
-void Trolleybus::readFrom() {
+void Trolleybus::inputVehicle() {
+    _regNumber = inputString("Введите госномер: ");
+    _model = inputString("Введите модель: ");
+    _year = inputInt("Введите год выпуска: ", 1900, 2100);
+    _capacity = inputInt("Введите вместимость: ", 1, 500);
     _voltage = inputInt("Введите напряжение (В): ", 100, 1500);
     _powerConsumption = inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0);
 }

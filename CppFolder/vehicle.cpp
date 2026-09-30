@@ -36,10 +36,3 @@ void Vehicle::printBaseInfo() const {
     else
         std::cout << " | Водитель не назначен";
 }
-
-void Vehicle::readBaseFrom() {
-    _regNumber = inputString("Введите госномер: ");
-    _model     = inputString("Введите модель: ");
-    _year      = inputInt("Введите год выпуска: ", 1900, 2100);
-    _capacity  = inputInt("Введите вместимость: ", 1, 500);
-}

@@ -21,7 +21,11 @@ double Bus::getFuelTankCapacity() const { return _fuelTankCapacity; }
 void Bus::setFuelType(std::string_view newFuelType) { _fuelType = newFuelType; }
 void Bus::setFuelTankCapacity(double newCapacity) { _fuelTankCapacity = newCapacity; }
 
-void Bus::readFrom() {
+void Bus::inputVehicle() {
+    _regNumber = inputString("Введите госномер: ");
+    _model = inputString("Введите модель: ");
+    _year = inputInt("Введите год выпуска: ", 1900, 2100);
+    _capacity = inputInt("Введите вместимость: ", 1, 500);
     _fuelType = inputString("Введите тип топлива: ");
     _fuelTankCapacity = inputDouble("Введите объём бака (л): ", 1.0, 1000.0);
 }

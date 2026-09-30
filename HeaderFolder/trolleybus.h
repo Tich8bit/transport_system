@@ -24,7 +24,7 @@ public:
     double calculateMetric() const override;
     void applyEffect(int value) override;
     std::string getMetricName() const override;
-    void readFrom() override;
+    void inputVehicle() override;
 private:
     static const double MAX_VOLTAGE;
     static const double VOLTAGE_METRIC_COEF;

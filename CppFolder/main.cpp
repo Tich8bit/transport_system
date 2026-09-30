@@ -151,8 +151,7 @@ int main() {
                 break;
             }
             case 12: {
-                bus1->readBaseFrom();
-                bus1->readFrom();
+                bus1->inputVehicle();
                 bus1->printBaseInfo();
                 cout << *bus1;
                 system.addVehicle(bus1);

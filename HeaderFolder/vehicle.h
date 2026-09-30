@@ -30,7 +30,6 @@ public:
     void setDriver(std::shared_ptr<Driver> newDriver);
 
     void printBaseInfo() const;  
-    void readBaseFrom();
     
     virtual void printInfo(std::ostream& os) const = 0;
     virtual std::string getType() const = 0;         
@@ -38,7 +37,7 @@ public:
     virtual void applyEffect(int value) = 0;
     virtual bool equals(const Vehicle& other) const = 0;
     virtual std::string getMetricName() const = 0;
-    virtual void readFrom() = 0;
+    virtual void inputVehicle() = 0;
 
     friend std::strong_ordering operator<=>(const Vehicle& a, const Vehicle& b) {
         double metricA = a.calculateMetric();
@@ -58,7 +57,6 @@ protected:
     std::string _regNumber; 
     std::string _model; 
     int _year; 
-    int _capacity; 
-    int _maxSpeed; 
+    int _capacity;  
     std::shared_ptr<Driver> _driver; 
 };

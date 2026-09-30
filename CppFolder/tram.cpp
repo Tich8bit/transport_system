@@ -21,7 +21,11 @@ double Tram::getPowerConsumption() const { return _powerConsumption; }
 void Tram::setGauge(int newGauge) { _gauge = newGauge; }
 void Tram::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
-void Tram::readFrom() {
+void Tram::inputVehicle() {
+    _regNumber = inputString("Введите госномер: ");
+    _model = inputString("Введите модель: ");
+    _year = inputInt("Введите год выпуска: ", 1900, 2100);
+    _capacity = inputInt("Введите вместимость: ", 1, 500);
     _gauge = inputInt("Введите колею (мм): ", 1000, 2000);
     _powerConsumption = inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0);
 }
