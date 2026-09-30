@@ -143,20 +143,20 @@ int main() {
                 findBestVehicle(vehicles);  
                  break; 
             }
-            case 11: {
-                for (const auto& v : vehicles) {
-                    cout << "\n(" << v->getType() << ")" << endl;
-                    v->applyEffect(10);
-                }
-                break;
-            }
-            case 12: {
-                bus1->inputVehicle();
-                bus1->printBaseInfo();
-                cout << *bus1;
-                system.addVehicle(bus1);
-                break;
-            }
+            // case 11: {
+            //     for (const auto& v : vehicles) {
+            //         cout << "\n(" << v->getType() << ")" << endl;
+            //         v->applyEffect(10);
+            //     }
+            //     break;
+            // }
+            // // case 12: {
+            // //     bus1->inputVehicle();
+            // //     bus1->printBaseInfo();
+            // //     cout << *bus1;
+            // //     system.addVehicle(bus1);
+            // //     break;
+            // // }
              case 0: {
                 cout << "Выход из программы. До свидания!\n";
                 break;
