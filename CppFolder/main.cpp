@@ -10,6 +10,8 @@
 #include "route.h"
 #include "transport_system.h"
 #include "basefunction.h"
+#include "collection.h"
+#include "algs.h"
 
 using namespace std;
 
@@ -23,9 +25,23 @@ void printMenu() {
     cout << "|6. Удалить маршрут из системы          |\n"; 
     cout << "|7. Сравнить ТС по рег. номеру          |\n";
     cout << "|8. Сравнить ТС по метрике              |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|             ЛР №4 — Полиморфизм       |\n";
+    cout << "|_______________________________________|\n";
     cout << "|9. Полиморфный подсчёт метрик          |\n";
     cout << "|10. Поиск самого результативного ТС    |\n";
     cout << "|11. Массовое обслуживание всех ТС      |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|             ЛР №5 — Шаблоны           |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|12. Показать размер коллекции          |\n";
+    cout << "|13. Получить элемент по индексу        |\n";
+    cout << "|14. Удалить по индексу                 |\n";
+    cout << "|15. Удалить по критерию                |\n";
+    cout << "|16. Поиск по критерию                  |\n";
+    cout << "|17. Средняя метрика                    |\n";
+    cout << "|18. Сортировка по компаратору          |\n";
+    cout << "|0. Выход                               |\n";
     cout << "|0. Выход                               |\n";
     cout << "|_______________________________________|\n";
 }
@@ -64,6 +80,16 @@ int main() {
     auto bus1 = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, driver1, "Дизель", 100.0);
 
     vector<shared_ptr<Vehicle>> vehicles = {bus, trolley, tram};
+        Collection<Vehicle> vehicleColl;
+    for (const auto& v : vehicles) {
+        vehicleColl.add(v);
+    }
+
+    Collection<Driver> driverColl;
+    driverColl.add(driver1);
+    driverColl.add(driver2);
+    driverColl.add(driver3);
+    driverColl.add(driver4);
 
     auto route1 = make_shared<Route>(1, "Центральный", "Вокзал", "Площадь Победы", 30);
     auto route2 = make_shared<Route>(2, "Северный", "Университет", "ТЦ Экспобел", 50);
@@ -145,6 +171,113 @@ int main() {
                 for (const auto& v : vehicles) {
                     cout << "\n(" << v->getType() << ")" << endl;
                     v->applyEffect(10);
+                }
+                break;
+            }
+            case 12: {
+                cout << "\n=== РАЗМЕР КОЛЛЕКЦИЙ ===\n";
+                cout << "Vehicle:  " << vehicleColl.size() << '\n';
+                cout << "Driver:   " << driverColl.size() << '\n';
+                break;
+            }
+
+            case 13: {
+                cout << "\n=== ПОЛУЧЕНИЕ ПО ИНДЕКСУ ===\n";
+
+                cout << "Vehicle[1]:\n";
+                auto v = vehicleColl.get(1);
+                if (v) cout << *v << '\n';
+
+                cout << "Driver[2]:\n";
+                auto d = driverColl.get(2);
+                if (d) cout << *d << '\n';
+                break;
+            }
+
+            case 14: {
+                cout << "\n=== УДАЛЕНИЕ ПО ИНДЕКСУ ===\n";
+
+                cout << "Vehicle: удаляем [1]\n";
+                vehicleColl.removeAt(1);
+                vehicleColl.print();
+
+                cout << "\nDriver: удаляем [0]\n";
+                driverColl.removeAt(0);
+                driverColl.print();
+                break;
+            }
+
+            case 15: {
+                cout << "\n=== УДАЛЕНИЕ ПО КРИТЕРИЮ ===\n";
+
+                cout << "Удаляем все трамваи:\n";
+                size_t removed1 = vehicleColl.removeIf(
+                    [](const shared_ptr<Vehicle>& v) {
+                        return v->getType() == "Трамвай";
+                    });
+                cout << "Удалено: " << removed1 << '\n';
+                vehicleColl.print();
+
+                cout << "\nУдаляем водителей со стажем < 10:\n";
+                size_t removed2 = driverColl.removeIf(
+                    [](const shared_ptr<Driver>& d) {
+                        return d->getExperienceYears() < 10;
+                    });
+                cout << "Удалено: " << removed2 << '\n';
+                driverColl.print();
+                break;
+            }
+
+            case 16: {
+                cout << "\n=== ПОИСК ПО КРИТЕРИЮ ===\n";
+
+                cout << "Поиск автобуса:\n";
+                auto busPtr = vehicleColl.find(
+                    [](const shared_ptr<Vehicle>& v) {
+                        return v->getType() == "Автобус";
+                    });
+                if (busPtr) cout << *busPtr << '\n';
+                else        cout << "Не найдено\n";
+
+                cout << "\nПоиск водителя 'Петров':\n";
+                auto driverPtr = driverColl.find(
+                    [](const shared_ptr<Driver>& d) {
+                        return d->getFullName() == "Петров Пётр Петрович";
+                    });
+                if (driverPtr) cout << *driverPtr << '\n';
+                else           cout << "Не найдено\n";
+                break;
+            }
+
+            case 17: {
+                cout << "\n=== СРЕДНЯЯ МЕТРИКА ===\n";
+                cout << "Средняя метрика ТС:       "
+                    << averageMetric(vehicleColl) << '\n';
+                cout << "Средняя метрика водителей: "
+                    << averageMetric(driverColl) << '\n';
+                break;
+            }
+
+            case 18: {
+                cout << "\n=== СОРТИРОВКА ПО МЕТРИКЕ (убывание) ===\n";
+
+                auto sortedVehicles = sortBy(vehicleColl,
+                    [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
+                        return a->calculateMetric() > b->calculateMetric();
+                    });
+                for (const auto& v : sortedVehicles) {
+                    cout << v->getType() << " (" << v->getRegNumber() << ") --- "
+                        << v->calculateMetric() << '\n';
+                }
+
+                cout << "\n=== СОРТИРОВКА ВОДИТЕЛЕЙ ПО СТАЖУ ===\n";
+                auto sortedDrivers = sortBy(driverColl,
+                    [](const shared_ptr<Driver>& a, const shared_ptr<Driver>& b) {
+                        return a->getExperienceYears() > b->getExperienceYears();
+                    });
+                for (const auto& d : sortedDrivers) {
+                    cout << d->getFullName() << " --- стаж: "
+                        << d->getExperienceYears() << " лет\n";
                 }
                 break;
             }

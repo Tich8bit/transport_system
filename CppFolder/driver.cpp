@@ -1,6 +1,8 @@
 #include "driver.h"
 #include <iostream>
 
+const int Driver::EXPERIENCE_METRIC_COEF = 10;
+
 Driver::Driver(std::string_view fullName, int experienceYears)
     : _fullName(fullName), _experienceYears(experienceYears) {}
 
@@ -19,3 +21,5 @@ void Driver::printDriverInformation() const {
     std::cout << "Водитель: " << _fullName
               << " | Стаж: " << _experienceYears << " лет" << std::endl;
 }
+
+double Driver::calculateMetric() const { return _experienceYears * EXPERIENCE_METRIC_COEF; }
