@@ -33,7 +33,7 @@ void Trolleybus::inputVehicle() {
 std::string Trolleybus::getType() const { return "Троллейбус"; }
 
 double Trolleybus::calculateMetric() const {
-    return _capacity + _voltage * VOLTAGE_METRIC_COEF;
+    return getCapacity() + _voltage * VOLTAGE_METRIC_COEF;
 }
 
 void Trolleybus::applyEffect(int value) {
@@ -42,7 +42,7 @@ void Trolleybus::applyEffect(int value) {
         return;
     }
     _voltage += value;
-    std::cout << "Напряжение троллейбуса " << _regNumber 
+    std::cout << "Напряжение троллейбуса " << getRegNumber() 
          << " увеличено на " << value << " В. Теперь: " 
          << _voltage << " В\n";
 }
@@ -50,7 +50,7 @@ void Trolleybus::applyEffect(int value) {
 bool Trolleybus::equals(const Vehicle& other) const {
     auto* t = dynamic_cast<const Trolleybus*>(&other);
     if (!t) return false;
-    return _regNumber == t->_regNumber;
+    return getRegNumber() == t->getRegNumber();
 }
 
 std::string Trolleybus::getMetricName() const {

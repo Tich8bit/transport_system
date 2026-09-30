@@ -35,7 +35,7 @@ std::string Bus::getType() const {
 }
 
 double Bus::calculateMetric() const {
-    return _capacity + _fuelTankCapacity * FUEL_METRIC_COEF;
+    return getCapacity() + _fuelTankCapacity * FUEL_METRIC_COEF;
 }
 
 void Bus::applyEffect(int value) {
@@ -44,13 +44,13 @@ void Bus::applyEffect(int value) {
         return;
     }
     _fuelTankCapacity += value;   
-    std::cout << "Бак автобуса " << _regNumber << " увеличен на " << value << " л. Теперь: "  << _fuelTankCapacity << " л\n";
+    std::cout << "Бак автобуса " << getRegNumber() << " увеличен на " << value << " л. Теперь: "  << _fuelTankCapacity << " л\n";
 }
 
 bool Bus::equals(const Vehicle& other) const {
     auto* b = dynamic_cast<const Bus*>(&other);
     if (!b) return false;
-    return _regNumber == b->_regNumber;
+    return getRegNumber() == b->getRegNumber();
 }
 
 std::string Bus::getMetricName() const {

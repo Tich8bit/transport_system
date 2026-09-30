@@ -33,7 +33,7 @@ void Tram::inputVehicle() {
 std::string Tram::getType() const { return "Трамвай"; }
 
 double Tram::calculateMetric() const {
-    return _capacity + _gauge * GAUGE_METRIC_COEF;
+    return getCapacity() + _gauge * GAUGE_METRIC_COEF;
 }
 
 void Tram::applyEffect(int value) {
@@ -46,7 +46,7 @@ void Tram::applyEffect(int value) {
         return;
     }
     _gauge += value;
-    std::cout << "Колея трамвая " << _regNumber 
+    std::cout << "Колея трамвая " << getRegNumber() 
          << " увеличена на " << value << " мм. Теперь: " 
          << _gauge << " мм\n";
 }
@@ -54,7 +54,7 @@ void Tram::applyEffect(int value) {
 bool Tram::equals(const Vehicle& other) const {
     auto* t = dynamic_cast<const Tram*>(&other);
     if (!t) return false;
-    return _regNumber == t->_regNumber;
+    return getRegNumber() == t->getRegNumber();
 }
 
 std::string Tram::getMetricName() const {

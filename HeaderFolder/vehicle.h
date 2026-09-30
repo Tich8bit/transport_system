@@ -54,7 +54,7 @@ public:
     friend bool operator==(const Vehicle& a, const Vehicle& b) {
         return a.equals(b);
     }
-protected: 
+private: 
     std::string _regNumber; 
     std::string _model; 
     int _year; 

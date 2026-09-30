@@ -14,22 +14,20 @@
 using namespace std;
 
 void printMenu() {
-    cout << "_______________________________________________\n";
-    cout << "|1. Показать все маршруты                     |\n";
-    cout << "|2. (<<) Показать весь транспорт              |\n";
-    cout << "|3. (+=) Закрепить транспорт за маршрутом     |\n";
-    cout << "|4. (-=) Открепить транспорт от маршрута      |\n";
-    cout << "|5. (+=) Добавить маршрут в систему           |\n";
-    cout << "|6. (-=) Удалить маршрут из системы           |\n"; 
-    cout << "|7. (==) Сравнить ТС по рег. номеру           |\n";
-    cout << "|8. (<=>) Сравнить ТС по метрике              |\n";
-    cout << "|             ЛР №4 — Полиморфизм             |\n";
-    cout << "|9. Полиморфный подсчёт метрик               |\n";
-    cout << "|10. Поиск самого результативного ТС          |\n";
-    cout << "|11. Массовое обслуживание всех ТС            |\n";
-    cout << "|12. Добавить новое ТС (полиморфный ввод)     |\n";
-    cout << "|0. Выход                                     |\n";
-    cout << "|_____________________________________________|\n";
+    cout << "_________________________________________\n";
+    cout << "|1. Показать все маршруты               |\n";
+    cout << "|2. Показать весь транспорт             |\n";
+    cout << "|3. Закрепить транспорт за маршрутом    |\n";
+    cout << "|4. Открепить транспорт от маршрута     |\n";
+    cout << "|5. Добавить маршрут в систему          |\n";
+    cout << "|6. Удалить маршрут из системы          |\n"; 
+    cout << "|7. Сравнить ТС по рег. номеру          |\n";
+    cout << "|8. Сравнить ТС по метрике              |\n";
+    cout << "|9. Полиморфный подсчёт метрик          |\n";
+    cout << "|10. Поиск самого результативного ТС    |\n";
+    cout << "|11. Массовое обслуживание всех ТС      |\n";
+    cout << "|0. Выход                               |\n";
+    cout << "|_______________________________________|\n";
 }
 
 void findBestVehicle(const vector<shared_ptr<Vehicle>>& vehicles) {
@@ -131,32 +129,25 @@ int main() {
                 cout << "bus < tram: " << (check ? "True" : "False") << endl;  
                 break;
             }
-            // case 9: {
-            //     for (const auto& v : vehicles) { 
-            //         double metric = v->calculateMetric();
-            //         cout << v->getType() << " (" << v->getRegNumber() << "):\n";
-            //         cout << "  " << v->getMetricName() << " = " << metric << endl;
-            //     }
-            //     break;
-            // }
-            // case 10: {
-            //     findBestVehicle(vehicles);  
-            //      break; 
-            // }
-            // case 11: {
-            //     for (const auto& v : vehicles) {
-            //         cout << "\n(" << v->getType() << ")" << endl;
-            //         v->applyEffect(10);
-            //     }
-            //     break;
-            // }
-            // // case 12: {
-            // //     bus1->inputVehicle();
-            // //     bus1->printBaseInfo();
-            // //     cout << *bus1;
-            // //     system.addVehicle(bus1);
-            // //     break;
-            // // }
+            case 9: {
+                for (const auto& v : vehicles) { 
+                    double metric = v->calculateMetric();
+                    cout << v->getType() << " (" << v->getRegNumber() << "):\n";
+                    cout << "  " << v->getMetricName() << " = " << metric << endl;
+                }
+                break;
+            }
+            case 10: {
+                findBestVehicle(vehicles);  
+                 break; 
+            }
+            case 11: {
+                for (const auto& v : vehicles) {
+                    cout << "\n(" << v->getType() << ")" << endl;
+                    v->applyEffect(10);
+                }
+                break;
+            }
              case 0: {
                 cout << "Выход из программы. До свидания!\n";
                 break;
