@@ -131,18 +131,18 @@ int main() {
                 cout << "bus < tram: " << (check ? "True" : "False") << endl;  
                 break;
             }
-            case 9: {
-                for (const auto& v : vehicles) { 
-                    double metric = v->calculateMetric();
-                    cout << v->getType() << " (" << v->getRegNumber() << "):\n";
-                    cout << "  " << v->getMetricName() << " = " << metric << endl;
-                }
-                break;
-            }
-            case 10: {
-                findBestVehicle(vehicles);  
-                 break; 
-            }
+            // case 9: {
+            //     for (const auto& v : vehicles) { 
+            //         double metric = v->calculateMetric();
+            //         cout << v->getType() << " (" << v->getRegNumber() << "):\n";
+            //         cout << "  " << v->getMetricName() << " = " << metric << endl;
+            //     }
+            //     break;
+            // }
+            // case 10: {
+            //     findBestVehicle(vehicles);  
+            //      break; 
+            // }
             // case 11: {
             //     for (const auto& v : vehicles) {
             //         cout << "\n(" << v->getType() << ")" << endl;
