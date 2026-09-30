@@ -26,6 +26,7 @@ public:
 
     void setYear(int newYear);
     void setCapacity(int newCapacity);
+    void setModel(std::string_view newModel);
     void setRegNumber(std::string_view newRegNumber);
     void setDriver(std::shared_ptr<Driver> newDriver);
 

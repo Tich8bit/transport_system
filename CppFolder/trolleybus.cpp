@@ -22,12 +22,12 @@ void Trolleybus::setVoltage(int newVoltage) { _voltage = newVoltage; }
 void Trolleybus::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
 void Trolleybus::inputVehicle() {
-    _regNumber = inputString("Введите госномер: ");
-    _model = inputString("Введите модель: ");
-    _year = inputInt("Введите год выпуска: ", 1900, 2100);
-    _capacity = inputInt("Введите вместимость: ", 1, 500);
-    _voltage = inputInt("Введите напряжение (В): ", 100, 1500);
-    _powerConsumption = inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0);
+    setRegNumber(inputString("Введите госномер: "));
+    setModel(inputString("Введите модель: "));
+    setYear(inputInt("Введите год выпуска: ", 1900, 2100));
+    setCapacity (inputInt("Введите вместимость: ", 1, 500));
+    setVoltage(inputInt("Введите напряжение (В): ", 100, 1500));
+    setPowerConsumption(inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0));
 }
 
 std::string Trolleybus::getType() const { return "Троллейбус"; }

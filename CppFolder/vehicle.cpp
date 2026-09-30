@@ -23,6 +23,7 @@ std::shared_ptr<Driver> Vehicle::getDriver() const { return _driver; }
 
 void Vehicle::setYear(int newYear) { _year = newYear; }
 void Vehicle::setCapacity(int newCapacity) { _capacity = newCapacity; }
+void Vehicle::setModel(std::string_view newModel) { _model = newModel; }
 void Vehicle::setRegNumber(std::string_view newRegNumber) { _regNumber = newRegNumber; }
 void Vehicle::setDriver(std::shared_ptr<Driver> newDriver) { _driver = newDriver; }
 

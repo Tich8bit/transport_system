@@ -22,12 +22,12 @@ void Tram::setGauge(int newGauge) { _gauge = newGauge; }
 void Tram::setPowerConsumption(double newConsumption) { _powerConsumption = newConsumption; }
 
 void Tram::inputVehicle() {
-    _regNumber = inputString("Введите госномер: ");
-    _model = inputString("Введите модель: ");
-    _year = inputInt("Введите год выпуска: ", 1900, 2100);
-    _capacity = inputInt("Введите вместимость: ", 1, 500);
-    _gauge = inputInt("Введите колею (мм): ", 1000, 2000);
-    _powerConsumption = inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0);
+    setRegNumber(inputString("Введите госномер: "));
+    setModel(inputString("Введите модель: "));
+    setYear(inputInt("Введите год выпуска: ", 1900, 2100));
+    setCapacity(inputInt("Введите вместимость: ", 1, 500));
+    setGauge(inputInt("Введите колею (мм): ", 1000, 2000));
+    setPowerConsumption(inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0));
 }
 
 std::string Tram::getType() const { return "Трамвай"; }
