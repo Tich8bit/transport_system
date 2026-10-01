@@ -2,6 +2,7 @@
 
 #include "collection.h"
 #include <algorithm>
+#include "exceptions.h"
 
 template <typename T>
 const std::vector<std::shared_ptr<T>>& Collection<T>::getItems() const {
@@ -16,7 +17,9 @@ void Collection<T>::add(const std::shared_ptr<T>& item) {
 template <typename T>
 void Collection<T>::removeAt(size_t index) {
     if (index >= _items.size()) {
-        std::cout << "Индекс за пределами коллекции\n";
+        throw OutOfRangeException(
+            "индекс " + std::to_string(index)
+            + " вне диапазона [0, " + std::to_string(_items.size() - 1) + "]");
         return;
     }
     _items.erase(_items.begin() + index);
@@ -41,7 +44,9 @@ size_t Collection<T>::removeIf(Predicate pred) {
 template <typename T>
 std::shared_ptr<T> Collection<T>::get(size_t index) const {
     if (index >= _items.size()) {
-        std::cout << "Индекс за пределами коллекции\n";
+        throw OutOfRangeException(
+            "индекс " + std::to_string(index)
+            + " вне диапазона [0, " + std::to_string(_items.size() - 1) + "]");
         return nullptr;
     }
     return _items[index];

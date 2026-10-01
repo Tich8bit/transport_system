@@ -1,5 +1,6 @@
 #include "tram.h"
 #include <iostream>
+#include "exceptions.h"
 
 const double Tram::MAX_GAUGE = 1600;
 const double Tram::GAUGE_METRIC_COEF = 0.1;
@@ -38,17 +39,22 @@ double Tram::calculateMetric() const {
 
 void Tram::applyEffect(int value) {
     if (value < 0) {
-        std::cout << "Нельзя уменьшать колею!\n";
-        return;
+        throw InvalidOperationException(
+            "значение не может быть отрицательным: " + std::to_string(value));
     }
-    if (_gauge + value > MAX_GAUGE) {
-        std::cout << "Колея слишком большая!\n";
-        return;
+
+    if (value > MAX_GAUGE) {
+        throw LimitExceededException(
+            "колея не может превысить " + std::to_string(MAX_GAUGE)
+            + " мм: текущая " + std::to_string(_gauge)
+            + " мм, изменение " + std::to_string(value)
+            + " мм, итог " + std::to_string(_gauge + value) + " мм");
     }
+
     _gauge += value;
-    std::cout << "Колея трамвая " << getRegNumber() 
-         << " увеличена на " << value << " мм. Теперь: " 
-         << _gauge << " мм\n";
+    std::cout << "Колея трамвая " << getRegNumber()
+              << " увеличена на " << value << " мм. Теперь: "
+              << _gauge << " мм\n";
 }
 
 bool Tram::equals(const Vehicle& other) const {

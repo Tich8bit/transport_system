@@ -1,5 +1,6 @@
 #include "trolleybus.h"
 #include <iostream>
+#include "exceptions.h"
 
 const double Trolleybus::MAX_VOLTAGE = 100;
 const double Trolleybus::VOLTAGE_METRIC_COEF = 0.5;
@@ -37,14 +38,24 @@ double Trolleybus::calculateMetric() const {
 }
 
 void Trolleybus::applyEffect(int value) {
-    if (value < 0 || value > MAX_VOLTAGE) {
-        std::cout << "Недопустимое изменение напряжения!\n";
-        return;
+    if (value < 0) {
+        throw InvalidOperationException(
+            "значение не может быть отрицательным: " + std::to_string(value));
     }
+
+    if (value > MAX_VOLTAGE) {
+        throw LimitExceededException(
+            "напряжение не может превысить "
+            + std::to_string(MAX_VOLTAGE)
+            + " В: текущее " + std::to_string(_voltage)
+            + " В, изменение " + std::to_string(value)
+            + " В, итог " + std::to_string(_voltage + value) + " В");
+    }
+
     _voltage += value;
-    std::cout << "Напряжение троллейбуса " << getRegNumber() 
-         << " увеличено на " << value << " В. Теперь: " 
-         << _voltage << " В\n";
+    std::cout << "Напряжение троллейбуса " << getRegNumber()
+              << " увеличено на " << value << " В. Теперь: "
+              << _voltage << " В\n";
 }
 
 bool Trolleybus::equals(const Vehicle& other) const {

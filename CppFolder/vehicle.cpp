@@ -4,6 +4,7 @@
 #include <iostream>
 #include <compare>
 #include <vector>
+#include "exceptions.h"
 
 Vehicle::Vehicle(std::string_view regNumber,
                  std::string_view model,
@@ -14,7 +15,17 @@ Vehicle::Vehicle(std::string_view regNumber,
       _model(model),
       _year(year),
       _capacity(capacity),
-      _driver(driver) {}
+      _driver(driver)
+{
+    if (year < 1900 || year > 2100) {
+        throw InvalidDataException(
+            "год " + std::to_string(year) + " вне диапазона [1900, 2100]");
+    }
+    if (capacity <= 0 || capacity > 500) {
+        throw InvalidDataException(
+            "вместимость " + std::to_string(capacity) + " вне диапазона [1, 500]");
+    }
+}
 
 std::string_view Vehicle::getRegNumber() const { return _regNumber; }
 std::string_view Vehicle::getModel() const { return _model; }

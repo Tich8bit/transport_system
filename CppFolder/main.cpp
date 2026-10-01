@@ -12,6 +12,7 @@
 #include "basefunction.h"
 #include "collection.h"
 #include "algs.h"
+#include "exceptions.h"
 
 using namespace std;
 
@@ -41,6 +42,16 @@ void printMenu() {
     cout << "|16. Поиск по критерию                  |\n";
     cout << "|17. Средняя метрика                    |\n";
     cout << "|18. Сортировка по компаратору          |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|             ЛР №6 — Исключения        |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|19. InvalidDataException               |\n";
+    cout << "|20. LimitExceededException             |\n";
+    cout << "|21. DuplicateIdException               |\n";
+    cout << "|22. ObjectNotFoundException            |\n";
+    cout << "|23. OutOfRangeException                |\n";
+    cout << "|24. InvalidOperationException          |\n";
+    cout << "|25. RelationException                  |\n";
     cout << "|0. Выход                               |\n";
     cout << "|_______________________________________|\n";
 }
@@ -86,7 +97,7 @@ int main() {
 
     do {
         printMenu();
-        choice = inputInt("Выберите пункт меню: ", 0, 16);
+        choice = inputInt("Выберите пункт меню: ", 0, 25);
 
         switch (choice) {
             case 1: {
@@ -252,6 +263,77 @@ int main() {
                 for (const auto& d : sortedDrivers) {
                     cout << d->getFullName() << " --- стаж: "
                         << d->getExperienceYears() << " лет\n";
+                }
+                break;
+            }
+            case 19: {
+                try {
+                    auto badBus = make_shared<Bus>("А000ХХ", "Test", -100, 30,
+                                                    driver1, "Test", 100.0);
+                }
+                catch (const InvalidDataException& e) {
+                    cout << "InvalidDataException: " << e.what() << '\n';
+                }
+                break;
+            }
+            case 20: {
+                try {
+                    bus->applyEffect(100000);
+                }
+                catch (const LimitExceededException& e) {
+                    cout << "LimitExceededException: " << e.what() << '\n';
+                }
+                break;
+            }
+            case 21: {
+                try {
+                    auto bus2 = make_shared<Bus>("А123ВС", "Test", 2020, 30,
+                                                driver1, "Test", 100.0);
+                    system.addVehicle(bus2);
+                }
+                catch (const DuplicateIdException& e) {
+                    cout << "DuplicateIdException: " << e.what() << '\n';
+                }
+                break;
+            }
+            case 22: {
+                try {
+                    auto ghost = make_shared<Bus>("ZZZZZZ", "Ghost", 2020, 30,
+                                                driver1, "Test", 100.0);
+                    system.removeVehicle(ghost);
+                }
+                catch (const ObjectNotFoundException& e) {
+                    cout << "ObjectNotFoundException: " << e.what() << '\n';
+                }
+                break;
+            }
+            case 23: {
+                try {
+                    auto v = vehicleColl.get(100);
+                    cout << *v << '\n';
+                }
+                catch (const OutOfRangeException& e) {
+                    cout << "OutOfRangeException: " << e.what() << '\n';
+                }
+                break;
+            }
+            case 24: {
+                try {
+                    tram->applyEffect(-5);
+                }
+                catch (const InvalidOperationException& e) {
+                    cout << "InvalidOperationException: " << e.what() << '\n';
+                }
+                break;
+            }
+            case 25: {
+                try {
+                    auto tinyBus = make_shared<Bus>("МАЛ777", "Малый", 2020, 5,
+                                                    driver4, "Газ", 50.0);
+                    *route1 += tinyBus;
+                }
+                catch (const RelationException& e) {
+                    cout << "RelationException: " << e.what() << '\n';
                 }
                 break;
             }

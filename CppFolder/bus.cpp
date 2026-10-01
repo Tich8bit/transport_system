@@ -1,5 +1,6 @@
 #include "bus.h"
 #include <iostream>
+#include "exceptions.h"
 
 const double Bus::MAX_FUELTANKCAPACITY = 100;
 const double Bus::FUEL_METRIC_COEF = 0.5;
@@ -39,12 +40,24 @@ double Bus::calculateMetric() const {
 }
 
 void Bus::applyEffect(int value) {
-    if (value < 0 || value > MAX_FUELTANKCAPACITY) {
-        std::cout << "Недопустимое изменение бака!\n";
-        return;
+    if (value < 0) {
+        throw InvalidOperationException(
+            "значение не может быть отрицательным: " + std::to_string(value));
     }
-    _fuelTankCapacity += value;   
-    std::cout << "Бак автобуса " << getRegNumber() << " увеличен на " << value << " л. Теперь: "  << _fuelTankCapacity << " л\n";
+
+    if (value > MAX_FUELTANKCAPACITY) {
+        throw LimitExceededException(
+            "бак не может превысить "
+            + std::to_string(MAX_FUELTANKCAPACITY)
+            + " л: текущий " + std::to_string(_fuelTankCapacity)
+            + " л, изменение " + std::to_string(value)
+            + " л, итог " + std::to_string(_fuelTankCapacity + value) + " л");
+    }
+
+    _fuelTankCapacity += value;
+    std::cout << "Бак автобуса " << getRegNumber()
+              << " увеличен на " << value << " л. Теперь: "
+              << _fuelTankCapacity << " л\n";
 }
 
 bool Bus::equals(const Vehicle& other) const {

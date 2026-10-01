@@ -1,6 +1,7 @@
 #include "route.h"
 #include "vehicle.h"
 #include <iostream>
+#include "exceptions.h"
 
 Route::Route(int number,
              std::string_view name,
@@ -43,25 +44,25 @@ void Route::printRouteInformation() const {
 
 Route& Route::operator+=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "\nОШИБКА! Пустой указатель на транспорт!" << std::endl;
+        throw InvalidDataException("пустой указатель на ТС");
         return *this;
     }
     for (const auto& v : _assignedVehicles) {
         if (v == vehicle) {
-            std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
-                      << "\" (" << vehicle->getRegNumber()
-                      << ") уже закреплено за маршрутом №" << _number << "!" << std::endl;
-            return *this;
+            throw DuplicateIdException(
+                "ТС с госномером " + std::string(vehicle->getRegNumber())
+                + " уже закреплено за маршрутом №" + std::to_string(_number));
+                return *this;
         }
     }
-    if (vehicle->getCapacity() >= _minCapacity)  {
-        _assignedVehicles.push_back(vehicle);
-        return *this;
+    if (vehicle->getCapacity() < _minCapacity) {
+        throw RelationException(
+            "вместимость ТС " + std::to_string(vehicle->getCapacity())
+            + " < минимальной " + std::to_string(_minCapacity));
+            return *this;
     }
-    else {
-        std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel() << "\"" << std::endl;
-        return *this;
-    }
+    _assignedVehicles.push_back(vehicle);
+    return *this;
 }
 
 Route& Route::operator-=(std::shared_ptr<Vehicle> vehicle) {
@@ -75,7 +76,8 @@ Route& Route::operator-=(std::shared_ptr<Vehicle> vehicle) {
             return *this;
         }
     }
-    std::cout << "\nОШИБКА! ТС \"" << vehicle->getModel()
-              << "\" не закреплено за маршрутом №" << _number << "!" << std::endl;
+    throw ObjectNotFoundException(
+        "ТС с госномером " + std::string(vehicle->getRegNumber())
+        + " не закреплено за маршрутом №" + std::to_string(_number));
     return *this;
 }

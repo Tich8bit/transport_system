@@ -3,11 +3,22 @@
 #include "vehicle.h"
 #include <iostream>
 #include <string_view>
+#include "exceptions.h"
 
 void TransportSystem::addVehicle(std::shared_ptr<Vehicle> vehicle) {
-    if (vehicle) {
-        _vehicles.push_back(vehicle);
+    if (!vehicle) {
+        throw InvalidDataException("пустой указатель на ТС");
     }
+
+    for (const auto& v : _vehicles) {
+        if (*v == *vehicle) {
+            throw DuplicateIdException(
+                "ТС с госномером " + std::string(vehicle->getRegNumber())
+                + " уже есть в системе");
+        }
+    }
+
+    _vehicles.push_back(vehicle);
 }
 
 bool TransportSystem::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
@@ -22,15 +33,10 @@ bool TransportSystem::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
         }
     }
 
+    throw ObjectNotFoundException(
+        "ТС с госномером " + std::string(vehicle->getRegNumber())
+        + " не найдено в системе");
     return false;
-}
-
-std::shared_ptr<Route>
-TransportSystem::findRouteByNumber(int number) const {
-    for (const auto& r : _routes) {
-        if (r->getNumber() == number) return r;
-    }
-    return nullptr;
 }
 
 const std::vector<std::shared_ptr<Route>>&
@@ -68,13 +74,14 @@ void TransportSystem::printAllVehicles() const {
 
 TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
     if (!route) {
-        std::cout << "\nОШИБКА! Пустой указатель на маршрут!\n";
+        throw InvalidDataException("пустой указатель на маршрут");
         return *this;
     }
     for (const auto& r : _routes) {
         if (r == route) {
-            std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
-                      << " уже есть в системе!\n";
+            throw DuplicateIdException(
+                "Маршрут №" + std::to_string(route->getNumber())
+                + " уже есть в системе");
             return *this;
         }
     }
@@ -84,7 +91,7 @@ TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
 
 TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
     if (!route) {
-        std::cout << "\nОШИБКА! Пустой указатель на маршрут!\n";
+        throw InvalidDataException("пустой указатель на ТС");
         return *this;
     }
     for (auto it = _routes.begin(); it != _routes.end(); ++it) {
@@ -93,8 +100,9 @@ TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
             return *this;
         }
     }
-    std::cout << "\nОШИБКА! Маршрут №" << route->getNumber()
-              << " не найден в системе!\n";
+    throw ObjectNotFoundException(
+        "Маршрут №" + std::to_string(route->getNumber())
+        + " не найден в системе");
     return *this;
 }
 
