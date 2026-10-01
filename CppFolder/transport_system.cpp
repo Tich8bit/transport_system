@@ -75,14 +75,12 @@ void TransportSystem::printAllVehicles() const {
 TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
     if (!route) {
         throw InvalidDataException("пустой указатель на маршрут");
-        return *this;
     }
     for (const auto& r : _routes) {
         if (r == route) {
             throw DuplicateIdException(
                 "Маршрут №" + std::to_string(route->getNumber())
                 + " уже есть в системе");
-            return *this;
         }
     }
     _routes.push_back(route);
@@ -92,7 +90,6 @@ TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
 TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
     if (!route) {
         throw InvalidDataException("пустой указатель на ТС");
-        return *this;
     }
     for (auto it = _routes.begin(); it != _routes.end(); ++it) {
         if (*it == route) {
@@ -103,7 +100,6 @@ TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
     throw ObjectNotFoundException(
         "Маршрут №" + std::to_string(route->getNumber())
         + " не найден в системе");
-    return *this;
 }
 
 std::shared_ptr<Vehicle> TransportSystem::findBestVehicle() const {

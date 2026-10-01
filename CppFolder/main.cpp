@@ -177,12 +177,14 @@ int main() {
             }
             case 13: {
                 cout << "Vehicle[1]:\n";
-                auto v = vehicleColl.get(1);
-                if (v) cout << *v << '\n';
+                if (auto v = vehicleColl.get(1); v) {
+                    cout << *v << '\n';
+                }
 
                 cout << "Driver[2]:\n";
-                auto d = driverColl.get(2);
-                if (d) cout << *d << '\n';
+                if (auto d = driverColl.get(2); d) {
+                    cout << *d << '\n';
+                }
                 break;
             }
             case 14: {
@@ -212,140 +214,142 @@ int main() {
                 driverColl.print();
                 break;
             }
-
             case 16: {
-                cout << "\n=== ПОИСК ПО КРИТЕРИЮ ===\n";
+            cout << "\n=== ПОИСК ПО КРИТЕРИЮ ===\n";
 
-                cout << "Поиск автобуса:\n";
-                auto busPtr = vehicleColl.find(
+            cout << "Поиск автобуса:\n";
+            if (auto busPtr = vehicleColl.find(
                     [](const shared_ptr<Vehicle>& v) {
                         return v->getType() == "Автобус";
-                    });
-                if (busPtr) cout << *busPtr << '\n';
-                else        cout << "Не найдено\n";
+                    }); busPtr) {
+                cout << *busPtr << '\n';
+            } else {
+                cout << "Не найдено\n";
+            }
 
-                cout << "\nПоиск водителя 'Петров':\n";
-                auto driverPtr = driverColl.find(
+            cout << "\nПоиск водителя 'Петров':\n";
+            if (auto driverPtr = driverColl.find(
                     [](const shared_ptr<Driver>& d) {
                         return d->getFullName() == "Петров Пётр Петрович";
-                    });
-                if (driverPtr) cout << *driverPtr << '\n';
-                else           cout << "Не найдено\n";
-                break;
+                    }); driverPtr) {
+                cout << *driverPtr << '\n';
+            } else {
+                cout << "Не найдено\n";
             }
-
+            break;
+        }       
             case 17: {
-                cout << "\n=== СРЕДНЯЯ МЕТРИКА ===\n";
-                cout << "Средняя метрика ТС:       "
-                    << averageMetric(vehicleColl) << '\n';
-                cout << "Средняя метрика водителей: "
-                    << averageMetric(driverColl) << '\n';
-                break;
-            }
-
-            case 18: {
-                cout << "\n=== СОРТИРОВКА ПО МЕТРИКЕ (убывание) ===\n";
-
-                auto sortedVehicles = sortBy(vehicleColl,
-                    [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
-                        return a->calculateMetric() > b->calculateMetric();
-                    });
-                for (const auto& v : sortedVehicles) {
-                    cout << v->getType() << " (" << v->getRegNumber() << ") --- "
-                        << v->calculateMetric() << '\n';
-                }
-
-                cout << "\n=== СОРТИРОВКА ВОДИТЕЛЕЙ ПО СТАЖУ ===\n";
-                auto sortedDrivers = sortBy(driverColl,
-                    [](const shared_ptr<Driver>& a, const shared_ptr<Driver>& b) {
-                        return a->getExperienceYears() > b->getExperienceYears();
-                    });
-                for (const auto& d : sortedDrivers) {
-                    cout << d->getFullName() << " --- стаж: "
-                        << d->getExperienceYears() << " лет\n";
-                }
-                break;
-            }
-            case 19: {
-                try {
-                    auto badBus = make_shared<Bus>("А000ХХ", "Test", -100, 30,
-                                                    driver1, "Test", 100.0);
-                }
-                catch (const InvalidDataException& e) {
-                    cout << "InvalidDataException: " << e.what() << '\n';
-                }
-                break;
-            }
-            case 20: {
-                try {
-                    bus->applyEffect(100000);
-                }
-                catch (const LimitExceededException& e) {
-                    cout << "LimitExceededException: " << e.what() << '\n';
-                }
-                break;
-            }
-            case 21: {
-                try {
-                    auto bus2 = make_shared<Bus>("А123ВС", "Test", 2020, 30,
-                                                driver1, "Test", 100.0);
-                    system.addVehicle(bus2);
-                }
-                catch (const DuplicateIdException& e) {
-                    cout << "DuplicateIdException: " << e.what() << '\n';
-                }
-                break;
-            }
-            case 22: {
-                try {
-                    auto ghost = make_shared<Bus>("ZZZZZZ", "Ghost", 2020, 30,
-                                                driver1, "Test", 100.0);
-                    system.removeVehicle(ghost);
-                }
-                catch (const ObjectNotFoundException& e) {
-                    cout << "ObjectNotFoundException: " << e.what() << '\n';
-                }
-                break;
-            }
-            case 23: {
-                try {
-                    auto v = vehicleColl.get(100);
-                    cout << *v << '\n';
-                }
-                catch (const OutOfRangeException& e) {
-                    cout << "OutOfRangeException: " << e.what() << '\n';
-                }
-                break;
-            }
-            case 24: {
-                try {
-                    tram->applyEffect(-5);
-                }
-                catch (const InvalidOperationException& e) {
-                    cout << "InvalidOperationException: " << e.what() << '\n';
-                }
-                break;
-            }
-            case 25: {
-                try {
-                    auto tinyBus = make_shared<Bus>("МАЛ777", "Малый", 2020, 5,
-                                                    driver4, "Газ", 50.0);
-                    *route1 += tinyBus;
-                }
-                catch (const RelationException& e) {
-                    cout << "RelationException: " << e.what() << '\n';
-                }
-                break;
-            }
-             case 0: {
-                cout << "Выход из программы. До свидания!\n";
-                break;
-            }
-            default: {
-                cout << "Неверный пункт меню. Попробуйте снова.\n";
-                break;
-            }
+            cout << "\n=== СРЕДНЯЯ МЕТРИКА ===\n";
+            cout << "Средняя метрика ТС:       "
+                << averageMetric(vehicleColl) << '\n';
+            cout << "Средняя метрика водителей: "
+                << averageMetric(driverColl) << '\n';
+            break;
         }
+
+        case 18: {
+            cout << "\n=== СОРТИРОВКА ПО МЕТРИКЕ (убывание) ===\n";
+
+            auto sortedVehicles = sortBy(vehicleColl,
+                [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
+                    return a->calculateMetric() > b->calculateMetric();
+                });
+            for (const auto& v : sortedVehicles) {
+                cout << v->getType() << " (" << v->getRegNumber() << ") --- "
+                    << v->calculateMetric() << '\n';
+            }
+
+            cout << "\n=== СОРТИРОВКА ВОДИТЕЛЕЙ ПО СТАЖУ ===\n";
+            auto sortedDrivers = sortBy(driverColl,
+                [](const shared_ptr<Driver>& a, const shared_ptr<Driver>& b) {
+                    return a->getExperienceYears() > b->getExperienceYears();
+                });
+            for (const auto& d : sortedDrivers) {
+                cout << d->getFullName() << " --- стаж: "
+                    << d->getExperienceYears() << " лет\n";
+            }
+            break;
+        }
+        case 19: {
+            try {
+                auto badBus = make_shared<Bus>("А000ХХ", "Test", -100, 30,
+                                                driver1, "Test", 100.0);
+            }
+            catch (const InvalidDataException& e) {
+                cout << "InvalidDataException: " << e.what() << '\n';
+            }
+            break;
+        }
+        case 20: {
+            try {
+                bus->applyEffect(100000);
+            }
+            catch (const LimitExceededException& e) {
+                cout << "LimitExceededException: " << e.what() << '\n';
+            }
+            break;
+        }
+        case 21: {
+            try {
+                auto bus2 = make_shared<Bus>("А123ВС", "Test", 2020, 30,
+                                            driver1, "Test", 100.0);
+                system.addVehicle(bus2);
+            }
+            catch (const DuplicateIdException& e) {
+                cout << "DuplicateIdException: " << e.what() << '\n';
+            }
+            break;
+        }
+        case 22: {
+            try {
+                auto ghost = make_shared<Bus>("ZZZZZZ", "Ghost", 2020, 30,
+                                            driver1, "Test", 100.0);
+                system.removeVehicle(ghost);
+            }
+            catch (const ObjectNotFoundException& e) {
+                cout << "ObjectNotFoundException: " << e.what() << '\n';
+            }
+            break;
+        }
+        case 23: {
+            try {
+                auto v = vehicleColl.get(100);
+                cout << *v << '\n';
+            }
+            catch (const OutOfRangeException& e) {
+                cout << "OutOfRangeException: " << e.what() << '\n';
+            }
+            break;
+        }
+        case 24: {
+            try {
+                tram->applyEffect(-5);
+            }
+            catch (const InvalidOperationException& e) {
+                cout << "InvalidOperationException: " << e.what() << '\n';
+            }
+            break;
+        }
+        case 25: {
+            try {
+                auto tinyBus = make_shared<Bus>("МАЛ777", "Малый", 2020, 5,
+                                                driver4, "Газ", 50.0);
+                *route1 += tinyBus;
+            }
+            catch (const RelationException& e) {
+                cout << "RelationException: " << e.what() << '\n';
+            }
+            break;
+        }
+            case 0: {
+            cout << "Выход из программы. До свидания!\n";
+            break;
+        }
+        default: {
+            cout << "Неверный пункт меню. Попробуйте снова.\n";
+            break;
+        }
+    }
 
     } while (choice != 0);
 

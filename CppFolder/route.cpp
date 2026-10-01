@@ -45,21 +45,18 @@ void Route::printRouteInformation() const {
 Route& Route::operator+=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
         throw InvalidDataException("пустой указатель на ТС");
-        return *this;
     }
     for (const auto& v : _assignedVehicles) {
         if (v == vehicle) {
             throw DuplicateIdException(
                 "ТС с госномером " + std::string(vehicle->getRegNumber())
                 + " уже закреплено за маршрутом №" + std::to_string(_number));
-                return *this;
         }
     }
     if (vehicle->getCapacity() < _minCapacity) {
         throw RelationException(
             "вместимость ТС " + std::to_string(vehicle->getCapacity())
             + " < минимальной " + std::to_string(_minCapacity));
-            return *this;
     }
     _assignedVehicles.push_back(vehicle);
     return *this;
@@ -67,8 +64,7 @@ Route& Route::operator+=(std::shared_ptr<Vehicle> vehicle) {
 
 Route& Route::operator-=(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        std::cout << "\nОШИБКА! Пустой указатель на транспорт!\n";
-        return *this;
+        throw InvalidDataException("пустой указатель на ТС");
     }
     for (auto it = _assignedVehicles.begin(); it != _assignedVehicles.end(); ++it) {
         if (*it == vehicle) {
@@ -79,5 +75,4 @@ Route& Route::operator-=(std::shared_ptr<Vehicle> vehicle) {
     throw ObjectNotFoundException(
         "ТС с госномером " + std::string(vehicle->getRegNumber())
         + " не закреплено за маршрутом №" + std::to_string(_number));
-    return *this;
 }

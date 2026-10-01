@@ -5,14 +5,13 @@
 
 class TransportException : public std::runtime_error {
 public:
-    explicit TransportException(const std::string& message)
-        : std::runtime_error(message) {}
+    using std::runtime_error::runtime_error;
 };
 
 class InvalidDataException : public TransportException {
 public:
     explicit InvalidDataException(const std::string& message)
-        : TransportException("Некорректные данные: " + message) {}
+        : TransportException("Некорректные данные: " + message) {}   
 };
 
 class ObjectNotFoundException : public TransportException {
@@ -24,7 +23,7 @@ public:
 class DuplicateIdException : public TransportException {
 public:
     explicit DuplicateIdException(const std::string& message)
-        : TransportException("Дубликат идентификатора: " + message) {}
+        : TransportException("Дубликат: " + message) {}
 };
 
 class LimitExceededException : public TransportException {
