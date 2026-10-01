@@ -97,3 +97,15 @@ TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
               << " не найден в системе!\n";
     return *this;
 }
+
+std::shared_ptr<Vehicle> TransportSystem::findBestVehicle() const {
+    if (_vehicles.empty()) return nullptr;
+
+    auto best = _vehicles[0];
+    for (const auto& v : _vehicles) {
+        if (v->calculateMetric() > best->calculateMetric()) {
+            best = v;
+        }
+    }
+    return best;
+}
