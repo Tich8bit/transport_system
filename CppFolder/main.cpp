@@ -18,40 +18,23 @@ using namespace std;
 
 void printMenu() {
     cout << "_________________________________________\n";
-    cout << "|1. Показать все маршруты               |\n";
-    cout << "|2. Показать весь транспорт             |\n";
-    cout << "|3. Закрепить транспорт за маршрутом    |\n";
-    cout << "|4. Открепить транспорт от маршрута     |\n";
-    cout << "|5. Добавить маршрут в систему          |\n";
-    cout << "|6. Удалить маршрут из системы          |\n"; 
-    cout << "|7. Сравнить ТС по рег. номеру          |\n";
-    cout << "|8. Сравнить ТС по метрике              |\n";
-    cout << "|_______________________________________|\n";
     cout << "|             ЛР №4 — Полиморфизм       |\n";
     cout << "|_______________________________________|\n";
-    cout << "|9. Полиморфный подсчёт метрик          |\n";
-    cout << "|10. Поиск самого результативного ТС    |\n";
-    cout << "|11. Массовое обслуживание всех ТС      |\n";
+    cout << "|1. Полиморфный подсчёт метрик          |\n";
+    cout << "|2. Поиск самого результативного ТС     |\n";
+    cout << "|3. Массовое обслуживание всех ТС       |\n";
     cout << "|_______________________________________|\n";
     cout << "|             ЛР №5 — Шаблоны           |\n";
     cout << "|_______________________________________|\n";
-    cout << "|12. Показать размер коллекции          |\n";
-    cout << "|13. Получить элемент по индексу        |\n";
-    cout << "|14. Удалить по индексу                 |\n";
-    cout << "|15. Удалить по критерию                |\n";
-    cout << "|16. Поиск по критерию                  |\n";
-    cout << "|17. Средняя метрика                    |\n";
-    cout << "|18. Сортировка по компаратору          |\n";
+    cout << "|4. Показать размер коллекции           |\n";
+    cout << "|5. Получить элемент по индексу         |\n";
+    cout << "|6. Удалить по индексу                  |\n";
+    cout << "|7. Удалить по критерию                 |\n";
+    cout << "|8. Поиск по критерию                   |\n";
+    cout << "|9. Средняя метрика                     |\n";
+    cout << "|10. Сортировка по компаратору          |\n";
+    cout << "|11. Вывод коллекции                    |\n";
     cout << "|_______________________________________|\n";
-    cout << "|             ЛР №6 — Исключения        |\n";
-    cout << "|_______________________________________|\n";
-    cout << "|19. InvalidDataException               |\n";
-    cout << "|20. LimitExceededException             |\n";
-    cout << "|21. DuplicateIdException               |\n";
-    cout << "|22. ObjectNotFoundException            |\n";
-    cout << "|23. OutOfRangeException                |\n";
-    cout << "|24. InvalidOperationException          |\n";
-    cout << "|25. RelationException                  |\n";
     cout << "|0. Выход                               |\n";
     cout << "|_______________________________________|\n";
 }
@@ -97,55 +80,10 @@ int main() {
 
     do {
         printMenu();
-        choice = inputInt("Выберите пункт меню: ", 0, 25);
+        choice = inputInt("Выберите пункт меню: ", 0, 11);
 
         switch (choice) {
             case 1: {
-                system.printAllRoutes();
-                break;
-            }
-            case 2: {
-                system.printAllVehicles();
-                break;
-            }
-            case 3: {
-                *route1 += bus;
-                *route1 += trolley;
-                *route1 += tram;
-                route1->printRouteInformation();
-                break;
-            }
-            case 4: {
-                *route1 -= trolley;
-                route1->printRouteInformation();
-                break;
-            }
-            case 5: {
-                system += route3;
-                system.printAllRoutes();
-                break;
-            }
-            case 6: {
-                system -= route3;
-                system.printAllRoutes();
-                break;
-            }
-            case 7: {
-                auto bus2 = make_shared<Bus>("А123ВС", "ЛиАЗ-5292", 2022, 110, driver4, "Газ", 250.0);
-                cout << "bus == bus2: "
-                    << ((*bus == *bus2) ? "True" : "False") << endl;  
-                cout << "bus == tram: "
-                    << ((*bus == *tram) ? "True" : "False") << endl;  
-                break;
-            }
-            case 8: {
-                bool check = (*bus > *trolley);
-                cout << "bus > trolley: " << (check ? "True" : "False") << endl;  
-                check = (*bus < *tram);
-                cout << "bus < tram: " << (check ? "True" : "False") << endl;  
-                break;
-            }
-            case 9: {
                 for (const auto& v : vehicles) { 
                     double metric = v->calculateMetric();
                     cout << v->getType() << " (" << v->getRegNumber() << "):\n";
@@ -153,7 +91,7 @@ int main() {
                 }
                 break;
             }
-            case 10: {
+            case 2: {
                 auto best = system.findBestVehicle();
                 if (best) {
                     cout << "Лучшее ТС:\n";
@@ -162,32 +100,32 @@ int main() {
                         << best->calculateMetric() << '\n';
                     cout << *best << '\n';
                 } 
+                break;
             }
-            case 11: {
+            case 3: {
                 for (const auto& v : vehicles) {
                     cout << "\n(" << v->getType() << ")" << endl;
                     v->applyEffect(10);
                 }
                 break;
             }
-            case 12: {
+            case 4: {
                 cout << "Vehicle:  " << vehicleColl.size() << '\n';
                 cout << "Driver:   " << driverColl.size() << '\n';
                 break;
             }
-            case 13: {
-                cout << "Vehicle[1]:\n";
+            case 5: {
+                cout << "Vehicle[1]:";
                 if (auto v = vehicleColl.get(1); v) {
-                    cout << *v << '\n';
+                    cout  << *v << '\n';
                 }
-
                 cout << "Driver[2]:\n";
                 if (auto d = driverColl.get(2); d) {
                     cout << *d << '\n';
                 }
                 break;
             }
-            case 14: {
+            case 6: {
                 cout << "Vehicle: удаляем [1]\n";
                 vehicleColl.removeAt(1);
                 vehicleColl.print();
@@ -196,7 +134,7 @@ int main() {
                 driverColl.print();
                 break;
             }
-            case 15: {
+            case 7: {
                 cout << "Удаляем все трамваи:\n";
                 size_t removed1 = vehicleColl.removeIf(
                     [](const shared_ptr<Vehicle>& v) {
@@ -214,9 +152,7 @@ int main() {
                 driverColl.print();
                 break;
             }
-            case 16: {
-            cout << "\n=== ПОИСК ПО КРИТЕРИЮ ===\n";
-
+            case 8: {
             cout << "Поиск автобуса:\n";
             if (auto busPtr = vehicleColl.find(
                     [](const shared_ptr<Vehicle>& v) {
@@ -226,7 +162,6 @@ int main() {
             } else {
                 cout << "Не найдено\n";
             }
-
             cout << "\nПоиск водителя 'Петров':\n";
             if (auto driverPtr = driverColl.find(
                     [](const shared_ptr<Driver>& d) {
@@ -238,18 +173,14 @@ int main() {
             }
             break;
         }       
-            case 17: {
-            cout << "\n=== СРЕДНЯЯ МЕТРИКА ===\n";
+            case 9: {
             cout << "Средняя метрика ТС:       "
                 << averageMetric(vehicleColl) << '\n';
             cout << "Средняя метрика водителей: "
                 << averageMetric(driverColl) << '\n';
             break;
         }
-
-        case 18: {
-            cout << "\n=== СОРТИРОВКА ПО МЕТРИКЕ (убывание) ===\n";
-
+        case 10: {
             auto sortedVehicles = sortBy(vehicleColl,
                 [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
                     return a->calculateMetric() > b->calculateMetric();
@@ -258,8 +189,6 @@ int main() {
                 cout << v->getType() << " (" << v->getRegNumber() << ") --- "
                     << v->calculateMetric() << '\n';
             }
-
-            cout << "\n=== СОРТИРОВКА ВОДИТЕЛЕЙ ПО СТАЖУ ===\n";
             auto sortedDrivers = sortBy(driverColl,
                 [](const shared_ptr<Driver>& a, const shared_ptr<Driver>& b) {
                     return a->getExperienceYears() > b->getExperienceYears();
@@ -270,75 +199,11 @@ int main() {
             }
             break;
         }
-        case 19: {
-            try {
-                auto badBus = make_shared<Bus>("А000ХХ", "Test", -100, 30,
-                                                driver1, "Test", 100.0);
-            }
-            catch (const InvalidDataException& e) {
-                cout << "InvalidDataException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 20: {
-            try {
-                bus->applyEffect(100000);
-            }
-            catch (const LimitExceededException& e) {
-                cout << "LimitExceededException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 21: {
-            try {
-                auto bus2 = make_shared<Bus>("А123ВС", "Test", 2020, 30,
-                                            driver1, "Test", 100.0);
-                system.addVehicle(bus2);
-            }
-            catch (const DuplicateIdException& e) {
-                cout << "DuplicateIdException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 22: {
-            try {
-                auto ghost = make_shared<Bus>("ZZZZZZ", "Ghost", 2020, 30,
-                                            driver1, "Test", 100.0);
-                system.removeVehicle(ghost);
-            }
-            catch (const ObjectNotFoundException& e) {
-                cout << "ObjectNotFoundException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 23: {
-            try {
-                auto v = vehicleColl.get(100);
-                cout << *v << '\n';
-            }
-            catch (const OutOfRangeException& e) {
-                cout << "OutOfRangeException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 24: {
-            try {
-                tram->applyEffect(-5);
-            }
-            catch (const InvalidOperationException& e) {
-                cout << "InvalidOperationException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 25: {
-            try {
-                auto tinyBus = make_shared<Bus>("МАЛ777", "Малый", 2020, 5,
-                                                driver4, "Газ", 50.0);
-                *route1 += tinyBus;
-            }
-            catch (const RelationException& e) {
-                cout << "RelationException: " << e.what() << '\n';
-            }
+         case 11: {
+            cout << "--- Collection<Vehicle> ---\n";
+            vehicleColl.print(cout);
+            cout << "\n--- Collection<Driver> ---\n";
+            driverColl.print(cout);
             break;
         }
             case 0: {

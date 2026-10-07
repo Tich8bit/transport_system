@@ -23,7 +23,7 @@ void TransportSystem::addVehicle(std::shared_ptr<Vehicle> vehicle) {
 
 bool TransportSystem::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
-        return false;
+        throw InvalidDataException("пустой указатель на ТС");
     }
 
     for (auto it = _vehicles.begin(); it != _vehicles.end(); ++it) {
@@ -36,7 +36,6 @@ bool TransportSystem::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
     throw ObjectNotFoundException(
         "ТС с госномером " + std::string(vehicle->getRegNumber())
         + " не найдено в системе");
-    return false;
 }
 
 const std::vector<std::shared_ptr<Route>>&
