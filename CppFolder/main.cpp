@@ -24,8 +24,6 @@ void printMenu() {
     cout << "|2. Поиск самого результативного ТС     |\n";
     cout << "|3. Массовое обслуживание всех ТС       |\n";
     cout << "|_______________________________________|\n";
-    cout << "|             ЛР №5 — Шаблоны           |\n";
-    cout << "|_______________________________________|\n";
     cout << "|4. Показать размер коллекции           |\n";
     cout << "|5. Получить элемент по индексу         |\n";
     cout << "|6. Удалить по индексу                  |\n";
@@ -39,6 +37,60 @@ void printMenu() {
     cout << "|_______________________________________|\n";
 }
 
+
+Collection<Driver> buildDriverCollection(const vector<shared_ptr<Driver>>& drivers) {
+    Collection<Driver> coll;
+    for (const auto& d : drivers) {
+        coll.add(d);
+    }
+    return coll;
+}
+
+Collection<Vehicle> buildVehicleCollection(const vector<shared_ptr<Vehicle>>& vehicles) {
+    Collection<Vehicle> coll;
+    for (const auto& v : vehicles) {
+        coll.add(v);
+    }
+    return coll;
+}
+
+void demoGetByIndex(const Collection<Vehicle>& vehicleColl,
+                    const Collection<Driver>& driverColl,
+                    int vIndex, int dIndex) {
+    cout << "Vehicle[" << vIndex << "]:\n";
+    if (auto v = vehicleColl.get(vIndex); v) {
+        cout << *v << '\n';
+    }
+
+    cout << "Driver[" << dIndex << "]:\n";
+    if (auto d = driverColl.get(dIndex); d) {
+        cout << *d << '\n';
+    }
+}
+
+void demoFind(const Collection<Vehicle>& vehicleColl,
+              const Collection<Driver>& driverColl) {
+    cout << "Поиск автобуса:\n";
+    if (auto busPtr = vehicleColl.find(
+            [](const shared_ptr<Vehicle>& v) {
+                return v->getType() == "Автобус";
+            }); busPtr) {
+        cout << *busPtr << '\n';
+    } else {
+        cout << "Не найдено\n";
+    }
+
+    cout << "\nПоиск водителя 'Петров':\n";
+    if (auto driverPtr = driverColl.find(
+            [](const shared_ptr<Driver>& d) {
+                return d->getFullName() == "Петров Пётр Петрович";
+            }); driverPtr) {
+        cout << *driverPtr << '\n';
+    } else {
+        cout << "Не найдено\n";
+    }
+}
+
 int main() {  
     setlocale(LC_ALL, "ru_RU.UTF-8");
 
@@ -48,21 +100,14 @@ int main() {
     auto driver4 = make_shared<Driver>("Кузнецов Кузьма Кузьмич", 5);
 
     vector<shared_ptr<Driver>> drivers = {driver1, driver2, driver3, driver4};
-
-    Collection<Driver> driverColl;
-    for (const auto& d : drivers) {
-        driverColl.add(d);
-    }
+    Collection<Driver> driverColl = buildDriverCollection(drivers);
 
     auto bus = make_shared<Bus>("А123ВС", "ПАЗ-3205", 2015, 30, driver1, "Дизель", 100.0);
     auto trolley = make_shared<Trolleybus>("В456ЕК", "АКСМ-321", 2018, 90, driver2, 550, 45.0);
     auto tram = make_shared<Tram>("С789МН", "БКМ-843", 2020, 150, driver3, 1524, 60.0);
 
     vector<shared_ptr<Vehicle>> vehicles = {bus, trolley, tram};
-    Collection<Vehicle> vehicleColl;
-    for (const auto& v : vehicles) {
-        vehicleColl.add(v);
-    }
+    Collection<Vehicle> vehicleColl = buildVehicleCollection(vehicles);
 
     auto route1 = make_shared<Route>(1, "Центральный", "Вокзал", "Площадь Победы", 30);
     auto route2 = make_shared<Route>(2, "Северный", "Университет", "ТЦ Экспобел", 50);
@@ -92,8 +137,7 @@ int main() {
                 break;
             }
             case 2: {
-                auto best = system.findBestVehicle();
-                if (best) {
+                if (auto best = system.findBestVehicle()) {
                     cout << "Лучшее ТС:\n";
                     cout << "  Тип: " << best->getType() << '\n';
                     cout << "  " << best->getMetricName() << ": "
@@ -115,14 +159,7 @@ int main() {
                 break;
             }
             case 5: {
-                cout << "Vehicle[1]:";
-                if (auto v = vehicleColl.get(1); v) {
-                    cout  << *v << '\n';
-                }
-                cout << "Driver[2]:\n";
-                if (auto d = driverColl.get(2); d) {
-                    cout << *d << '\n';
-                }
+                demoGetByIndex(vehicleColl, driverColl, 1, 2);   
                 break;
             }
             case 6: {
@@ -142,7 +179,6 @@ int main() {
                     });
                 cout << "Удалено: " << removed1 << '\n';
                 vehicleColl.print();
-
                 cout << "\nУдаляем водителей со стажем < 10:\n";
                 size_t removed2 = driverColl.removeIf(
                     [](const shared_ptr<Driver>& d) {
@@ -153,26 +189,9 @@ int main() {
                 break;
             }
             case 8: {
-            cout << "Поиск автобуса:\n";
-            if (auto busPtr = vehicleColl.find(
-                    [](const shared_ptr<Vehicle>& v) {
-                        return v->getType() == "Автобус";
-                    }); busPtr) {
-                cout << *busPtr << '\n';
-            } else {
-                cout << "Не найдено\n";
-            }
-            cout << "\nПоиск водителя 'Петров':\n";
-            if (auto driverPtr = driverColl.find(
-                    [](const shared_ptr<Driver>& d) {
-                        return d->getFullName() == "Петров Пётр Петрович";
-                    }); driverPtr) {
-                cout << *driverPtr << '\n';
-            } else {
-                cout << "Не найдено\n";
-            }
+            demoFind(vehicleColl, driverColl);
             break;
-        }       
+            }
             case 9: {
             cout << "Средняя метрика ТС:       "
                 << averageMetric(vehicleColl) << '\n';

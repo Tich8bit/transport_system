@@ -20,7 +20,6 @@ void Collection<T>::removeAt(size_t index) {
         throw OutOfRangeException(
             "индекс " + std::to_string(index)
             + " вне диапазона [0, " + std::to_string(_items.size() - 1) + "]");
-        return;
     }
     _items.erase(_items.begin() + index);
 }
@@ -47,7 +46,6 @@ std::shared_ptr<T> Collection<T>::get(size_t index) const {
         throw OutOfRangeException(
             "индекс " + std::to_string(index)
             + " вне диапазона [0, " + std::to_string(_items.size() - 1) + "]");
-        return nullptr;
     }
     return _items[index];
 }

@@ -48,9 +48,19 @@ public:
         return std::strong_ordering::equal;
     }
     friend std::ostream& operator<<(std::ostream& os, const Vehicle& vehicle) {
+        os << "ТС: " << vehicle._model
+        << " | Госномер: " << vehicle._regNumber
+        << " | Год: " << vehicle._year
+        << " | Вместимость: " << vehicle._capacity << " чел.";
+        if (vehicle._driver) {
+            os << " | Водитель: " << vehicle._driver->getFullName();
+        } else {
+            os << " | Водитель не назначен";
+        }
         vehicle.printInfo(os);
         return os;
     }
+
     friend bool operator==(const Vehicle& a, const Vehicle& b) {
         return a.equals(b);
     }
