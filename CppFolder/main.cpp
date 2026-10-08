@@ -189,7 +189,7 @@ int main() {
             break;
             }
             case 6: {
-            cout << "Средняя метрика ТС:       "
+            cout << "Средняя метрика Vehicle:       "
                 << averageMetric(vehicleColl) << '\n';
             cout << "Средняя метрика водителей: "
                 << averageMetric(driverColl) << '\n';
@@ -220,5 +220,3 @@ int main() {
 
     return 0;
 }
-
-//g++ -std=c++20 CppFolder/*.cpp -IHeaderFolder -o transport.exe
