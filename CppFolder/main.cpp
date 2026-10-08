@@ -28,17 +28,6 @@ void printMenu() {
     cout << "|6. Средняя метрика                     |\n";
     cout << "|7. Сортировка по компаратору           |\n";
     cout << "|8. Вывод коллекции                     |\n";
-    cout << "|_______________________________________|\n";
-    cout << "|             ЛР №6 —  Исключения       |\n";
-    cout << "|_______________________________________|\n";
-    cout << "|9.  InvalidDataException               |\n";
-    cout << "|10. LimitExceededException             |\n";
-    cout << "|11. DuplicateIdException               |\n";
-    cout << "|12. ObjectNotFoundException            |\n";
-    cout << "|13. OutOfRangeException                |\n";
-    cout << "|14. InvalidOperationException          |\n";
-    cout << "|15. RelationException                  |\n";
-    cout << "|_______________________________________|\n";
     cout << "|0. Выход                               |\n";
     cout << "|_______________________________________|\n";
 }
@@ -64,14 +53,14 @@ void demoGetByIndex(const Collection<Vehicle>& vehicleColl,
                     const Collection<Driver>& driverColl,
                     int vIndex, int dIndex) {
     cout << "Vehicle[" << vIndex << "]:\n";
-    if (auto v = vehicleColl.get(vIndex); v) {
+    if (auto v = vehicleColl.get(vIndex); v)
         cout << *v << '\n';
-    }
+    else cout << "Не найдено";
 
     cout << "Driver[" << dIndex << "]:\n";
-    if (auto d = driverColl.get(dIndex); d) {
+    if (auto d = driverColl.get(dIndex); d)
         cout << *d << '\n';
-    }
+    else cout << "Не найдено";  
 }
 
 void demoFind(const Collection<Vehicle>& vehicleColl,
@@ -86,7 +75,7 @@ void demoFind(const Collection<Vehicle>& vehicleColl,
         cout << "Не найдено\n";
     }
 
-    cout << "\nПоиск водителя 'Петров':\n";
+    cout << "\nПоиск водителя 'Петров Пётр Петрович':\n";
     if (auto driverPtr = driverColl.find(
             [](const shared_ptr<Driver>& d) {
                 return d->getFullName() == "Петров Пётр Петрович";
@@ -96,6 +85,47 @@ void demoFind(const Collection<Vehicle>& vehicleColl,
         cout << "Не найдено\n";
     }
 }
+
+void demoSort(const Collection<Vehicle>& vehicleColl,
+              const Collection<Driver>& driverColl) {
+    auto sortedVehicles = sortBy(vehicleColl,
+        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
+            return a->calculateMetric() > b->calculateMetric();
+        });
+    for (const auto& v : sortedVehicles) {
+        cout << v->getType() << " (" << v->getRegNumber() << ") --- "
+             << v->calculateMetric() << '\n';
+    }
+
+    auto sortedDrivers = sortBy(driverColl,
+        [](const shared_ptr<Driver>& a, const shared_ptr<Driver>& b) {
+            return a->getExperienceYears() > b->getExperienceYears();
+        });
+    for (const auto& d : sortedDrivers) {
+        cout << d->getFullName() << " --- стаж: "
+             << d->getExperienceYears() << " лет\n";
+    }
+}
+
+void demoRemoveIf(Collection<Vehicle>& vehicleColl,
+                   Collection<Driver>& driverColl) {
+    cout << "Удаляем все трамваи:\n";
+    size_t removed1 = vehicleColl.removeIf(
+        [](const shared_ptr<Vehicle>& v) {
+            return v->getType() == "Трамвай";
+        });
+    cout << "Удалено: " << removed1 << '\n';
+    vehicleColl.print();
+
+    cout << "\nУдаляем водителей со стажем < 10:\n";
+    size_t removed2 = driverColl.removeIf(
+        [](const shared_ptr<Driver>& d) {
+            return d->getExperienceYears() < 10;
+        });
+    cout << "Удалено: " << removed2 << '\n';
+    driverColl.print();
+}
+
 
 int main() {  
     setlocale(LC_ALL, "ru_RU.UTF-8");
@@ -131,7 +161,7 @@ int main() {
 
     do {
         printMenu();
-        choice = inputInt("Выберите пункт меню: ", 0, 11);
+        choice = inputInt("Выберите пункт меню: ", 0, 8);
 
         switch (choice) {
             case 1: {
@@ -144,29 +174,14 @@ int main() {
                 break;
             }
             case 3: {
-                cout << "Vehicle: удаляем [1]\n";
                 vehicleColl.removeAt(1);
                 vehicleColl.print();
-                cout << "\nDriver: удаляем [0]\n";
                 driverColl.removeAt(0);
                 driverColl.print();
                 break;
             }
             case 4: {
-                cout << "Удаляем все трамваи:\n";
-                size_t removed1 = vehicleColl.removeIf(
-                    [](const shared_ptr<Vehicle>& v) {
-                        return v->getType() == "Трамвай";
-                    });
-                cout << "Удалено: " << removed1 << '\n';
-                vehicleColl.print();
-                cout << "\nУдаляем водителей со стажем < 10:\n";
-                size_t removed2 = driverColl.removeIf(
-                    [](const shared_ptr<Driver>& d) {
-                        return d->getExperienceYears() < 10;
-                    });
-                cout << "Удалено: " << removed2 << '\n';
-                driverColl.print();
+                demoRemoveIf(vehicleColl, driverColl);
                 break;
             }
             case 5: {
@@ -181,100 +196,14 @@ int main() {
             break;
         }
         case 7: {
-            auto sortedVehicles = sortBy(vehicleColl,
-                [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
-                    return a->calculateMetric() > b->calculateMetric();
-                });
-            for (const auto& v : sortedVehicles) {
-                cout << v->getType() << " (" << v->getRegNumber() << ") --- "
-                    << v->calculateMetric() << '\n';
-            }
-            auto sortedDrivers = sortBy(driverColl,
-                [](const shared_ptr<Driver>& a, const shared_ptr<Driver>& b) {
-                    return a->getExperienceYears() > b->getExperienceYears();
-                });
-            for (const auto& d : sortedDrivers) {
-                cout << d->getFullName() << " --- стаж: "
-                    << d->getExperienceYears() << " лет\n";
-            }
+            demoSort(vehicleColl, driverColl);
             break;
         }
          case 8: {
             cout << "--- Collection<Vehicle> ---\n";
             vehicleColl.print(cout);
-            cout << "\n--- Collection<Driver> ---\n";
+            cout << "--- Collection<Driver> ---\n";
             driverColl.print(cout);
-            break;
-         }
-        case 9: {
-            try {
-                auto badBus = make_shared<Bus>("А000ХХ", "Test", -100, 30,
-                                                driver1, "Test", 100.0);
-            }
-            catch (const InvalidDataException& e) {
-                cout << "InvalidDataException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 10: {
-            try {
-                bus->applyEffect(100000);
-            }
-            catch (const LimitExceededException& e) {
-                cout << "LimitExceededException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 11: {
-            try {
-                auto bus2 = make_shared<Bus>("А123ВС", "Test", 2020, 30,
-                                            driver1, "Test", 100.0);
-                system.addVehicle(bus2);
-            }
-            catch (const DuplicateIdException& e) {
-                cout << "DuplicateIdException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 12: {
-            try {
-                auto ghost = make_shared<Bus>("ZZZZZZ", "Ghost", 2020, 30,
-                                            driver1, "Test", 100.0);
-                system.removeVehicle(ghost);
-            }
-            catch (const ObjectNotFoundException& e) {
-                cout << "ObjectNotFoundException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 13: {
-            try {
-                auto v = vehicleColl.get(100);
-                cout << *v << '\n';
-            }
-            catch (const OutOfRangeException& e) {
-                cout << "OutOfRangeException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 14: {
-            try {
-                tram->applyEffect(-5);
-            }
-            catch (const InvalidOperationException& e) {
-                cout << "InvalidOperationException: " << e.what() << '\n';
-            }
-            break;
-        }
-        case 15: {
-            try {
-                auto tinyBus = make_shared<Bus>("МАЛ777", "Малый", 2020, 5,
-                                                driver4, "Газ", 50.0);
-                *route1 += tinyBus;
-            }
-            catch (const RelationException& e) {
-                cout << "RelationException: " << e.what() << '\n';
-            }
             break;
         }
             case 0: {

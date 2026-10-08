@@ -72,5 +72,5 @@ std::string Bus::getMetricName() const {
 
 void Bus::printInfo(std::ostream& os) const {
     os << "\n  Топливо: " << _fuelType
-       << "\n  Объём бака: " << _fuelTankCapacity << " л\n";
+       << "\n  Объём бака: " << _fuelTankCapacity << " л";
 }

@@ -44,33 +44,6 @@ TransportSystem::getRoutes() const { return _routes; }
 const std::vector<std::shared_ptr<Vehicle>>&
 TransportSystem::getVehicles() const { return _vehicles; }
 
-void TransportSystem::printAllRoutes() const {
-    if (_routes.empty()) {
-        std::cout << "\nСписок маршрутов пуст." << std::endl;
-        return;
-    }
-    std::cout << "_______________________________________________\n";
-    std::cout << "|            СПИСОК МАРШРУТОВ                 |\n";
-    std::cout << "|_____________________________________________|\n";
-    for (const auto& r : _routes) 
-        r->printRouteInformation();
-}
-
-void TransportSystem::printAllVehicles() const {
-    if (_vehicles.empty()) {
-        std::cout << "\nСписок транспорта пуст." << std::endl;
-        return;
-    }
-    std::cout << "_______________________________________________\n";
-    std::cout << "|            СПИСОК ТРАНСПОРТА                |\n";
-    std::cout << "|_____________________________________________|\n";
-    for (const auto& v : _vehicles) {
-        v->printBaseInfo();
-        std::cout << *v;
-        std::cout << "\n-----------------------------------------------" << std::endl;
-    }
-}
-
 TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
     if (!route) {
         throw InvalidDataException("пустой указатель на маршрут");

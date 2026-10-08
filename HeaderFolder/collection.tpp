@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "collection.h"
 #include <algorithm>
 #include "exceptions.h"
@@ -17,9 +18,8 @@ void Collection<T>::add(const std::shared_ptr<T>& item) {
 template <typename T>
 void Collection<T>::removeAt(size_t index) {
     if (index >= _items.size()) {
-        throw OutOfRangeException(
-            "индекс " + std::to_string(index)
-            + " вне диапазона [0, " + std::to_string(_items.size() - 1) + "]");
+        std::cout << "ОШИБКА: индекс вне диапазона\n";
+        return;
     }
     _items.erase(_items.begin() + index);
 }
@@ -28,24 +28,22 @@ template <typename T>
 template <typename Predicate>
 size_t Collection<T>::removeIf(Predicate pred) {
     size_t removed = 0;
-    auto it = std::remove_if(_items.begin(), _items.end(),
-        [&](const std::shared_ptr<T>& item) {
-            if (item && pred(item)) {
-                ++removed;
-                return true;
-            }
-            return false;
-        });
-    _items.erase(it, _items.end());
+    for (auto it = _items.begin(); it != _items.end(); ) {
+        if (*it && pred(*it)) {
+            it = _items.erase(it);
+            ++removed;
+        } else {
+            ++it;
+        }
+    }
     return removed;
 }
 
 template <typename T>
 std::shared_ptr<T> Collection<T>::get(size_t index) const {
     if (index >= _items.size()) {
-        throw OutOfRangeException(
-            "индекс " + std::to_string(index)
-            + " вне диапазона [0, " + std::to_string(_items.size() - 1) + "]");
+        std::cout << "ОШИБКА: индекс вне диапазона\n";
+        return nullptr;
     }
     return _items[index];
 }

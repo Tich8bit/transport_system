@@ -29,8 +29,6 @@ public:
     void setModel(std::string_view newModel);
     void setRegNumber(std::string_view newRegNumber);
     void setDriver(std::shared_ptr<Driver> newDriver);
-
-    void printBaseInfo() const;  
     
     virtual void printInfo(std::ostream& os) const = 0;
     virtual std::string getType() const = 0;         
