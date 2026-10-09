@@ -3,7 +3,7 @@
 #include <iostream>
 #include "collection.h"
 #include <algorithm>
-#include "exceptions.h"
+#include "exceptions/exception.h"
 
 template <typename T>
 const std::vector<std::shared_ptr<T>>& Collection<T>::getItems() const {

@@ -12,7 +12,7 @@
 #include "basefunction.h"
 #include "collection.h"
 #include "algs.h"
-#include "exceptions.h"
+#include "exceptions/exception.h"
 
 using namespace std;
 

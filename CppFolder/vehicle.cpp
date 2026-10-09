@@ -4,7 +4,7 @@
 #include <iostream>
 #include <compare>
 #include <vector>
-#include "exceptions.h"
+#include "exceptions/exception.h"
 
 Vehicle::Vehicle(std::string_view regNumber,
                  std::string_view model,

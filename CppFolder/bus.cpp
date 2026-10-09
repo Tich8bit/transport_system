@@ -1,6 +1,6 @@
 #include "bus.h"
 #include <iostream>
-#include "exceptions.h"
+#include "exceptions/exception.h"
 
 const double Bus::MAX_FUELTANKCAPACITY = 100;
 const double Bus::FUEL_METRIC_COEF = 0.5;

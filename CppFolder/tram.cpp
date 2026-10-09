@@ -1,6 +1,6 @@
 #include "tram.h"
 #include <iostream>
-#include "exceptions.h"
+#include "exceptions/exception.h"
 
 const double Tram::MAX_GAUGE = 1600;
 const double Tram::GAUGE_METRIC_COEF = 0.1;

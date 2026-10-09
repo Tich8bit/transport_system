@@ -1,6 +1,6 @@
 #include "trolleybus.h"
 #include <iostream>
-#include "exceptions.h"
+#include "exceptions/exception.h"
 
 const double Trolleybus::MAX_VOLTAGE = 100;
 const double Trolleybus::VOLTAGE_METRIC_COEF = 0.5;

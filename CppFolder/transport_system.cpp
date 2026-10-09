@@ -3,7 +3,7 @@
 #include "vehicle.h"
 #include <iostream>
 #include <string_view>
-#include "exceptions.h"
+#include "exceptions/exception.h"
 
 void TransportSystem::addVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) {
