@@ -8,6 +8,8 @@
 *.app
 *.o
 *.obj
+*.txt
+*.log
 *.lo
 *.slo
 
