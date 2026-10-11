@@ -14,6 +14,7 @@
 #include "algs.h"
 #include "exceptions/exception.h"
 #include "files.h"
+#include "analytics.h"
 
 using namespace std;
 
@@ -48,7 +49,16 @@ void printMenu() {
     cout << "|19. Добавить запись в журнал           |\n";
     cout << "|20. Сформировать отчёт                 |\n";
     cout << "|_______________________________________|\n";
-    cout << "|0. Выход                               |\n";
+    cout << "|             ЛР №8 — STL               |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|21. Поиск маршрута по номеру (map)     |\n";
+    cout << "|22. Уникальные госномера (set)         |\n";
+    cout << "|23. Группировка ТС по типу             |\n";
+    cout << "|24. Подсчёт ТС с вместимостью > 100    |\n";
+    cout << "|25. Min/Max метрики ТС                 |\n";
+    cout << "|26. Фильтрация ТС по критерию          |\n";
+    cout << "|27. Сумма вместимостей ТС              |\n";
+    cout << "|28. Сортировка по 2 критериям          |\n";
     cout << "|_______________________________________|\n";
 }
 
@@ -297,7 +307,7 @@ int main() {
         printMenu();
 
         try {
-            choice = inputInt("Выберите пункт меню: ", 0, 20);
+            choice = inputInt("Выберите пункт меню: ", 0, 28);
 
             switch (choice) {
                 case 1: demoSize(vehicleColl, driverColl); break;
@@ -315,13 +325,15 @@ int main() {
                     break;
                 }
                 case 10: {
-                    const auto& vs = system.getVehicles();
-                    if (!vs.empty()) vs[0]->applyEffect(100000);
+                    if (const auto& vs = system.getVehicles(); !vs.empty()) {
+                        vs[0]->applyEffect(100000);
+                    }
                     break;
                 }
                 case 11: {
-                    const auto& vs = system.getVehicles();
-                    if (!vs.empty()) system.addVehicle(vs[0]);
+                    if (const auto& vs = system.getVehicles(); !vs.empty()) {
+                        system.addVehicle(vs[0]);
+                    }
                     break;
                 }
                 case 12: {
@@ -337,15 +349,17 @@ int main() {
                     break;
                 }
                 case 14: {
-                    const auto& vs = system.getVehicles();
-                    if (vs.size() > 2) vs[2]->applyEffect(-5);
+                    if (const auto& vs = system.getVehicles(); vs.size() > 2) {
+                        vs[2]->applyEffect(-5);
+                    }
                     break;
                 }
                 case 15: {
                     auto tinyBus = make_shared<Bus>("МАЛ777", "Малый", 2020, 5,
                                                      nullptr, "Газ", 50.0);
-                    const auto& rs = system.getRoutes();
-                    if (!rs.empty()) *rs[0] += tinyBus;
+                    if (const auto& rs = system.getRoutes(); !rs.empty()) {
+                        *rs[0] += tinyBus;
+                    }
                     break;
                 }
 
@@ -366,10 +380,12 @@ int main() {
                 }
                 case 19: {
                     string action = inputString("Введите текст для журнала: ");
-                    if (!action.empty()) {
-                        StorageManager::logAction(logFilename, action);
-                        cout << "Запись добавлена\n";
+                    if (action.empty()) {
+                        cout << "Пустая строка — запись отменена\n";
+                        break;
                     }
+                    StorageManager::logAction(logFilename, action);
+                    cout << "Запись добавлена\n";
                     break;
                 }
                 case 20: {
@@ -378,7 +394,125 @@ int main() {
                         "Отчёт " + reportFilename);
                     break;
                 }
+                case 21: {
+                    cout << "=== Поиск маршрута по номеру (map) ===\n";
+                    map<int, shared_ptr<Route>> routesMap;
+                    for (const auto& r : system.getRoutes()) {
+                        routesMap[r->getNumber()] = r;
+                    }
 
+                    int number = inputInt("Введите номер маршрута: ", 0, 1000);
+                    auto it = routesMap.find(number);
+                    if (it != routesMap.end()) {
+                        cout << "Найден: " << it->second->getName() << '\n';
+                    } else {
+                        cout << "Маршрут не найден\n";
+                    }
+                    break;
+                }
+                case 22: {
+                    cout << "=== Уникальные госномера (set) ===\n";
+                    set<string> regNumbers;
+                    for (const auto& v : system.getVehicles()) {
+                        regNumbers.insert(string(v->getRegNumber()));
+                    }
+
+                    cout << "Уникальных госномеров: " << regNumbers.size() << '\n';
+                    for (const auto& r : regNumbers) {
+                        cout << "  - " << r << '\n';
+                    }
+                    break;
+                }
+                case 23: {
+                    cout << "=== Группировка ТС по типу ===\n";
+                    map<string, vector<shared_ptr<Vehicle>>> groups;
+                    for_each(system.getVehicles().begin(), system.getVehicles().end(),
+                        [&groups](const shared_ptr<Vehicle>& v) {
+                            groups[v->getType()].push_back(v);
+                        });
+
+                    for (const auto& [type, list] : groups) {
+                        cout << type << ": " << list.size() << " шт.\n";
+                        for (const auto& v : list) {
+                            cout << "    - " << v->getRegNumber() << '\n';
+                        }
+                    }
+                    break;
+                }
+                case 24: {
+                    cout << "=== Подсчёт ТС с вместимостью > 100 ===\n";
+                    size_t count = count_if(system.getVehicles().begin(),
+                                            system.getVehicles().end(),
+                        [](const shared_ptr<Vehicle>& v) {
+                            return v->getCapacity() > 100;
+                        });
+                    cout << "Найдено: " << count << '\n';
+                    break;
+                }
+                case 25: {
+                    cout << "=== Min/Max метрики ТС ===\n";
+                    const auto& vs = system.getVehicles();
+                    if (vs.empty()) { cout << "Список пуст\n"; break; }
+
+                    auto minIt = min_element(vs.begin(), vs.end(),
+                        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
+                            return a->calculateMetric() < b->calculateMetric();
+                        });
+                    auto maxIt = max_element(vs.begin(), vs.end(),
+                        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
+                            return a->calculateMetric() < b->calculateMetric();
+                        });
+
+                    cout << "Min: " << (*minIt)->getRegNumber()
+                        << " (" << (*minIt)->calculateMetric() << ")\n";
+                    cout << "Max: " << (*maxIt)->getRegNumber()
+                        << " (" << (*maxIt)->calculateMetric() << ")\n";
+                    break;
+                }
+                case 26: {
+                    cout << "=== Фильтрация ТС по критерию ===\n";
+                    vector<shared_ptr<Vehicle>> filtered;
+                    copy_if(system.getVehicles().begin(), system.getVehicles().end(),
+                            back_inserter(filtered),
+                        [](const shared_ptr<Vehicle>& v) {
+                            return v->getYear() >= 2018;
+                        });
+
+                    cout << "ТС с годом >= 2018: " << filtered.size() << '\n';
+                    for (const auto& v : filtered) {
+                        cout << "  - " << v->getType() << " " << v->getRegNumber() << '\n';
+                    }
+                    break;
+                }
+                case 27: {
+                    cout << "=== Сумма вместимостей ТС ===\n";
+                    int totalCapacity = accumulate(system.getVehicles().begin(),
+                                                    system.getVehicles().end(), 0,
+                        [](int acc, const shared_ptr<Vehicle>& v) {
+                            return acc + v->getCapacity();
+                        });
+                    cout << "Общая вместимость: " << totalCapacity << " чел.\n";
+                    break;
+                }
+                case 28: {
+                    cout << "=== Сортировка по 2 критериям ===\n";
+                    auto sorted = system.getVehicles();
+
+                    sort(sorted.begin(), sorted.end(),
+                        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
+                            if (a->getCapacity() != b->getCapacity()) {
+                                return a->getCapacity() > b->getCapacity();
+                            }
+                            return a->getYear() > b->getYear();
+                        });
+
+                    for (const auto& v : sorted) {
+                        cout << v->getType() << " " << v->getRegNumber()
+                            << " | Мест: " << v->getCapacity()
+                            << " | Год: " << v->getYear() << '\n';
+                    }
+                    break;
+                }
                 case 0: cout << "Выход из программы. До свидания!\n"; break;
                 default: cout << "Неверный пункт меню.\n"; break;
             }
