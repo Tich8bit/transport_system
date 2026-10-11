@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -27,9 +28,17 @@ private:
     static constexpr const char* TYPE_TROLLEYBUS = "Trolleybus";
     static constexpr const char* TYPE_TRAM       = "Tram";
 
-    static std::vector<std::string> split(const std::string& str,
+    static std::vector<std::string> split(std::string_view str,
                                            char delimiter);
-    static std::string trim(const std::string& str);
-    static std::string replaceSpaces(const std::string& str);
-    static std::string restoreSpaces(const std::string& str);
+    static std::string trim(std::string_view str);
+    static std::string replaceSpaces(std::string_view str);
+    static std::string restoreSpaces(std::string_view str);
+
+    static void loadDrivers(std::ifstream& ifs, TransportSystem& system);
+    static void loadVehicles(std::ifstream& ifs, TransportSystem& system);
+    static void loadVehicleLine(const std::string& line,
+                                 TransportSystem& system);
+    static void loadRoutes(std::ifstream& ifs, TransportSystem& system);
+    static void loadRouteLine(const std::string& line,
+                               TransportSystem& system);
 };

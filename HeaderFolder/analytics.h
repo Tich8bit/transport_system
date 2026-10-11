@@ -5,8 +5,7 @@
 #include <set>
 #include <memory>
 #include <string>
-#include <algorithm>
-#include <numeric>
+#include <string_view>
 #include <functional>
 #include "vehicle.h"
 #include "route.h"
@@ -18,8 +17,8 @@ public:
         int number);
 
     static bool isRegNumberUnique(
-        const std::set<std::string>& existing,
-        const std::string& regNumber);
+        const std::set<std::string, std::less<>>& existing,
+        std::string_view regNumber);
 
     static std::vector<std::shared_ptr<Vehicle>> sortByMetric(
         const std::vector<std::shared_ptr<Vehicle>>& vehicles);
@@ -30,11 +29,11 @@ public:
 
     static size_t countByPredicate(
         const std::vector<std::shared_ptr<Vehicle>>& vehicles,
-        std::function<bool(const std::shared_ptr<Vehicle>&)> pred);
+        const std::function<bool(const std::shared_ptr<Vehicle>&)>& pred);
 
     static std::shared_ptr<Vehicle> findVehicle(
         const std::vector<std::shared_ptr<Vehicle>>& vehicles,
-        std::function<bool(const std::shared_ptr<Vehicle>&)> pred);
+        const std::function<bool(const std::shared_ptr<Vehicle>&)>& pred);
 
     static double averageMetric(
         const std::vector<std::shared_ptr<Vehicle>>& vehicles);
@@ -45,5 +44,5 @@ public:
 
     static std::vector<std::shared_ptr<Vehicle>> filterByPredicate(
         const std::vector<std::shared_ptr<Vehicle>>& vehicles,
-        std::function<bool(const std::shared_ptr<Vehicle>&)> pred);
+        const std::function<bool(const std::shared_ptr<Vehicle>&)>& pred);
 };
