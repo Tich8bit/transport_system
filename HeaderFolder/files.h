@@ -34,6 +34,10 @@ private:
     static std::string replaceSpaces(std::string_view str);
     static std::string restoreSpaces(std::string_view str);
 
+    static void saveDrivers(std::ofstream& ofs, const TransportSystem& system);
+    static void saveVehicles(std::ofstream& ofs, const TransportSystem& system);
+    static void saveRoutes(std::ofstream& ofs, const TransportSystem& system);
+
     static void loadDrivers(std::ifstream& ifs, TransportSystem& system);
     static void loadVehicles(std::ifstream& ifs, TransportSystem& system);
     static void loadVehicleLine(const std::string& line,
@@ -41,4 +45,12 @@ private:
     static void loadRoutes(std::ifstream& ifs, TransportSystem& system);
     static void loadRouteLine(const std::string& line,
                                TransportSystem& system);
+
+    static int findDriverIndex(
+        const std::vector<std::shared_ptr<Driver>>& drivers,
+        const std::shared_ptr<Driver>& target);
+
+    static int findVehicleIndex(
+        const std::vector<std::shared_ptr<Vehicle>>& vehicles,
+        const std::shared_ptr<Vehicle>& target);
 };

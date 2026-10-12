@@ -40,6 +40,28 @@ std::string StorageManager::restoreSpaces(std::string_view str) {
     return result;
 }
 
+int StorageManager::findDriverIndex(
+    const std::vector<std::shared_ptr<Driver>>& drivers,
+    const std::shared_ptr<Driver>& target)
+{
+    if (!target) return -1;
+    for (size_t j = 0; j < drivers.size(); ++j) {
+        if (drivers[j] == target) return static_cast<int>(j);
+    }
+    return -1;
+}
+
+int StorageManager::findVehicleIndex(
+    const std::vector<std::shared_ptr<Vehicle>>& vehicles,
+    const std::shared_ptr<Vehicle>& target)
+{
+    if (!target) return -1;
+    for (size_t j = 0; j < vehicles.size(); ++j) {
+        if (vehicles[j] == target) return static_cast<int>(j);
+    }
+    return -1;
+}
+
 void StorageManager::saveState(const std::string& filename,
                                 const TransportSystem& system) {
     std::ofstream ofs(filename);
@@ -48,31 +70,37 @@ void StorageManager::saveState(const std::string& filename,
             "Не удалось открыть файл: " + filename);
     }
 
-    const auto& drivers  = system.getDrivers();
-    const auto& vehicles = system.getVehicles();
-    const auto& routes   = system.getRoutes();
+    saveDrivers(ofs, system);
+    saveVehicles(ofs, system);
+    saveRoutes(ofs, system);
 
+    ofs.close();
+    std::cout << "Данные сохранены в " << filename << std::endl;
+}
+
+void StorageManager::saveDrivers(std::ofstream& ofs,
+                                  const TransportSystem& system) {
+    const auto& drivers = system.getDrivers();
     ofs << drivers.size() << "\n";
+
     for (size_t i = 0; i < drivers.size(); ++i) {
         const auto& d = drivers[i];
         ofs << PREFIX_DRIVER << i << " "
             << replaceSpaces(d->getFullName()) << " "
             << d->getExperienceYears() << "\n";
     }
+}
+
+void StorageManager::saveVehicles(std::ofstream& ofs,
+                                   const TransportSystem& system) {
+    const auto& drivers  = system.getDrivers();
+    const auto& vehicles = system.getVehicles();
 
     ofs << vehicles.size() << "\n";
+
     for (size_t i = 0; i < vehicles.size(); ++i) {
         const auto& v = vehicles[i];
-
-        int driverIdx = -1;
-        if (v->getDriver()) {
-            for (size_t j = 0; j < drivers.size(); ++j) {
-                if (drivers[j] == v->getDriver()) {
-                    driverIdx = static_cast<int>(j);
-                    break;
-                }
-            }
-        }
+        int driverIdx = findDriverIndex(drivers, v->getDriver());
 
         const std::string type = v->getType();
         std::string typeKey;
@@ -103,8 +131,15 @@ void StorageManager::saveState(const std::string& filename,
         }
         ofs << "\n";
     }
+}
+
+void StorageManager::saveRoutes(std::ofstream& ofs,
+                                 const TransportSystem& system) {
+    const auto& vehicles = system.getVehicles();
+    const auto& routes   = system.getRoutes();
 
     ofs << routes.size() << "\n";
+
     for (size_t i = 0; i < routes.size(); ++i) {
         const auto& r = routes[i];
         ofs << PREFIX_ROUTE << i << " "
@@ -116,16 +151,13 @@ void StorageManager::saveState(const std::string& filename,
 
         const auto& assigned = r->getAssignedVehicles();
         ofs << " " << assigned.size();
+
         for (const auto& v : assigned) {
-            for (size_t j = 0; j < vehicles.size(); ++j) {
-                if (vehicles[j] == v) { ofs << " " << j; break; }
-            }
+            int idx = findVehicleIndex(vehicles, v);
+            if (idx != -1) ofs << " " << idx;
         }
         ofs << "\n";
     }
-
-    ofs.close();
-    std::cout << "Данные сохранены в " << filename << std::endl;
 }
 
 void StorageManager::loadState(const std::string& filename,
