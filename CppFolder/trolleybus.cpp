@@ -25,10 +25,10 @@ void Trolleybus::setPowerConsumption(double newConsumption) { _powerConsumption 
 void Trolleybus::inputVehicle() {
     setRegNumber(inputString("Введите госномер: "));
     setModel(inputString("Введите модель: "));
-    setYear(inputInt("Введите год выпуска: ", 1900, 2100));
-    setCapacity (inputInt("Введите вместимость: ", 1, 500));
-    setVoltage(inputInt("Введите напряжение (В): ", 100, 1500));
-    setPowerConsumption(inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0));
+    setYear(inputNumber<int>("Введите год выпуска: ", 1900, 2100));
+    setCapacity (inputNumber<int>("Введите вместимость: ", 1, 500));
+    setVoltage(inputNumber<int>("Введите напряжение (В): ", 100, 1500));
+    setPowerConsumption(inputNumber<double>("Введите расход (кВт·ч/100 км): ", 1.0, 200.0));
 }
 
 std::string Trolleybus::getType() const { return "Троллейбус"; }

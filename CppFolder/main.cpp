@@ -282,48 +282,41 @@ void demoPrint(const Collection<Vehicle>& vehicleColl,
 }
 
 void demoInvalidData() {
-    cout << "=== Некорректные данные (год = -100) ===\n";
     auto badBus = make_shared<Bus>("А000ХХ", "Test", -100, 30,
                                     nullptr, "Test", 100.0);
 }
 
 void demoLimitExceeded(const TransportSystem& system) {
-    cout << "=== Превышение лимита бака ===\n";
     if (const auto& vs = system.getVehicles(); !vs.empty()) {
         vs[0]->applyEffect(100000);
     }
 }
 
 void demoDuplicateId(TransportSystem& system) {
-    cout << "=== Дубликат ТС ===\n";
     if (const auto& vs = system.getVehicles(); !vs.empty()) {
         system.addVehicle(vs[0]);
     }
 }
 
 void demoNotFound(TransportSystem& system) {
-    cout << "=== Удаление несуществующего ТС ===\n";
     auto ghost = make_shared<Bus>("ZZZZZZ", "Ghost", 2020, 30,
                                    nullptr, "Test", 100.0);
     system.removeVehicle(ghost);
 }
 
 void demoOutOfRange(const TransportSystem& system) {
-    cout << "=== Выход за границы (индекс 100) ===\n";
     Collection<Vehicle> tmp;
     for (const auto& v : system.getVehicles()) tmp.add(v);
     tmp.get(100);
 }
 
 void demoInvalidOperation(const TransportSystem& system) {
-    cout << "=== Недопустимая операция (applyEffect -5) ===\n";
     if (const auto& vs = system.getVehicles(); vs.size() > 2) {
         vs[2]->applyEffect(-5);
     }
 }
 
 void demoRelation(const TransportSystem& system) {
-    cout << "=== Нарушение связи ===\n";
     auto tinyBus = make_shared<Bus>("МАЛ777", "Малый", 2020, 5,
                                      nullptr, "Газ", 50.0);
     if (const auto& rs = system.getRoutes(); !rs.empty()) {
@@ -372,7 +365,7 @@ void demoFindRouteByNumber(const TransportSystem& system) {
         routesMap[r->getNumber()] = r;
     }
 
-    int number = inputInt("Введите номер маршрута: ", 0, 1000);
+    int number = inputNumber<int>("Введите номер маршрута: ", 0, 1000);
 
     if (auto it = routesMap.find(number); it != routesMap.end()) {
         cout << "Найден: " << it->second->getName() << '\n';
@@ -506,7 +499,7 @@ int main() {
         printMenu();
 
         try {
-            choice = inputInt("Выберите пункт меню: ", 0, 28);
+            choice = inputNumber<int>("Выберите пункт меню: ", 0, 28);
 
             switch (choice) {
                 case 1:  demoSize(vehicleColl, driverColl); break;

@@ -25,10 +25,10 @@ void Bus::setFuelTankCapacity(double newCapacity) { _fuelTankCapacity = newCapac
 void Bus::inputVehicle() {
     setRegNumber(inputString("Введите госномер: "));
     setModel(inputString("Введите модель: "));
-    setYear(inputInt("Введите год выпуска: ", 1900, 2100));
-    setCapacity(inputInt("Введите вместимость: ", 1, 500));
+    setYear(inputNumber<int>("Введите год выпуска: ", 1900, 2100));
+    setCapacity(inputNumber<int>("Введите вместимость: ", 1, 500));
     setFuelType(inputString("Введите тип топлива: "));
-    setFuelTankCapacity(inputDouble("Введите объём бака (л): ", 1.0, 1000.0));
+    setFuelTankCapacity(inputNumber<double>("Введите объём бака (л): ", 1.0, 1000.0));
 }
 
 std::string Bus::getType() const {

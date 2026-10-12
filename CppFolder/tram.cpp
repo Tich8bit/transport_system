@@ -25,10 +25,10 @@ void Tram::setPowerConsumption(double newConsumption) { _powerConsumption = newC
 void Tram::inputVehicle() {
     setRegNumber(inputString("Введите госномер: "));
     setModel(inputString("Введите модель: "));
-    setYear(inputInt("Введите год выпуска: ", 1900, 2100));
-    setCapacity(inputInt("Введите вместимость: ", 1, 500));
-    setGauge(inputInt("Введите колею (мм): ", 1000, 2000));
-    setPowerConsumption(inputDouble("Введите расход (кВт·ч/100 км): ", 1.0, 200.0));
+    setYear(inputNumber<int>("Введите год выпуска: ", 1900, 2100));
+    setCapacity(inputNumber<int>("Введите вместимость: ", 1, 500));
+    setGauge(inputNumber<int>("Введите колею (мм): ", 1000, 2000));
+    setPowerConsumption(inputNumber<double>("Введите расход (кВт·ч/100 км): ", 1.0, 200.0));
 }
 
 std::string Tram::getType() const { return "Трамвай"; }

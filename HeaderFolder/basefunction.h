@@ -7,5 +7,23 @@
 #include <string_view>
 
 std::string inputString(std::string_view message);
-int inputInt(std::string_view message, int max, int min);
-double inputDouble(std::string_view message, double min, double max);
+
+template <typename T>
+T inputNumber(std::string_view message, T min, T max) {
+    std::string input;
+    T number;
+    char extra;
+
+    while (true) {
+        std::cout << message.data();
+        std::getline(std::cin, input);
+
+        if (std::stringstream ss(input); ss >> number && !(ss >> extra)
+                                         && number >= min && number <= max) {
+            return number;
+        }
+
+        std::cout << "Ошибка! Введите число от " << min
+                  << " до " << max << ".\n";
+    }
+}
