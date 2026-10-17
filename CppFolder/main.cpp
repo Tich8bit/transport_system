@@ -22,78 +22,61 @@
 
 using namespace std;
 
+int chooseStartMode() {
+    cout << "_________________________________________\n";
+    cout << "|         Выберите режим запуска        |\n";
+    cout << "|_______________________________________|\n";
+    cout << "|1. Создать тестовую систему            |\n";
+    cout << "|2. Загрузить систему из файла          |\n";
+    cout << "|0. Выход                               |\n";
+    cout << "|_______________________________________|\n";
+
+    int choice = -1;
+    while (choice < 0 || choice > 2) {
+        choice = inputNumber<int>("Ваш выбор: ", 0, 2);
+        if (choice < 0 || choice > 2) {
+            cout << "Неверный пункт. Попробуйте снова.\n";
+        }
+    }
+    return choice;
+}
+
 void printMenu() {
     cout << "_________________________________________\n";
-    cout << "|             ЛР №5 — Шаблоны           |\n";
-    cout << "|_______________________________________|\n";
-    cout << "|1. Показать размер коллекции           |\n";
-    cout << "|2. Получить элемент по индексу         |\n";
-    cout << "|3. Удалить по индексу                  |\n";
-    cout << "|4. Удалить по критерию                 |\n";
-    cout << "|5. Поиск по критерию                   |\n";
-    cout << "|6. Средняя метрика                     |\n";
-    cout << "|7. Сортировка по компаратору           |\n";
-    cout << "|8. Вывод коллекции                     |\n";
-    cout << "|_______________________________________|\n";
     cout << "|             ЛР №6 — Исключения        |\n";
     cout << "|_______________________________________|\n";
-    cout << "|9.  InvalidDataException               |\n";
-    cout << "|10. LimitExceededException             |\n";
-    cout << "|11. DuplicateIdException               |\n";
-    cout << "|12. ObjectNotFoundException            |\n";
-    cout << "|13. OutOfRangeException                |\n";
-    cout << "|14. InvalidOperationException          |\n";
-    cout << "|15. RelationException                  |\n";
+    cout << "|1.  InvalidDataException               |\n";
+    cout << "|2.  LimitExceededException             |\n";
+    cout << "|3.  DuplicateIdException               |\n";
+    cout << "|4.  ObjectNotFoundException            |\n";
+    cout << "|5.  OutOfRangeException                |\n";
+    cout << "|6.  InvalidOperationException          |\n";
+    cout << "|7.  RelationException                  |\n";
     cout << "|_______________________________________|\n";
     cout << "|             ЛР №7 — Файлы             |\n";
     cout << "|_______________________________________|\n";
-    cout << "|16. Показать текущее состояние         |\n";
-    cout << "|17. Сохранить в файл                   |\n";
-    cout << "|18. Загрузить из файла                 |\n";
-    cout << "|19. Добавить запись в журнал           |\n";
-    cout << "|20. Сформировать отчёт                 |\n";
+    cout << "|8.  Показать текущее состояние         |\n";
+    cout << "|9.  Сохранить в файл                   |\n";
+    cout << "|10. Добавить запись в журнал           |\n";
+    cout << "|11. Сформировать отчёт                 |\n";
     cout << "|_______________________________________|\n";
     cout << "|             ЛР №8 — STL               |\n";
     cout << "|_______________________________________|\n";
-    cout << "|21. Поиск маршрута по номеру (map)     |\n";
-    cout << "|22. Уникальные госномера (set)         |\n";
-    cout << "|23. Группировка ТС по типу             |\n";
-    cout << "|24. Подсчёт ТС с вместимостью > 100    |\n";
-    cout << "|25. Min/Max метрики ТС                 |\n";
-    cout << "|26. Фильтрация ТС по критерию          |\n";
-    cout << "|27. Сумма вместимостей ТС              |\n";
-    cout << "|28. Сортировка по 2 критериям          |\n";
+    cout << "|12. Поиск маршрута по номеру (map)     |\n";
+    cout << "|13. Уникальные госномера (set)         |\n";
+    cout << "|14. Группировка ТС по типу             |\n";
+    cout << "|15. Подсчёт ТС с вместимостью > 100    |\n";
+    cout << "|16. Min/Max метрики ТС                 |\n";
+    cout << "|17. Фильтрация ТС по критерию          |\n";
+    cout << "|18. Сумма вместимостей ТС              |\n";
+    cout << "|19. Сортировка по 2 критериям          |\n";
+    cout << "|20. Топ-2 ТС по метрике                |\n";
     cout << "|_______________________________________|\n";
     cout << "|0. Выход                               |\n";
     cout << "|_______________________________________|\n";
 }
 
-Collection<Driver> buildDriverCollection(
-    const vector<shared_ptr<Driver>>& drivers) {
-    Collection<Driver> coll;
-    for (const auto& d : drivers) coll.add(d);
-    return coll;
-}
-
-Collection<Vehicle> buildVehicleCollection(
-    const vector<shared_ptr<Vehicle>>& vehicles) {
-    Collection<Vehicle> coll;
-    for (const auto& v : vehicles) coll.add(v);
-    return coll;
-}
-
-void refreshCollections(const TransportSystem& system,
-                         Collection<Vehicle>& vehicleColl,
-                         Collection<Driver>& driverColl) {
-    vehicleColl.clear();
-    driverColl.clear();
-    for (const auto& v : system.getVehicles()) vehicleColl.add(v);
-    for (const auto& d : system.getDrivers())  driverColl.add(d);
-}
-
-void createTestSystem(TransportSystem& system,
-                       Collection<Vehicle>& vehicleColl,
-                       Collection<Driver>& driverColl) {
+void createTestSystem(TransportSystem& system) {
     system.clear();
 
     auto driver1 = make_shared<Driver>("Иванов Иван Иванович", 15);
@@ -129,8 +112,6 @@ void createTestSystem(TransportSystem& system,
     system += route1;
     system += route2;
 
-    refreshCollections(system, vehicleColl, driverColl);
-
     cout << "Тестовая система создана:\n";
     cout << "  Водителей: " << system.getDrivers().size() << '\n';
     cout << "  ТС: " << system.getVehicles().size() << '\n';
@@ -165,120 +146,6 @@ void printCurrentState(const TransportSystem& system) {
     }
 
     cout << "--------------------------------\n";
-}
-
-void demoSize(const Collection<Vehicle>& vehicleColl,
-              const Collection<Driver>& driverColl) {
-    cout << "Vehicle:  " << vehicleColl.size() << '\n';
-    cout << "Driver:   " << driverColl.size() << '\n';
-}
-
-void demoGetByIndex(const Collection<Vehicle>& vehicleColl,
-                    const Collection<Driver>& driverColl,
-                    int vIndex, int dIndex) {
-    cout << "Vehicle[" << vIndex << "]:\n";
-    if (auto v = vehicleColl.get(vIndex); v)
-        cout << *v << '\n';
-    else
-        cout << "Не найдено\n";
-
-    cout << "Driver[" << dIndex << "]:\n";
-    if (auto d = driverColl.get(dIndex); d)
-        cout << *d << '\n';
-    else
-        cout << "Не найдено\n";
-}
-
-void demoRemoveAt(Collection<Vehicle>& vehicleColl,
-                  Collection<Driver>& driverColl,
-                  int vIndex, int dIndex) {
-    cout << "Vehicle: удаляем [" << vIndex << "]\n";
-    vehicleColl.removeAt(vIndex);
-    vehicleColl.print();
-
-    cout << "\nDriver: удаляем [" << dIndex << "]\n";
-    driverColl.removeAt(dIndex);
-    driverColl.print();
-}
-
-void demoRemoveIf(Collection<Vehicle>& vehicleColl,
-                   Collection<Driver>& driverColl) {
-    cout << "Удаляем все трамваи:\n";
-    size_t removed1 = vehicleColl.removeIf(
-        [](const shared_ptr<Vehicle>& v) {
-            return v->getType() == "Трамвай";
-        });
-    cout << "Удалено: " << removed1 << '\n';
-    vehicleColl.print();
-
-    cout << "\nУдаляем водителей со стажем < 10:\n";
-    size_t removed2 = driverColl.removeIf(
-        [](const shared_ptr<Driver>& d) {
-            return d->getExperienceYears() < 10;
-        });
-    cout << "Удалено: " << removed2 << '\n';
-    driverColl.print();
-}
-
-void demoFind(const Collection<Vehicle>& vehicleColl,
-              const Collection<Driver>& driverColl) {
-    cout << "Поиск автобуса:\n";
-    if (auto busPtr = vehicleColl.find(
-            [](const shared_ptr<Vehicle>& v) {
-                return v->getType() == "Автобус";
-            }); busPtr) {
-        cout << *busPtr << '\n';
-    } else {
-        cout << "Не найдено\n";
-    }
-
-    cout << "\nПоиск водителя 'Петров Пётр Петрович':\n";
-    if (auto driverPtr = driverColl.find(
-            [](const shared_ptr<Driver>& d) {
-                return d->getFullName() == "Петров Пётр Петрович";
-            }); driverPtr) {
-        cout << *driverPtr << '\n';
-    } else {
-        cout << "Не найдено\n";
-    }
-}
-
-void demoAverage(const Collection<Vehicle>& vehicleColl,
-                  const Collection<Driver>& driverColl) {
-    cout << "Средняя метрика Vehicle:   "
-         << averageMetric(vehicleColl) << '\n';
-    cout << "Средняя метрика водителей: "
-         << averageMetric(driverColl) << '\n';
-}
-
-void demoSort(const Collection<Vehicle>& vehicleColl,
-              const Collection<Driver>& driverColl) {
-    auto sortedVehicles = sortBy(vehicleColl,
-        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
-            return a->calculateMetric() > b->calculateMetric();
-        });
-    for (const auto& v : sortedVehicles) {
-        cout << v->getType() << " (" << v->getRegNumber() << ") --- "
-             << v->calculateMetric() << '\n';
-    }
-
-    cout << "\n";
-    auto sortedDrivers = sortBy(driverColl,
-        [](const shared_ptr<Driver>& a, const shared_ptr<Driver>& b) {
-            return a->getExperienceYears() > b->getExperienceYears();
-        });
-    for (const auto& d : sortedDrivers) {
-        cout << d->getFullName() << " --- стаж: "
-             << d->getExperienceYears() << " лет\n";
-    }
-}
-
-void demoPrint(const Collection<Vehicle>& vehicleColl,
-               const Collection<Driver>& driverColl) {
-    cout << "--- Collection<Vehicle> ---\n";
-    vehicleColl.print(cout);
-    cout << "\n--- Collection<Driver> ---\n";
-    driverColl.print(cout);
 }
 
 void demoInvalidData() {
@@ -329,16 +196,6 @@ void demoSaveState(const string& filename,
                     const TransportSystem& system) {
     StorageManager::saveState(filename, system);
     StorageManager::logAction(logFilename, "Сохранение в " + filename);
-}
-
-void demoLoadState(const string& filename,
-                    const string& logFilename,
-                    TransportSystem& system,
-                    Collection<Vehicle>& vehicleColl,
-                    Collection<Driver>& driverColl) {
-    StorageManager::loadState(filename, system);
-    refreshCollections(system, vehicleColl, driverColl);
-    StorageManager::logAction(logFilename, "Загрузка из " + filename);
 }
 
 void demoLogAction(const string& logFilename) {
@@ -480,6 +337,21 @@ void demoSortByTwo(const TransportSystem& system) {
     }
 }
 
+void demoTopN(const TransportSystem& system) {
+    cout << "=== Топ-2 ТС по метрике ===\n";
+    const auto& vs = system.getVehicles();
+    if (vs.empty()) { cout << "Список пуст\n"; return; }
+
+    auto top = TransportAnalytics::findTopN(vs, 2);
+
+    for (size_t i = 0; i < top.size(); ++i) {
+        cout << "  " << (i + 1) << ". " << top[i]->getType()
+             << " " << top[i]->getRegNumber()
+             << " | Метрика: " << top[i]->calculateMetric()
+             << " (" << top[i]->getMetricName() << ")\n";
+    }
+}
+
 int main() {
     setlocale(LC_ALL, "ru_RU.UTF-8");
 
@@ -488,10 +360,30 @@ int main() {
     string logFilename    = "journal.log";
 
     TransportSystem system;
-    Collection<Vehicle> vehicleColl;
-    Collection<Driver>  driverColl;
 
-    createTestSystem(system, vehicleColl, driverColl);
+    int startMode = chooseStartMode();
+
+    if (startMode == 0) {
+        cout << "Выход из программы. До свидания!\n";
+        return 0;
+    }
+
+    if (startMode == 1) {
+        createTestSystem(system);
+    } else if (startMode == 2) {
+        try {
+            StorageManager::loadState(filename, system);
+            StorageManager::logAction(logFilename, "Загрузка из " + filename + " при запуске");
+            cout << "Система успешно загружена из файла " << filename << "\n";
+            cout << "  Водителей: " << system.getDrivers().size() << '\n';
+            cout << "  ТС: " << system.getVehicles().size() << '\n';
+            cout << "  Маршрутов: " << system.getRoutes().size() << '\n';
+        } catch (const exception& e) {
+            cout << "ОШИБКА загрузки: " << e.what() << "\n";
+            cout << "Будет создана тестовая система.\n";
+            createTestSystem(system);
+        }
+    }
 
     int choice = -1;
 
@@ -499,38 +391,29 @@ int main() {
         printMenu();
 
         try {
-            choice = inputNumber<int>("Выберите пункт меню: ", 0, 28);
+            choice = inputNumber<int>("Выберите пункт меню: ", 0, 20);
 
             switch (choice) {
-                case 1:  demoSize(vehicleColl, driverColl); break;
-                case 2:  demoGetByIndex(vehicleColl, driverColl, 1, 2); break;
-                case 3:  demoRemoveAt(vehicleColl, driverColl, 1, 0); break;
-                case 4:  demoRemoveIf(vehicleColl, driverColl); break;
-                case 5:  demoFind(vehicleColl, driverColl); break;
-                case 6:  demoAverage(vehicleColl, driverColl); break;
-                case 7:  demoSort(vehicleColl, driverColl); break;
-                case 8:  demoPrint(vehicleColl, driverColl); break;
-                case 9:  demoInvalidData(); break;
-                case 10: demoLimitExceeded(system); break;
-                case 11: demoDuplicateId(system); break;
-                case 12: demoNotFound(system); break;
-                case 13: demoOutOfRange(system); break;
-                case 14: demoInvalidOperation(system); break;
-                case 15: demoRelation(system); break;
-                case 16: printCurrentState(system); break;
-                case 17: demoSaveState(filename, logFilename, system); break;
-                case 18: demoLoadState(filename, logFilename, system,
-                                        vehicleColl, driverColl); break;
-                case 19: demoLogAction(logFilename); break;
-                case 20: demoGenerateReport(reportFilename, logFilename, system); break;
-                case 21: demoFindRouteByNumber(system); break;
-                case 22: demoUniqueRegNumbers(system); break;
-                case 23: demoGroupByType(system); break;
-                case 24: demoCountByCapacity(system); break;
-                case 25: demoMinMaxMetric(system); break;
-                case 26: demoFilterByYear(system); break;
-                case 27: demoSumCapacity(system); break;
-                case 28: demoSortByTwo(system); break;
+                case 1:  demoInvalidData(); break;
+                case 2:  demoLimitExceeded(system); break;
+                case 3:  demoDuplicateId(system); break;
+                case 4:  demoNotFound(system); break;
+                case 5:  demoOutOfRange(system); break;
+                case 6:  demoInvalidOperation(system); break;
+                case 7:  demoRelation(system); break;
+                case 8:  printCurrentState(system); break;
+                case 9:  demoSaveState(filename, logFilename, system); break;
+                case 10: demoLogAction(logFilename); break;
+                case 11: demoGenerateReport(reportFilename, logFilename, system); break;
+                case 12: demoFindRouteByNumber(system); break;
+                case 13: demoUniqueRegNumbers(system); break;
+                case 14: demoGroupByType(system); break;
+                case 15: demoCountByCapacity(system); break;
+                case 16: demoMinMaxMetric(system); break;
+                case 17: demoFilterByYear(system); break;
+                case 18: demoSumCapacity(system); break;
+                case 19: demoSortByTwo(system); break;
+                case 20: demoTopN(system); break;
                 case 0:  cout << "Выход из программы. До свидания!\n"; break;
                 default: cout << "Неверный пункт меню.\n"; break;
             }

@@ -53,4 +53,13 @@ private:
     static int findVehicleIndex(
         const std::vector<std::shared_ptr<Vehicle>>& vehicles,
         const std::shared_ptr<Vehicle>& target);
+
+    static void reportDrivers(std::ofstream& ofs, 
+                       const std::vector<std::shared_ptr<Driver>>& drivers);
+                       
+    static void reportVehicles(std::ofstream& ofs, 
+                        const std::vector<std::shared_ptr<Vehicle>>& vehicles);
+                        
+    static void reportRoutes(std::ofstream& ofs, 
+                      const std::vector<std::shared_ptr<Route>>& routes);
 };

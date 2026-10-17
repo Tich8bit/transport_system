@@ -45,8 +45,8 @@ int StorageManager::findDriverIndex(
     const std::shared_ptr<Driver>& target)
 {
     if (!target) return -1;
-    for (size_t j = 0; j < drivers.size(); ++j) {
-        if (drivers[j] == target) return static_cast<int>(j);
+    for (int j = 0; j < drivers.size(); ++j) {
+        if (drivers[j] == target) return j;
     }
     return -1;
 }
@@ -56,8 +56,8 @@ int StorageManager::findVehicleIndex(
     const std::shared_ptr<Vehicle>& target)
 {
     if (!target) return -1;
-    for (size_t j = 0; j < vehicles.size(); ++j) {
-        if (vehicles[j] == target) return static_cast<int>(j);
+    for (int j = 0; j < vehicles.size(); ++j) {
+        if (vehicles[j] == target) return j;
     }
     return -1;
 }
@@ -183,25 +183,28 @@ void StorageManager::loadDrivers(std::ifstream& ifs, TransportSystem& system) {
     if (!(ifs >> count)) {
         throw InvalidDataException("Не удалось прочитать количество водителей");
     }
-    ifs.ignore();
+    ifs.ignore(); 
 
     std::string line;
     for (size_t i = 0; i < count; ++i) {
         if (!std::getline(ifs, line)) {
-            throw InvalidDataException("Не удалось прочитать водителя #"
-                                       + std::to_string(i));
-        }
-        auto t = split(line, ' ');
-        if (t.size() < 3) {
-            throw InvalidDataException("Строка водителя неполная: " + line);
+            throw InvalidDataException("Не удалось прочитать водителя #" + std::to_string(i));
         }
 
-        std::string name = restoreSpaces(t[1]);
-        int experience = std::stoi(t[2]);
+        std::istringstream iss(line);
+        std::string prefix, rawName;
+        int experience;
+
+        if (!(iss >> prefix >> rawName >> experience)) {
+            throw InvalidDataException("Строка водителя повреждена или неполная: " + line);
+        }
+
+        std::string name = restoreSpaces(rawName);
 
         system.addDriver(std::make_shared<Driver>(name, experience));
     }
 }
+
 
 void StorageManager::loadVehicles(std::ifstream& ifs, TransportSystem& system) {
     size_t count;
@@ -220,27 +223,27 @@ void StorageManager::loadVehicles(std::ifstream& ifs, TransportSystem& system) {
     }
 }
 
-void StorageManager::loadVehicleLine(const std::string& line,
-                                      TransportSystem& system) {
-    auto t = split(line, ' ');
-    if (t.size() < 7) {
-        throw InvalidDataException("Строка ТС неполная: " + line);
+void StorageManager::loadVehicleLine(const std::string& line, TransportSystem& system) {
+    std::istringstream iss(line);
+    std::string prefix, typeKey, regNumber, rawModel;
+    
+    if (!(iss >> prefix >> typeKey >> regNumber)) {
+        throw InvalidDataException("Ошибка чтения заголовка ТС: " + line);
     }
 
-    std::string typeKey   = t[1];
-    std::string regNumber = t[2];
-    std::string model     = restoreSpaces(t[3]);
-    int year              = std::stoi(t[4]);
-    int capacity          = std::stoi(t[5]);
-    int driverIdx         = std::stoi(t[6]);
+    iss >> rawModel;
+    std::string model = restoreSpaces(rawModel);
+
+    int year, capacity, driverIdx;
+    if (!(iss >> year >> capacity >> driverIdx)) {
+        throw InvalidDataException("Ошибка чтения базовых параметров ТС: " + line);
+    }
 
     std::shared_ptr<Driver> driver = nullptr;
     if (driverIdx != -1) {
         const auto& drivers = system.getDrivers();
         if (driverIdx < 0 || driverIdx >= static_cast<int>(drivers.size())) {
-            throw RelationException(
-                "ТС ссылается на несуществующего водителя ID="
-                + std::to_string(driverIdx));
+            throw RelationException("ТС ссылается на несуществующего водителя ID=" + std::to_string(driverIdx));
         }
         driver = drivers[driverIdx];
     }
@@ -248,26 +251,32 @@ void StorageManager::loadVehicleLine(const std::string& line,
     std::shared_ptr<Vehicle> v;
 
     if (typeKey == TYPE_BUS) {
-        std::string fuelType = restoreSpaces(t[7]);
-        double tank = std::stod(t[8]);
-        v = std::make_shared<Bus>(regNumber, model, year, capacity,
-                                   driver, fuelType, tank);
+        std::string rawFuel;
+        double tank;
+        iss >> rawFuel >> tank;
+        std::string fuelType = restoreSpaces(rawFuel); 
+        v = std::make_shared<Bus>(regNumber, model, year, capacity, driver, fuelType, tank);
     } else if (typeKey == TYPE_TROLLEYBUS) {
-        int voltage = std::stoi(t[7]);
-        double power = std::stod(t[8]);
-        v = std::make_shared<Trolleybus>(regNumber, model, year, capacity,
-                                          driver, voltage, power);
+        int voltage;
+        double power;
+        iss >> voltage >> power;
+        v = std::make_shared<Trolleybus>(regNumber, model, year, capacity, driver, voltage, power);
     } else if (typeKey == TYPE_TRAM) {
-        int gauge = std::stoi(t[7]);
-        double power = std::stod(t[8]);
-        v = std::make_shared<Tram>(regNumber, model, year, capacity,
-                                    driver, gauge, power);
+        int gauge;
+        double power;
+        iss >> gauge >> power;
+        v = std::make_shared<Tram>(regNumber, model, year, capacity, driver, gauge, power);
     } else {
         throw InvalidDataException("Неизвестный тип ТС: " + typeKey);
     }
 
+    if (!iss) {
+        throw InvalidDataException("Специфичные параметры ТС повреждены или отсутствуют: " + line);
+    }
+
     system.addVehicle(v);
 }
+
 
 void StorageManager::loadRoutes(std::ifstream& ifs, TransportSystem& system) {
     size_t count;
@@ -286,30 +295,36 @@ void StorageManager::loadRoutes(std::ifstream& ifs, TransportSystem& system) {
     }
 }
 
-void StorageManager::loadRouteLine(const std::string& line,
-                                    TransportSystem& system) {
-    auto t = split(line, ' ');
-    if (t.size() < 7) {
-        throw InvalidDataException("Строка маршрута неполная: " + line);
+void StorageManager::loadRouteLine(const std::string& line, TransportSystem& system) {
+    std::istringstream iss(line);
+    std::string prefix, rawName, rawStart, rawEnd;
+    int number;
+
+    if (!(iss >> prefix >> number)) {
+        throw InvalidDataException("Ошибка чтения заголовка маршрута: " + line);
     }
 
-    int number         = std::stoi(t[1]);
-    std::string name   = restoreSpaces(t[2]);
-    std::string start  = restoreSpaces(t[3]);
-    std::string end    = restoreSpaces(t[4]);
-    int minCapacity    = std::stoi(t[5]);
-    int vehiclesCount  = std::stoi(t[6]);
+    iss >> rawName >> rawStart >> rawEnd;
+    std::string name  = restoreSpaces(rawName);
+    std::string start = restoreSpaces(rawStart);
+    std::string end   = restoreSpaces(rawEnd);
+
+    int minCapacity, vehiclesCount;
+    if (!(iss >> minCapacity >> vehiclesCount)) {
+        throw InvalidDataException("Ошибка чтения параметров маршрута: " + line);
+    }
 
     auto route = std::make_shared<Route>(number, name, start, end, minCapacity);
-
     const auto& vehicles = system.getVehicles();
 
     for (int k = 0; k < vehiclesCount; ++k) {
-        int vIdx = std::stoi(t[7 + k]);
+        int vIdx;
+        if (!(iss >> vIdx)) {
+            throw InvalidDataException("В файле указано ТС, но индекс отсутствует или поврежден");
+        }
+
         if (vIdx < 0 || vIdx >= static_cast<int>(vehicles.size())) {
-            throw RelationException(
-                "Маршрут ссылается на несуществующее ТС ID="
-                + std::to_string(vIdx));
+            throw RelationException("Маршрут ссылается на несуществующее ТС ID=" + std::to_string(vIdx));
         }
         *route += vehicles[vIdx];
     }
@@ -343,31 +358,43 @@ void StorageManager::generateReport(const std::string& reportFilename,
             "Не удалось создать файл отчёта: " + reportFilename);
     }
 
-    const auto& drivers  = system.getDrivers();
-    const auto& vehicles = system.getVehicles();
-    const auto& routes   = system.getRoutes();
-
     ofs << "=== ОТЧЁТ О СОСТОЯНИИ СИСТЕМЫ ТРАНСПОРТА ===\n\n";
-    ofs << "Всего водителей: " << drivers.size() << "\n";
-    ofs << "Всего ТС: " << vehicles.size() << "\n";
-    ofs << "Всего маршрутов: " << routes.size() << "\n\n";
+    ofs << "Всего водителей: " << system.getDrivers().size() << "\n";
+    ofs << "Всего ТС: " << system.getVehicles().size() << "\n";
+    ofs << "Всего маршрутов: " << system.getRoutes().size() << "\n\n";
 
+    reportDrivers(ofs, system.getDrivers());
+    reportVehicles(ofs, system.getVehicles());
+    reportRoutes(ofs, system.getRoutes());
+
+    ofs.close();
+    std::cout << "Отчёт сохранён в " << reportFilename << std::endl;
+}
+
+void StorageManager::reportDrivers(std::ofstream& ofs, 
+                                   const std::vector<std::shared_ptr<Driver>>& drivers) {
     ofs << "--- ВОДИТЕЛИ ---\n";
     for (const auto& d : drivers) {
+        if (!d) continue;
         ofs << "ФИО: " << d->getFullName()
             << " | Стаж: " << d->getExperienceYears() << " лет\n";
     }
     ofs << "\n";
+}
 
+void StorageManager::reportVehicles(std::ofstream& ofs, 
+                                    const std::vector<std::shared_ptr<Vehicle>>& vehicles) {
     ofs << "--- ТРАНСПОРТ ---\n";
     for (const auto& v : vehicles) {
+        if (!v) continue;
+        
         ofs << "Тип: " << v->getType() << "\n";
         ofs << "  Госномер: " << v->getRegNumber() << "\n";
         ofs << "  Модель: " << v->getModel() << "\n";
         ofs << "  Год: " << v->getYear() << "\n";
         ofs << "  Вместимость: " << v->getCapacity() << " чел.\n";
-        ofs << "  Метрика (" << v->getMetricName() << "): "
-            << v->calculateMetric() << "\n";
+        ofs << "  Метрика (" << v->getMetricName() << "): " << v->calculateMetric() << "\n";
+        
         if (v->getDriver()) {
             ofs << "  Водитель: " << v->getDriver()->getFullName() << "\n";
         } else {
@@ -375,11 +402,15 @@ void StorageManager::generateReport(const std::string& reportFilename,
         }
         ofs << "\n";
     }
+}
 
+void StorageManager::reportRoutes(std::ofstream& ofs, 
+                                  const std::vector<std::shared_ptr<Route>>& routes) {
     ofs << "--- МАРШРУТЫ ---\n";
     for (const auto& r : routes) {
-        ofs << "Маршрут №" << r->getNumber()
-            << " \"" << r->getName() << "\"\n";
+        if (!r) continue;
+
+        ofs << "Маршрут №" << r->getNumber() << " \"" << r->getName() << "\"\n";
         ofs << "  От: " << r->getStartStop() << "\n";
         ofs << "  До: " << r->getEndStop() << "\n";
         ofs << "  Мин. вместимость: " << r->getMinCapacity() << "\n";
@@ -387,12 +418,9 @@ void StorageManager::generateReport(const std::string& reportFilename,
         const auto& assigned = r->getAssignedVehicles();
         ofs << "  ТС на маршруте (" << assigned.size() << "):\n";
         for (const auto& v : assigned) {
-            ofs << "    - " << v->getType()
-                << " " << v->getRegNumber() << "\n";
+            if (!v) continue;
+            ofs << "    - " << v->getType() << " " << v->getRegNumber() << "\n";
         }
         ofs << "\n";
     }
-
-    ofs.close();
-    std::cout << "Отчёт сохранён в " << reportFilename << std::endl;
 }
