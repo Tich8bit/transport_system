@@ -192,7 +192,8 @@ void StorageManager::loadDrivers(std::ifstream& ifs, TransportSystem& system) {
         }
 
         std::istringstream iss(line);
-        std::string prefix, rawName;
+        std::string prefix;
+        std::string rawName;        
         int experience;
 
         if (!(iss >> prefix >> rawName >> experience)) {
@@ -225,7 +226,10 @@ void StorageManager::loadVehicles(std::ifstream& ifs, TransportSystem& system) {
 
 void StorageManager::loadVehicleLine(const std::string& line, TransportSystem& system) {
     std::istringstream iss(line);
-    std::string prefix, typeKey, regNumber, rawModel;
+    std::string prefix;
+    std::string typeKey;
+    std::string regNumber;
+    std::string rawModel;
     
     if (!(iss >> prefix >> typeKey >> regNumber)) {
         throw InvalidDataException("Ошибка чтения заголовка ТС: " + line);
@@ -234,7 +238,10 @@ void StorageManager::loadVehicleLine(const std::string& line, TransportSystem& s
     iss >> rawModel;
     std::string model = restoreSpaces(rawModel);
 
-    int year, capacity, driverIdx;
+    int year;
+    int capacity;
+    int driverIdx;
+
     if (!(iss >> year >> capacity >> driverIdx)) {
         throw InvalidDataException("Ошибка чтения базовых параметров ТС: " + line);
     }
@@ -297,7 +304,10 @@ void StorageManager::loadRoutes(std::ifstream& ifs, TransportSystem& system) {
 
 void StorageManager::loadRouteLine(const std::string& line, TransportSystem& system) {
     std::istringstream iss(line);
-    std::string prefix, rawName, rawStart, rawEnd;
+    std::string prefix;
+    std::string rawName;
+    std::string rawStart;
+    std::string rawEnd;
     int number;
 
     if (!(iss >> prefix >> number)) {
@@ -309,7 +319,9 @@ void StorageManager::loadRouteLine(const std::string& line, TransportSystem& sys
     std::string start = restoreSpaces(rawStart);
     std::string end   = restoreSpaces(rawEnd);
 
-    int minCapacity, vehiclesCount;
+    int minCapacity;
+    int vehiclesCount;
+    
     if (!(iss >> minCapacity >> vehiclesCount)) {
         throw InvalidDataException("Ошибка чтения параметров маршрута: " + line);
     }
