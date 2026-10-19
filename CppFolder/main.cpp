@@ -275,21 +275,29 @@ void demoCountByCapacity(const TransportSystem& system) {
 void demoMinMaxMetric(const TransportSystem& system) {
     cout << "=== Min/Max метрики ТС ===\n";
     const auto& vs = system.getVehicles();
-    if (vs.empty()) { cout << "Список пуст\n"; return; }
+    
+    if (vs.empty()) {
+        cout << "Список ТС пуст\n";
+        return;
+    }
 
-    auto minIt = min_element(vs.begin(), vs.end(),
-        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
-            return a->calculateMetric() < b->calculateMetric();
-        });
-    auto maxIt = max_element(vs.begin(), vs.end(),
-        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
-            return a->calculateMetric() < b->calculateMetric();
-        });
+    auto [minVehicle, maxVehicle] = TransportAnalytics::findMinMaxMetric(vs);
 
-    cout << "Min: " << (*minIt)->getRegNumber()
-         << " (" << (*minIt)->calculateMetric() << ")\n";
-    cout << "Max: " << (*maxIt)->getRegNumber()
-         << " (" << (*maxIt)->calculateMetric() << ")\n";
+    if (minVehicle) {
+        cout << "Min: " << minVehicle->getRegNumber()
+             << " | Метрика: " << minVehicle->calculateMetric()
+             << " (" << minVehicle->getMetricName() << ")\n";
+    } else {
+        cout << "Min: не найдено\n";
+    }
+
+    if (maxVehicle) {
+        cout << "Max: " << maxVehicle->getRegNumber()
+             << " | Метрика: " << maxVehicle->calculateMetric()
+             << " (" << maxVehicle->getMetricName() << ")\n";
+    } else {
+        cout << "Max: не найдено\n";
+    }
 }
 
 void demoFilterByYear(const TransportSystem& system) {

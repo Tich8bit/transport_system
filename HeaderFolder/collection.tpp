@@ -18,8 +18,8 @@ void Collection<T>::add(const std::shared_ptr<T>& item) {
 template <typename T>
 void Collection<T>::removeAt(size_t index) {
     if (index >= _items.size()) {
-        std::cout << "ОШИБКА: индекс вне диапазона\n";
-        return;
+        throw OutOfRangeException("Индекс " + std::to_string(index) + 
+                                   " вне диапазона (размер: " + std::to_string(_items.size()) + ")");
     }
     _items.erase(_items.begin() + index);
 }
@@ -42,8 +42,8 @@ size_t Collection<T>::removeIf(Predicate pred) {
 template <typename T>
 std::shared_ptr<T> Collection<T>::get(size_t index) const {
     if (index >= _items.size()) {
-        std::cout << "ОШИБКА: индекс вне диапазона\n";
-        return nullptr;
+        throw OutOfRangeException("Индекс " + std::to_string(index) + 
+                                   " вне диапазона (размер: " + std::to_string(_items.size()) + ")");
     }
     return _items[index];
 }

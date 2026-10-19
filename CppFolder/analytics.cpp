@@ -32,13 +32,7 @@ TransportAnalytics::findMinMaxMetric(
     const std::vector<std::shared_ptr<Vehicle>>& vehicles) {
     if (vehicles.empty()) return {nullptr, nullptr};
 
-    auto minIt = std::min_element(vehicles.begin(), vehicles.end(),
-        [](const std::shared_ptr<Vehicle>& a,
-           const std::shared_ptr<Vehicle>& b) {
-            return a->calculateMetric() < b->calculateMetric();
-        });
-
-    auto maxIt = std::max_element(vehicles.begin(), vehicles.end(),
+    auto [minIt, maxIt] = std::minmax_element(vehicles.begin(), vehicles.end(),
         [](const std::shared_ptr<Vehicle>& a,
            const std::shared_ptr<Vehicle>& b) {
             return a->calculateMetric() < b->calculateMetric();
