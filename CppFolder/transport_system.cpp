@@ -7,12 +7,11 @@
 #include <string_view>
 
 void TransportSystem::addDriver(std::shared_ptr<Driver> driver) {
-    if (!driver) {
-        throw InvalidDataException("пустой указатель на водителя");
-    }
+    if (!driver) throw InvalidDataException("пустой указатель");
+    
     for (const auto& d : _drivers) {
-        if (d == driver) {
-            throw DuplicateIdException("Водитель уже есть в системе");
+        if (d->getFullName() == driver->getFullName()) {
+            throw DuplicateIdException("Водитель с именем " + std::string(driver->getFullName()) + " уже есть в системе");
         }
     }
     _drivers.push_back(driver);
