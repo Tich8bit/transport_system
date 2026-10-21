@@ -165,7 +165,7 @@ void demoAddNewRoute(TransportSystem& system) {
     cout << "Успешно добавлен маршрут №" << newRoute->getNumber() << " \"" << newRoute->getName() << "\"\n";
 }
 
-void demoLinkVehicleDriver(TransportSystem& system) {
+void demoLinkVehicleDriver(const TransportSystem& system) {
     cout << "=== Связывание ТС с водителем ===\n";
     const auto& vehicles = system.getVehicles();
     const auto& drivers = system.getDrivers();
@@ -194,7 +194,7 @@ void demoLinkVehicleDriver(TransportSystem& system) {
          << " закреплен за ТС " << vehicles[vIdx]->getRegNumber() << ".\n";
 }
 
-void demoAssignVehicleToRoute(TransportSystem& system) {
+void demoAssignVehicleToRoute(const TransportSystem& system) {
     cout << "=== Закрепление ТС за маршрутом ===\n";
     const auto& routes = system.getRoutes();
     const auto& vehicles = system.getVehicles();
@@ -217,13 +217,9 @@ void demoAssignVehicleToRoute(TransportSystem& system) {
     }
     int vIdx = inputNumber<int>("Выберите индекс ТС: ", 0, vehicles.size() - 1);
 
-    try {
-        *routes[rIdx] += vehicles[vIdx];
-        cout << "ТС " << vehicles[vIdx]->getRegNumber() 
-             << " успешно закреплено за маршрутом №" << routes[rIdx]->getNumber() << ".\n";
-    } catch (const exception& e) {
-        cout << "ОШИБКА: " << e.what() << "\n";
-    }
+    *routes[rIdx] += vehicles[vIdx];
+    cout << "ТС " << vehicles[vIdx]->getRegNumber() 
+         << " успешно закреплено за маршрутом №" << routes[rIdx]->getNumber() << ".\n";
 }
 
 void demoSaveState(const string& filename, const string& logFilename, const TransportSystem& system) {
@@ -399,7 +395,6 @@ int main() {
     } else {
         try {
             StorageManager::loadState(filename, system);
-            cout << "Система загружена из " << filename << "\n";
         } catch (const exception& e) {
             cout << "ОШИБКА загрузки: " << e.what() << "\nБудет создана тестовая система.\n";
             createTestSystem(system);
@@ -439,13 +434,6 @@ int main() {
                 default: cout << "Неверный пункт.\n"; break;
             }
         }
-        catch (const InvalidDataException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
-        catch (const LimitExceededException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
-        catch (const DuplicateIdException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
-        catch (const ObjectNotFoundException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
-        catch (const OutOfRangeException& e) { cout << "ОШИБКА (границы): " << e.what() << '\n'; }
-        catch (const InvalidOperationException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
-        catch (const RelationException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
         catch (const TransportException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
 
     } while (choice != 0);

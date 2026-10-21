@@ -206,7 +206,6 @@ void StorageManager::loadDrivers(std::ifstream& ifs, TransportSystem& system) {
     }
 }
 
-
 void StorageManager::loadVehicles(std::ifstream& ifs, TransportSystem& system) {
     size_t count;
     if (!(ifs >> count)) {
