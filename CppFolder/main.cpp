@@ -117,7 +117,7 @@ void printCurrentState(const TransportSystem& system) {
     cout << "Водители:\n";
     const auto& drivers = system.getDrivers();
     for (size_t i = 0; i < drivers.size(); ++i) {
-        const auto& d = drivers[i];
+        const auto& d = drivers.get(i);
         cout << " [" << i << "] " << d->getFullName()
              << " (стаж: " << d->getExperienceYears() << " лет)\n";
     }
@@ -125,7 +125,7 @@ void printCurrentState(const TransportSystem& system) {
     cout << "Транспорт:\n";
     const auto& vehicles = system.getVehicles();
     for (size_t i = 0; i < vehicles.size(); ++i) {
-        const auto& v = vehicles[i];
+        const auto& v = vehicles.get(i);
         cout << " [" << i << "] " << v->getType()
              << " " << v->getRegNumber() << " (" << v->getModel() << ")";
         if (v->getDriver()) {
@@ -139,7 +139,7 @@ void printCurrentState(const TransportSystem& system) {
     cout << "Маршруты:\n";
     const auto& routes = system.getRoutes();
     for (size_t i = 0; i < routes.size(); ++i) {
-        const auto& r = routes[i];
+        const auto& r = routes.get(i);
         cout << " [" << i << "] №" << r->getNumber()
              << " \"" << r->getName() << "\" | Закреплено ТС: " << r->getAssignedVehicles().size() << "\n";
     }
@@ -148,24 +148,61 @@ void printCurrentState(const TransportSystem& system) {
 }
 
 void demoAddNewDriver(TransportSystem& system) {
-    auto newDriver = make_shared<Driver>("Смирнов Алексей Владимирович", 20);
-    system.addDriver(newDriver);
-    cout << "Успешно добавлен водитель: " << newDriver->getFullName() << "\n";
+    cout << "=== Добавление нового водителя ===\n";
+    string name = inputString("Введите ФИО водителя: ");
+    int experience = inputNumber<int>("Введите стаж (лет): ", 0, 60);
+
+    try {
+        auto newDriver = make_shared<Driver>(name, experience);
+        system.addDriver(newDriver);
+        cout << "Успешно добавлен водитель: " << name << "\n";
+    } catch (const exception& e) {
+        cout << "ОШИБКА: " << e.what() << "\n";
+    }
 }
 
 void demoAddNewVehicle(TransportSystem& system) {
-    auto newVehicle = make_shared<Bus>("Е777КХ", "ЛиАЗ-5292", 2021, 110, nullptr, "Газ", 150.0);
-    system.addVehicle(newVehicle);
-    cout << "Успешно добавлено ТС: " << newVehicle->getType() << " " << newVehicle->getRegNumber() << "\n";
+    cout << "=== Добавление нового ТС ===\n";
+    cout << "1. Автобус\n2. Троллейбус\n3. Трамвай\n";
+    int type = inputNumber<int>("Выберите тип ТС: ", 1, 3);
+
+    shared_ptr<Vehicle> newVehicle = nullptr;
+
+    if (type == 1) {
+        newVehicle = make_shared<Bus>("", "", 2000, 1, nullptr, "", 0.0);
+    } else if (type == 2) {
+        newVehicle = make_shared<Trolleybus>("", "", 2000, 1, nullptr, 0, 0.0);
+    } else if (type == 3) {
+        newVehicle = make_shared<Tram>("", "", 2000, 1, nullptr, 0, 0.0);
+    }
+
+    try {
+        newVehicle->inputVehicle();
+        system.addVehicle(newVehicle);
+        cout << "Успешно добавлено ТС: " << newVehicle->getType() << " " << newVehicle->getRegNumber() << "\n";
+    } catch (const exception& e) {
+        cout << "ОШИБКА: " << e.what() << "\n";
+    }
 }
 
 void demoAddNewRoute(TransportSystem& system) {
-    auto newRoute = make_shared<Route>(3, "Восточный", "Парк Челюскинцев", "Шабаны", 40);
-    system += newRoute;
-    cout << "Успешно добавлен маршрут №" << newRoute->getNumber() << " \"" << newRoute->getName() << "\"\n";
+    cout << "=== Добавление нового маршрута ===\n";
+    int number = inputNumber<int>("Введите номер маршрута: ", 1, 9999);
+    string name = inputString("Введите название маршрута: ");
+    string startStop = inputString("Введите начальную остановку: ");
+    string endStop = inputString("Введите конечную остановку: ");
+    int minCapacity = inputNumber<int>("Введите минимальную вместимость: ", 1, 500);
+
+    try {
+        auto newRoute = make_shared<Route>(number, name, startStop, endStop, minCapacity);
+        system += newRoute;
+        cout << "Успешно добавлен маршрут №" << number << " \"" << name << "\"\n";
+    } catch (const exception& e) {
+        cout << "ОШИБКА: " << e.what() << "\n";
+    }
 }
 
-void demoLinkVehicleDriver(const TransportSystem& system) {
+void demoLinkVehicleDriver(TransportSystem& system) {
     cout << "=== Связывание ТС с водителем ===\n";
     const auto& vehicles = system.getVehicles();
     const auto& drivers = system.getDrivers();
@@ -177,24 +214,26 @@ void demoLinkVehicleDriver(const TransportSystem& system) {
 
     cout << "Транспорт:\n";
     for (size_t i = 0; i < vehicles.size(); ++i) {
-        cout << " [" << i << "] " << vehicles[i]->getRegNumber();
-        if (vehicles[i]->getDriver()) cout << " (водитель: " << vehicles[i]->getDriver()->getFullName() << ")";
+        const auto& v = vehicles.get(i);
+        cout << " [" << i << "] " << v->getRegNumber();
+        if (v->getDriver()) cout << " (водитель: " << v->getDriver()->getFullName() << ")";
         cout << "\n";
     }
     int vIdx = inputNumber<int>("Выберите индекс ТС: ", 0, vehicles.size() - 1);
 
     cout << "Водители:\n";
     for (size_t i = 0; i < drivers.size(); ++i) {
-        cout << " [" << i << "] " << drivers[i]->getFullName() << "\n";
+        const auto& d = drivers.get(i);
+        cout << " [" << i << "] " << d->getFullName() << "\n";
     }
     int dIdx = inputNumber<int>("Выберите индекс водителя: ", 0, drivers.size() - 1);
 
-    vehicles[vIdx]->setDriver(drivers[dIdx]);
-    cout << "Водитель " << drivers[dIdx]->getFullName() 
-         << " закреплен за ТС " << vehicles[vIdx]->getRegNumber() << ".\n";
+    vehicles.get(vIdx)->setDriver(drivers.get(dIdx));
+    cout << "Водитель " << drivers.get(dIdx)->getFullName() 
+         << " закреплен за ТС " << vehicles.get(vIdx)->getRegNumber() << ".\n";
 }
 
-void demoAssignVehicleToRoute(const TransportSystem& system) {
+void demoAssignVehicleToRoute(TransportSystem& system) {
     cout << "=== Закрепление ТС за маршрутом ===\n";
     const auto& routes = system.getRoutes();
     const auto& vehicles = system.getVehicles();
@@ -206,25 +245,32 @@ void demoAssignVehicleToRoute(const TransportSystem& system) {
 
     cout << "Маршруты:\n";
     for (size_t i = 0; i < routes.size(); ++i) {
-        cout << " [" << i << "] №" << routes[i]->getNumber() << " \"" << routes[i]->getName() << "\"\n";
+        const auto& r = routes.get(i);
+        cout << " [" << i << "] №" << r->getNumber() << " \"" << r->getName() << "\"\n";
     }
     int rIdx = inputNumber<int>("Выберите индекс маршрута: ", 0, routes.size() - 1);
-    routes[rIdx]->printRouteInformation();
+
     cout << "Доступный транспорт:\n";
     for (size_t i = 0; i < vehicles.size(); ++i) {
-        cout << " [" << i << "] " << vehicles[i]->getType() << " " << vehicles[i]->getRegNumber() 
-             << " (Вместимость: " << vehicles[i]->getCapacity() << ")\n";
+        const auto& v = vehicles.get(i);
+        cout << " [" << i << "] " << v->getType() << " " << v->getRegNumber() 
+             << " (Вместимость: " << v->getCapacity() << ")\n";
     }
     int vIdx = inputNumber<int>("Выберите индекс ТС: ", 0, vehicles.size() - 1);
 
-    *routes[rIdx] += vehicles[vIdx];
-    cout << "ТС " << vehicles[vIdx]->getRegNumber() 
-         << " успешно закреплено за маршрутом №" << routes[rIdx]->getNumber() << ".\n";
+    try {
+        *routes.get(rIdx) += vehicles.get(vIdx);
+        cout << "ТС " << vehicles.get(vIdx)->getRegNumber() 
+             << " успешно закреплено за маршрутом №" << routes.get(rIdx)->getNumber() << ".\n";
+    } catch (const exception& e) {
+        cout << "ОШИБКА: " << e.what() << "\n";
+    }
 }
 
 void demoSaveState(const string& filename, const string& logFilename, const TransportSystem& system) {
     StorageManager::saveState(filename, system);
     StorageManager::logAction(logFilename, "Сохранение в " + filename);
+    cout << "Система сохранена в файл " << filename << "\n";
 }
 
 void demoLogAction(const string& logFilename) {
@@ -260,27 +306,16 @@ void demoFindRouteByNumber(const TransportSystem& system) {
 
 void demoUniqueRegNumbers(const TransportSystem& system) {
     cout << "=== Уникальные госномера (set) ===\n";
-    set<string, less<>> regNumbers;
-
-    for (const auto& v : system.getVehicles()) {
-        regNumbers.emplace(v->getRegNumber());
-    }
-
-    cout << "Уникальных госномеров: " << regNumbers.size() << '\n';
-    for (const auto& r : regNumbers) {
-        cout << "  - " << r << '\n';
+    auto nums = TransportAnalytics::getUniqueRegNumbers(system.getVehicles());
+    cout << "Уникальных госномеров: " << nums.size() << '\n';
+    for (const auto& n : nums) {
+        cout << "  - " << n << '\n';
     }
 }
 
 void demoGroupByType(const TransportSystem& system) {
     cout << "=== Группировка ТС по типу ===\n";
-    map<string, vector<shared_ptr<Vehicle>>, less<>> groups;
-
-    for_each(system.getVehicles().begin(), system.getVehicles().end(),
-        [&groups](const shared_ptr<Vehicle>& v) {
-            groups[v->getType()].push_back(v);
-        });
-
+    auto groups = TransportAnalytics::groupByType(system.getVehicles());
     for (const auto& [type, list] : groups) {
         cout << type << ": " << list.size() << " шт.\n";
         for (const auto& v : list) {
@@ -291,43 +326,19 @@ void demoGroupByType(const TransportSystem& system) {
 
 void demoCountByCapacity(const TransportSystem& system) {
     cout << "=== Подсчёт ТС с вместимостью > 100 ===\n";
-    size_t count = count_if(system.getVehicles().begin(),
-                             system.getVehicles().end(),
-        [](const shared_ptr<Vehicle>& v) {
-            return v->getCapacity() > 100;
-        });
-    cout << "Найдено: " << count << '\n';
+    cout << "Найдено: " << TransportAnalytics::countByCapacity(system.getVehicles(), 100) << '\n';
 }
 
 void demoMinMaxMetric(const TransportSystem& system) {
     cout << "=== Min/Max метрики ТС ===\n";
-    const auto& vs = system.getVehicles();
-    if (vs.empty()) { cout << "Список пуст\n"; return; }
-
-    auto [minVehicle, maxVehicle] = TransportAnalytics::findMinMaxMetric(vs);
-
-    if (minVehicle) {
-        cout << "Min: " << minVehicle->getRegNumber()
-             << " | Метрика: " << minVehicle->calculateMetric()
-             << " (" << minVehicle->getMetricName() << ")\n";
-    }
-    if (maxVehicle) {
-        cout << "Max: " << maxVehicle->getRegNumber()
-             << " | Метрика: " << maxVehicle->calculateMetric()
-             << " (" << maxVehicle->getMetricName() << ")\n";
-    }
+    auto [minV, maxV] = TransportAnalytics::findMinMaxMetric(system.getVehicles());
+    if (minV) cout << "Min: " << minV->getRegNumber() << " (" << minV->calculateMetric() << ")\n";
+    if (maxV) cout << "Max: " << maxV->getRegNumber() << " (" << maxV->calculateMetric() << ")\n";
 }
 
 void demoFilterByYear(const TransportSystem& system) {
     cout << "=== Фильтрация ТС по критерию (год >= 2018) ===\n";
-    vector<shared_ptr<Vehicle>> filtered;
-
-    copy_if(system.getVehicles().begin(), system.getVehicles().end(),
-            back_inserter(filtered),
-        [](const shared_ptr<Vehicle>& v) {
-            return v->getYear() >= 2018;
-        });
-
+    auto filtered = TransportAnalytics::filterByYear(system.getVehicles(), 2018);
     cout << "Найдено: " << filtered.size() << '\n';
     for (const auto& v : filtered) {
         cout << "  - " << v->getType() << " " << v->getRegNumber() << '\n';
@@ -336,26 +347,12 @@ void demoFilterByYear(const TransportSystem& system) {
 
 void demoSumCapacity(const TransportSystem& system) {
     cout << "=== Сумма вместимостей ТС ===\n";
-    int totalCapacity = accumulate(system.getVehicles().begin(),
-                                    system.getVehicles().end(), 0,
-        [](int acc, const shared_ptr<Vehicle>& v) {
-            return acc + v->getCapacity();
-        });
-    cout << "Общая вместимость: " << totalCapacity << " чел.\n";
+    cout << "Общая вместимость: " << TransportAnalytics::sumCapacity(system.getVehicles()) << " чел.\n";
 }
 
 void demoSortByTwo(const TransportSystem& system) {
     cout << "=== Сортировка по 2 критериям ===\n";
-    auto sorted = system.getVehicles();
-
-    sort(sorted.begin(), sorted.end(),
-        [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {
-            if (a->getCapacity() != b->getCapacity()) {
-                return a->getCapacity() > b->getCapacity();
-            }
-            return a->getYear() > b->getYear();
-        });
-
+    auto sorted = TransportAnalytics::sortByTwoCriteria(system.getVehicles());
     for (const auto& v : sorted) {
         cout << v->getType() << " " << v->getRegNumber()
              << " | Мест: " << v->getCapacity()
@@ -365,16 +362,11 @@ void demoSortByTwo(const TransportSystem& system) {
 
 void demoTopN(const TransportSystem& system) {
     cout << "=== Топ-2 ТС по метрике ===\n";
-    const auto& vs = system.getVehicles();
-    if (vs.empty()) { cout << "Список пуст\n"; return; }
-
-    auto top = TransportAnalytics::findTopN(vs, 2);
-
+    auto top = TransportAnalytics::findTopN(system.getVehicles(), 2);
     for (size_t i = 0; i < top.size(); ++i) {
         cout << "  " << (i + 1) << ". " << top[i]->getType()
              << " " << top[i]->getRegNumber()
-             << " | Метрика: " << top[i]->calculateMetric()
-             << " (" << top[i]->getMetricName() << ")\n";
+             << " | Метрика: " << top[i]->calculateMetric() << '\n';
     }
 }
 
@@ -395,6 +387,7 @@ int main() {
     } else {
         try {
             StorageManager::loadState(filename, system);
+            cout << "Система загружена из " << filename << "\n";
         } catch (const exception& e) {
             cout << "ОШИБКА загрузки: " << e.what() << "\nБудет создана тестовая система.\n";
             createTestSystem(system);
@@ -415,7 +408,7 @@ int main() {
                 case 4:  demoAddNewRoute(system); break;
                 case 5:  demoLinkVehicleDriver(system); break;
                 case 6:  demoAssignVehicleToRoute(system); break;
-                
+               
                 case 7:  demoSaveState(filename, logFilename, system); break;
                 case 8:  demoLogAction(logFilename); break;
                 case 9:  demoGenerateReport(reportFilename, logFilename, system); break;
@@ -434,7 +427,7 @@ int main() {
                 default: cout << "Неверный пункт.\n"; break;
             }
         }
-        catch (const TransportException& e) { cout << "ОШИБКА! " << e.what() << '\n'; }
+        catch (const TransportException& e) { cout << "ОШИБКА: " << e.what() << '\n'; }
 
     } while (choice != 0);
 

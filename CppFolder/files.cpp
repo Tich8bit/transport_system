@@ -1,226 +1,177 @@
 #include "files.h"
+#include <iostream>
 #include <sstream>
-#include <algorithm>
-#include <array>
+#include <iomanip>
 #include <ctime>
-#include "driver.h"
-#include "vehicle.h"
+#include <array>
+#include <algorithm>
 #include "bus.h"
 #include "trolleybus.h"
 #include "tram.h"
-#include "route.h"
+#include "exceptions/exception.h"
 
-std::string StorageManager::trim(std::string_view str) {
-    const size_t first = str.find_first_not_of(" \t\n\r");
-    if (std::string::npos == first) return "";
-    const size_t last = str.find_last_not_of(" \t\n\r");
-    return std::string(str.substr(first, (last - first + 1)));
-}
-
-std::vector<std::string> StorageManager::split(std::string_view str,
-                                                char delimiter) {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream{std::string(str)};
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(trim(token));
-    }
-    return tokens;
-}
-
-std::string StorageManager::replaceSpaces(std::string_view str) {
-    std::string result{str};
+std::string StorageManager::replaceSpaces(const std::string& str) {
+    std::string result = str;
     std::replace(result.begin(), result.end(), ' ', '_');
     return result;
 }
 
-std::string StorageManager::restoreSpaces(std::string_view str) {
-    std::string result{str};
+std::string StorageManager::restoreSpaces(const std::string& str) {
+    std::string result = str;
     std::replace(result.begin(), result.end(), '_', ' ');
     return result;
 }
 
-int StorageManager::findDriverIndex(
-    const std::vector<std::shared_ptr<Driver>>& drivers,
-    const std::shared_ptr<Driver>& target)
-{
-    if (!target) return -1;
-    for (int j = 0; j < drivers.size(); ++j) {
-        if (drivers[j] == target) return j;
+void StorageManager::logAction(const std::string& logFilename, const std::string& action) {
+    std::ofstream ofs(logFilename, std::ios::app);
+    if (!ofs.is_open()) {
+        throw InvalidOperationException("Не удалось открыть файл журнала: " + logFilename);
     }
-    return -1;
+
+    std::time_t now = std::time(nullptr);
+    std::tm timeInfo;
+    localtime_s(&timeInfo, &now);
+
+    std::array<char, 100> buf{};
+    std::strftime(buf.data(), buf.size(), "%Y-%m-%d %H:%M:%S", &timeInfo);
+
+    ofs << "[" << buf.data() << "] " << action << "\n";
 }
 
-int StorageManager::findVehicleIndex(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles,
-    const std::shared_ptr<Vehicle>& target)
-{
-    if (!target) return -1;
-    for (int j = 0; j < vehicles.size(); ++j) {
-        if (vehicles[j] == target) return j;
-    }
-    return -1;
-}
-
-void StorageManager::saveState(const std::string& filename,
-                                const TransportSystem& system) {
+void StorageManager::saveState(const std::string& filename, const TransportSystem& system) {
     std::ofstream ofs(filename);
     if (!ofs.is_open()) {
-        throw InvalidOperationException(
-            "Не удалось открыть файл: " + filename);
+        throw InvalidOperationException("Не удалось открыть файл для сохранения: " + filename);
     }
 
     saveDrivers(ofs, system);
     saveVehicles(ofs, system);
     saveRoutes(ofs, system);
-
-    ofs.close();
-    std::cout << "Данные сохранены в " << filename << std::endl;
 }
 
-void StorageManager::saveDrivers(std::ofstream& ofs,
-                                  const TransportSystem& system) {
+void StorageManager::saveDrivers(std::ofstream& ofs, const TransportSystem& system) {
     const auto& drivers = system.getDrivers();
     ofs << drivers.size() << "\n";
 
     for (size_t i = 0; i < drivers.size(); ++i) {
-        const auto& d = drivers[i];
-        ofs << PREFIX_DRIVER << i << " "
-            << replaceSpaces(d->getFullName()) << " "
+        const auto& d = drivers.get(i);
+        ofs << "DRV" << i << " "
+            << replaceSpaces(std::string(d->getFullName())) << " "
             << d->getExperienceYears() << "\n";
     }
 }
 
-void StorageManager::saveVehicles(std::ofstream& ofs,
-                                   const TransportSystem& system) {
-    const auto& drivers  = system.getDrivers();
+void StorageManager::saveVehicles(std::ofstream& ofs, const TransportSystem& system) {
     const auto& vehicles = system.getVehicles();
-
+    const auto& drivers = system.getDrivers();
     ofs << vehicles.size() << "\n";
 
     for (size_t i = 0; i < vehicles.size(); ++i) {
-        const auto& v = vehicles[i];
-        int driverIdx = findDriverIndex(drivers, v->getDriver());
-
-        const std::string type = v->getType();
-        std::string typeKey;
-        if (type == "Автобус")          typeKey = TYPE_BUS;
-        else if (type == "Троллейбус")  typeKey = TYPE_TROLLEYBUS;
-        else if (type == "Трамвай")     typeKey = TYPE_TRAM;
-
-        ofs << PREFIX_VEHICLE << i << " "
-            << typeKey << " "
-            << v->getRegNumber() << " "
-            << replaceSpaces(v->getModel()) << " "
-            << v->getYear() << " "
-            << v->getCapacity() << " "
-            << driverIdx;
-
-        if (typeKey == TYPE_BUS) {
-            auto b = std::dynamic_pointer_cast<Bus>(v);
-            ofs << " " << replaceSpaces(b->getFuelType())
-                << " " << b->getFuelTankCapacity();
-        } else if (typeKey == TYPE_TROLLEYBUS) {
-            auto t = std::dynamic_pointer_cast<Trolleybus>(v);
-            ofs << " " << t->getVoltage()
-                << " " << t->getPowerConsumption();
-        } else if (typeKey == TYPE_TRAM) {
-            auto t = std::dynamic_pointer_cast<Tram>(v);
-            ofs << " " << t->getGauge()
-                << " " << t->getPowerConsumption();
+        const auto& v = vehicles.get(i);
+        
+        int driverIdx = -1;
+        if (v->getDriver()) {
+            for (size_t j = 0; j < drivers.size(); ++j) {
+                if (drivers.get(j) == v->getDriver()) {
+                    driverIdx = static_cast<int>(j);
+                    break;
+                }
+            }
         }
-        ofs << "\n";
+
+        std::string typeKey;
+        if (std::dynamic_pointer_cast<Bus>(v)) typeKey = "Bus";
+        else if (std::dynamic_pointer_cast<Trolleybus>(v)) typeKey = "Trolleybus";
+        else if (std::dynamic_pointer_cast<Tram>(v)) typeKey = "Tram";
+
+        ofs << "VEH" << i << " " << typeKey << " "
+            << std::string(v->getRegNumber()) << " "
+            << std::string(v->getModel()) << " "
+            << v->getYear() << " " << v->getCapacity() << " "
+            << driverIdx << " ";
+
+        if (typeKey == "Bus") {
+            auto bus = std::dynamic_pointer_cast<Bus>(v);
+            ofs << replaceSpaces(std::string(bus->getFuelType())) << " " << bus->getFuelTankCapacity() << "\n";
+        } else if (typeKey == "Trolleybus") {
+            auto tb = std::dynamic_pointer_cast<Trolleybus>(v);
+            ofs << tb->getVoltage() << " " << tb->getPowerConsumption() << "\n";
+        } else if (typeKey == "Tram") {
+            auto tram = std::dynamic_pointer_cast<Tram>(v);
+            ofs << tram->getGauge() << " " << tram->getPowerConsumption() << "\n";
+        }
     }
 }
 
-void StorageManager::saveRoutes(std::ofstream& ofs,
-                                 const TransportSystem& system) {
+void StorageManager::saveRoutes(std::ofstream& ofs, const TransportSystem& system) {
+    const auto& routes = system.getRoutes();
     const auto& vehicles = system.getVehicles();
-    const auto& routes   = system.getRoutes();
-
     ofs << routes.size() << "\n";
 
     for (size_t i = 0; i < routes.size(); ++i) {
-        const auto& r = routes[i];
-        ofs << PREFIX_ROUTE << i << " "
-            << r->getNumber() << " "
-            << replaceSpaces(r->getName()) << " "
-            << replaceSpaces(r->getStartStop()) << " "
-            << replaceSpaces(r->getEndStop()) << " "
-            << r->getMinCapacity();
+        const auto& r = routes.get(i);
+        ofs << "RTE" << i << " " << r->getNumber() << " "
+            << replaceSpaces(std::string(r->getName())) << " "
+            << replaceSpaces(std::string(r->getStartStop())) << " "
+            << replaceSpaces(std::string(r->getEndStop())) << " "
+            << r->getMinCapacity() << " "
+            << r->getAssignedVehicles().size();
 
-        const auto& assigned = r->getAssignedVehicles();
-        ofs << " " << assigned.size();
-
-        for (const auto& v : assigned) {
-            int idx = findVehicleIndex(vehicles, v);
-            if (idx != -1) ofs << " " << idx;
+        for (const auto& av : r->getAssignedVehicles()) {
+            for (size_t j = 0; j < vehicles.size(); ++j) {
+                if (vehicles.get(j) == av) {
+                    ofs << " " << j;
+                    break;
+                }
+            }
         }
         ofs << "\n";
     }
 }
 
-void StorageManager::loadState(const std::string& filename,
-                                TransportSystem& system) {
+void StorageManager::loadState(const std::string& filename, TransportSystem& system) {
     std::ifstream ifs(filename);
     if (!ifs.is_open()) {
-        throw InvalidOperationException(
-            "Не удалось открыть файл: " + filename);
+        throw InvalidOperationException("Не удалось открыть файл для загрузки: " + filename);
     }
 
     system.clear();
-
-    loadDrivers(ifs, system);
-    loadVehicles(ifs, system);
-    loadRoutes(ifs, system);
-
-    ifs.close();
-    std::cout << "Данные загружены из " << filename << std::endl;
-}
-
-void StorageManager::loadDrivers(std::ifstream& ifs, TransportSystem& system) {
-    size_t count;
-    if (!(ifs >> count)) {
-        throw InvalidDataException("Не удалось прочитать количество водителей");
-    }
-    ifs.ignore(); 
-
     std::string line;
-    for (size_t i = 0; i < count; ++i) {
-        if (!std::getline(ifs, line)) {
-            throw InvalidDataException("Не удалось прочитать водителя #" + std::to_string(i));
-        }
 
-        std::istringstream iss(line);
-        std::string prefix;
-        std::string rawName;        
-        int experience;
-
-        if (!(iss >> prefix >> rawName >> experience)) {
-            throw InvalidDataException("Строка водителя повреждена или неполная: " + line);
-        }
-
-        std::string name = restoreSpaces(rawName);
-
-        system.addDriver(std::make_shared<Driver>(name, experience));
+    if (!std::getline(ifs, line)) return;
+    int driversCount = std::stoi(line);
+    for (int i = 0; i < driversCount; ++i) {
+        std::getline(ifs, line);
+        loadDriverLine(line, system);
     }
-}
 
-void StorageManager::loadVehicles(std::ifstream& ifs, TransportSystem& system) {
-    size_t count;
-    if (!(ifs >> count)) {
-        throw InvalidDataException("Не удалось прочитать количество ТС");
-    }
-    ifs.ignore();
-
-    std::string line;
-    for (size_t i = 0; i < count; ++i) {
-        if (!std::getline(ifs, line)) {
-            throw InvalidDataException("Не удалось прочитать ТС #"
-                                       + std::to_string(i));
-        }
+    if (!std::getline(ifs, line)) return;
+    int vehiclesCount = std::stoi(line);
+    for (int i = 0; i < vehiclesCount; ++i) {
+        std::getline(ifs, line);
         loadVehicleLine(line, system);
     }
+
+    if (!std::getline(ifs, line)) return;
+    int routesCount = std::stoi(line);
+    for (int i = 0; i < routesCount; ++i) {
+        std::getline(ifs, line);
+        loadRouteLine(line, system);
+    }
+}
+
+void StorageManager::loadDriverLine(const std::string& line, TransportSystem& system) {
+    std::istringstream iss(line);
+    std::string prefix;
+    std::string rawName;
+    int experience;
+
+    if (!(iss >> prefix >> rawName >> experience)) {
+        throw InvalidDataException("Ошибка чтения водителя: " + line);
+    }
+
+    auto driver = std::make_shared<Driver>(restoreSpaces(rawName), experience);
+    system.addDriver(driver);
 }
 
 void StorageManager::loadVehicleLine(const std::string& line, TransportSystem& system) {
@@ -229,76 +180,53 @@ void StorageManager::loadVehicleLine(const std::string& line, TransportSystem& s
     std::string typeKey;
     std::string regNumber;
     std::string rawModel;
-    
-    if (!(iss >> prefix >> typeKey >> regNumber)) {
-        throw InvalidDataException("Ошибка чтения заголовка ТС: " + line);
-    }
-
-    iss >> rawModel;
-    std::string model = restoreSpaces(rawModel);
-
     int year;
     int capacity;
     int driverIdx;
 
-    if (!(iss >> year >> capacity >> driverIdx)) {
+    if (!(iss >> prefix >> typeKey >> regNumber >> rawModel >> year >> capacity >> driverIdx)) {
         throw InvalidDataException("Ошибка чтения базовых параметров ТС: " + line);
     }
 
+    std::string model = restoreSpaces(rawModel);
     std::shared_ptr<Driver> driver = nullptr;
+    
     if (driverIdx != -1) {
         const auto& drivers = system.getDrivers();
         if (driverIdx < 0 || driverIdx >= static_cast<int>(drivers.size())) {
             throw RelationException("ТС ссылается на несуществующего водителя ID=" + std::to_string(driverIdx));
         }
-        driver = drivers[driverIdx];
+        driver = drivers.get(driverIdx);
     }
 
-    std::shared_ptr<Vehicle> v;
+    std::shared_ptr<Vehicle> vehicle = nullptr;
 
-    if (typeKey == TYPE_BUS) {
-        std::string rawFuel;
-        double tank;
-        iss >> rawFuel >> tank;
-        std::string fuelType = restoreSpaces(rawFuel); 
-        v = std::make_shared<Bus>(regNumber, model, year, capacity, driver, fuelType, tank);
-    } else if (typeKey == TYPE_TROLLEYBUS) {
+    if (typeKey == "Bus") {
+        std::string rawFuelType;
+        double fuelCapacity;
+        if (!(iss >> rawFuelType >> fuelCapacity)) {
+            throw InvalidDataException("Ошибка чтения параметров автобуса: " + line);
+        }
+        vehicle = std::make_shared<Bus>(regNumber, model, year, capacity, driver, restoreSpaces(rawFuelType), fuelCapacity);
+    } else if (typeKey == "Trolleybus") {
         int voltage;
-        double power;
-        iss >> voltage >> power;
-        v = std::make_shared<Trolleybus>(regNumber, model, year, capacity, driver, voltage, power);
-    } else if (typeKey == TYPE_TRAM) {
+        double consumption;
+        if (!(iss >> voltage >> consumption)) {
+            throw InvalidDataException("Ошибка чтения параметров троллейбуса: " + line);
+        }
+        vehicle = std::make_shared<Trolleybus>(regNumber, model, year, capacity, driver, voltage, consumption);
+    } else if (typeKey == "Tram") {
         int gauge;
-        double power;
-        iss >> gauge >> power;
-        v = std::make_shared<Tram>(regNumber, model, year, capacity, driver, gauge, power);
+        double consumption;
+        if (!(iss >> gauge >> consumption)) {
+            throw InvalidDataException("Ошибка чтения параметров трамвая: " + line);
+        }
+        vehicle = std::make_shared<Tram>(regNumber, model, year, capacity, driver, gauge, consumption);
     } else {
         throw InvalidDataException("Неизвестный тип ТС: " + typeKey);
     }
 
-    if (!iss) {
-        throw InvalidDataException("Специфичные параметры ТС повреждены или отсутствуют: " + line);
-    }
-
-    system.addVehicle(v);
-}
-
-
-void StorageManager::loadRoutes(std::ifstream& ifs, TransportSystem& system) {
-    size_t count;
-    if (!(ifs >> count)) {
-        throw InvalidDataException("Не удалось прочитать количество маршрутов");
-    }
-    ifs.ignore();
-
-    std::string line;
-    for (size_t i = 0; i < count; ++i) {
-        if (!std::getline(ifs, line)) {
-            throw InvalidDataException("Не удалось прочитать маршрут #"
-                                       + std::to_string(i));
-        }
-        loadRouteLine(line, system);
-    }
+    system.addVehicle(vehicle);
 }
 
 void StorageManager::loadRouteLine(const std::string& line, TransportSystem& system) {
@@ -337,101 +265,53 @@ void StorageManager::loadRouteLine(const std::string& line, TransportSystem& sys
         if (vIdx < 0 || vIdx >= static_cast<int>(vehicles.size())) {
             throw RelationException("Маршрут ссылается на несуществующее ТС ID=" + std::to_string(vIdx));
         }
-        *route += vehicles[vIdx];
+        *route += vehicles.get(vIdx);
     }
 
     system += route;
 }
 
-void StorageManager::logAction(const std::string& logFilename,
-                                const std::string& action) {
-    std::ofstream ofs(logFilename, std::ios::app);
-    if (!ofs.is_open()) {
-        throw InvalidOperationException(
-            "Не удалось открыть файл журнала: " + logFilename);
-    }
-
-    std::time_t now = std::time(nullptr);
-    std::tm timeInfo;
-    localtime_s(&timeInfo, &now);
-
-    std::array<char, 100> buf{};
-    std::strftime(buf.data(), buf.size(), "%Y-%m-%d %H:%M:%S", &timeInfo);
-
-    ofs << "[" << buf.data() << "] " << action << "\n";
-}
-
-void StorageManager::generateReport(const std::string& reportFilename,
-                                     const TransportSystem& system) {
+void StorageManager::generateReport(const std::string& reportFilename, const TransportSystem& system) {
     std::ofstream ofs(reportFilename);
     if (!ofs.is_open()) {
-        throw InvalidOperationException(
-            "Не удалось создать файл отчёта: " + reportFilename);
+        throw InvalidOperationException("Не удалось открыть файл для отчёта: " + reportFilename);
     }
 
-    ofs << "=== ОТЧЁТ О СОСТОЯНИИ СИСТЕМЫ ТРАНСПОРТА ===\n\n";
-    ofs << "Всего водителей: " << system.getDrivers().size() << "\n";
-    ofs << "Всего ТС: " << system.getVehicles().size() << "\n";
-    ofs << "Всего маршрутов: " << system.getRoutes().size() << "\n\n";
+    ofs << "ОТЧЁТ О СОСТОЯНИИ ТРАНСПОРТНОЙ СИСТЕМЫ\n";
+    ofs << "=====================================\n\n";
 
     reportDrivers(ofs, system.getDrivers());
     reportVehicles(ofs, system.getVehicles());
     reportRoutes(ofs, system.getRoutes());
-
-    ofs.close();
-    std::cout << "Отчёт сохранён в " << reportFilename << std::endl;
 }
 
-void StorageManager::reportDrivers(std::ofstream& ofs, 
-                                   const std::vector<std::shared_ptr<Driver>>& drivers) {
-    ofs << "--- ВОДИТЕЛИ ---\n";
+void StorageManager::reportDrivers(std::ofstream& ofs, const Collection<Driver>& drivers) {
+    ofs << "ВОДИТЕЛИ (" << drivers.size() << "):\n";
     for (const auto& d : drivers) {
-        if (!d) continue;
-        ofs << "ФИО: " << d->getFullName()
-            << " | Стаж: " << d->getExperienceYears() << " лет\n";
+        ofs << "  - " << d->getFullName() << " (стаж: " << d->getExperienceYears() << " лет)\n";
     }
     ofs << "\n";
 }
 
-void StorageManager::reportVehicles(std::ofstream& ofs, 
-                                    const std::vector<std::shared_ptr<Vehicle>>& vehicles) {
-    ofs << "--- ТРАНСПОРТ ---\n";
+void StorageManager::reportVehicles(std::ofstream& ofs, const Collection<Vehicle>& vehicles) {
+    ofs << "ТРАНСПОРТ (" << vehicles.size() << "):\n";
     for (const auto& v : vehicles) {
-        if (!v) continue;
-        
-        ofs << "Тип: " << v->getType() << "\n";
-        ofs << "  Госномер: " << v->getRegNumber() << "\n";
-        ofs << "  Модель: " << v->getModel() << "\n";
-        ofs << "  Год: " << v->getYear() << "\n";
-        ofs << "  Вместимость: " << v->getCapacity() << " чел.\n";
-        ofs << "  Метрика (" << v->getMetricName() << "): " << v->calculateMetric() << "\n";
-        
+        ofs << "  - " << v->getType() << " " << v->getRegNumber() << " (" << v->getModel() << ")";
         if (v->getDriver()) {
-            ofs << "  Водитель: " << v->getDriver()->getFullName() << "\n";
+            ofs << " | Водитель: " << v->getDriver()->getFullName();
         } else {
-            ofs << "  Водитель: не назначен\n";
+            ofs << " | Водитель: не назначен";
         }
         ofs << "\n";
     }
+    ofs << "\n";
 }
 
-void StorageManager::reportRoutes(std::ofstream& ofs, 
-                                  const std::vector<std::shared_ptr<Route>>& routes) {
-    ofs << "--- МАРШРУТЫ ---\n";
+void StorageManager::reportRoutes(std::ofstream& ofs, const Collection<Route>& routes) {
+    ofs << "МАРШРУТЫ (" << routes.size() << "):\n";
     for (const auto& r : routes) {
-        if (!r) continue;
-
-        ofs << "Маршрут №" << r->getNumber() << " \"" << r->getName() << "\"\n";
-        ofs << "  От: " << r->getStartStop() << "\n";
-        ofs << "  До: " << r->getEndStop() << "\n";
-        ofs << "  Мин. вместимость: " << r->getMinCapacity() << "\n";
-
-        const auto& assigned = r->getAssignedVehicles();
-        ofs << "  ТС на маршруте (" << assigned.size() << "):\n";
-        for (const auto& v : assigned) {
-            if (!v) continue;
-            ofs << "    - " << v->getType() << " " << v->getRegNumber() << "\n";
-        }
-        ofs << "\n";
+        ofs << "  - №" << r->getNumber() << " \"" << r->getName() << "\"";
+        ofs << " | Закреплено ТС: " << r->getAssignedVehicles().size() << "\n";
     }
+    ofs << "\n";
 }
