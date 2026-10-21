@@ -19,7 +19,7 @@ void TransportSystem::addDriver(std::shared_ptr<Driver> driver) {
 
 bool TransportSystem::removeDriver(std::shared_ptr<Driver> driver) {
     if (!driver) {
-        throw InvalidDataException("пустой указатель на водителя");
+        throw InvalidDataException("Пустой указатель на водителя");
     }
     for (auto it = _drivers.begin(); it != _drivers.end(); ++it) {
         if (*it == driver) {
