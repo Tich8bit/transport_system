@@ -3,16 +3,21 @@
 
 void TransportSystem::addDriver(std::shared_ptr<Driver> driver) {
     if (!driver) throw InvalidDataException("пустой указатель на водителя");
-    auto existing = _drivers.find([&driver](const std::shared_ptr<Driver>& d) {
+    
+    if (auto existing = _drivers.find([&driver](const std::shared_ptr<Driver>& d) {
         return d->getFullName() == driver->getFullName();
-    });
-    if (existing) throw DuplicateIdException("Водитель с именем " + std::string(driver->getFullName()) + " уже есть в системе");
+    })) {
+        throw DuplicateIdException("Водитель с именем " + std::string(driver->getFullName()) + " уже есть в системе");
+    }
     _drivers.add(driver);
 }
 
 bool TransportSystem::removeDriver(std::shared_ptr<Driver> driver) {
     if (!driver) throw InvalidDataException("пустой указатель на водителя");
-    if (size_t removed = _drivers.removeIf([&driver](const std::shared_ptr<Driver>& d) { return d == driver; }); removed == 0) {
+    
+    if (size_t removed = _drivers.removeIf([&driver](const std::shared_ptr<Driver>& d) { 
+        return d == driver; 
+    }); removed == 0) {
         throw ObjectNotFoundException("Водитель не найден в системе");
     }
     return true;
@@ -22,16 +27,21 @@ const Collection<Driver>& TransportSystem::getDrivers() const { return _drivers;
 
 void TransportSystem::addVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) throw InvalidDataException("пустой указатель на ТС");
-    auto existing = _vehicles.find([&vehicle](const std::shared_ptr<Vehicle>& v) {
+    
+    if (auto existing = _vehicles.find([&vehicle](const std::shared_ptr<Vehicle>& v) {
         return *v == *vehicle;
-    });
-    if (existing) throw DuplicateIdException("ТС с госномером " + std::string(vehicle->getRegNumber()) + " уже есть в системе");
+    })) {
+        throw DuplicateIdException("ТС с госномером " + std::string(vehicle->getRegNumber()) + " уже есть в системе");
+    }
     _vehicles.add(vehicle);
 }
 
 bool TransportSystem::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) throw InvalidDataException("пустой указатель на ТС");
-    if (size_t removed = _vehicles.removeIf([&vehicle](const std::shared_ptr<Vehicle>& v) { return v == vehicle; }); removed == 0) {
+    
+    if (size_t removed = _vehicles.removeIf([&vehicle](const std::shared_ptr<Vehicle>& v) { 
+        return v == vehicle; 
+    }); removed == 0) {
         throw ObjectNotFoundException("ТС с госномером " + std::string(vehicle->getRegNumber()) + " не найдено");
     }
     return true;
@@ -48,15 +58,22 @@ std::shared_ptr<Route> TransportSystem::findRouteByNumber(int number) const {
 
 TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
     if (!route) throw InvalidDataException("пустой указатель на маршрут");
-    auto existing = _routes.find([&route](const std::shared_ptr<Route>& r) { return r->getNumber() == route->getNumber(); });
-    if (existing) throw DuplicateIdException("Маршрут №" + std::to_string(route->getNumber()) + " уже есть в системе");
+    
+    if (auto existing = _routes.find([&route](const std::shared_ptr<Route>& r) { 
+        return r->getNumber() == route->getNumber(); 
+    })) {
+        throw DuplicateIdException("Маршрут №" + std::to_string(route->getNumber()) + " уже есть в системе");
+    }
     _routes.add(route);
     return *this;
 }
 
 TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
     if (!route) throw InvalidDataException("пустой указатель на маршрут");
-    if (size_t removed = _routes.removeIf([&route](const std::shared_ptr<Route>& r) { return r == route; }); removed == 0) {
+    
+    if (size_t removed = _routes.removeIf([&route](const std::shared_ptr<Route>& r) { 
+        return r == route; 
+    }); removed == 0) {
         throw ObjectNotFoundException("Маршрут №" + std::to_string(route->getNumber()) + " не найден");
     }
     return *this;

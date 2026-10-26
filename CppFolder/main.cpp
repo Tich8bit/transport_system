@@ -6,7 +6,7 @@
 #include <locale>
 #include <algorithm>
 #include <numeric>
-#include <windows.h>
+#include <Windows.h>
 
 #include "driver.h"
 #include "vehicle.h"

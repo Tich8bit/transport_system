@@ -38,10 +38,9 @@ Route& Route::operator+=(std::shared_ptr<Vehicle> vehicle) {
         throw InvalidDataException("пустой указатель на ТС");
     }
     
-    auto existing = _assignedVehicles.find([&vehicle](const std::shared_ptr<Vehicle>& v) {
+    if (auto existing = _assignedVehicles.find([&vehicle](const std::shared_ptr<Vehicle>& v) {
         return v == vehicle;
-    });
-    if (existing) {
+    })) {
         throw DuplicateIdException("ТС с госномером " + std::string(vehicle->getRegNumber()) + " уже закреплено за маршрутом №" + std::to_string(_number));
     }
     
@@ -58,11 +57,9 @@ Route& Route::operator-=(std::shared_ptr<Vehicle> vehicle) {
         throw InvalidDataException("пустой указатель на ТС");
     }
     
-    size_t removed = _assignedVehicles.removeIf([&vehicle](const std::shared_ptr<Vehicle>& v) {
+    if (size_t removed = _assignedVehicles.removeIf([&vehicle](const std::shared_ptr<Vehicle>& v) {
         return v == vehicle;
-    });
-    
-    if (removed == 0) {
+    }); removed == 0) {
         throw ObjectNotFoundException("ТС с госномером " + std::string(vehicle->getRegNumber()) + " не закреплено за маршрутом №" + std::to_string(_number));
     }
     return *this;
