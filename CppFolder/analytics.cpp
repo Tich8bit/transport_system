@@ -2,82 +2,91 @@
 #include <algorithm>
 #include <numeric>
 
-std::shared_ptr<Route> TransportAnalytics::findRouteByNumber(
-    const std::map<int, std::shared_ptr<Route>>& routes, int number) {
-    auto it = routes.find(number);
-    return (it != routes.end()) ? it->second : nullptr;
+std::map<std::string, std::vector<std::shared_ptr<Vehicle>>>
+TransportAnalytics::groupByType(const Collection<Vehicle>& vehicles) {
+    std::map<std::string, std::vector<std::shared_ptr<Vehicle>>> groups;
+    for (const auto& v : vehicles) {
+        groups[v->getType()].push_back(v);
+    }
+    return groups;
 }
 
-bool TransportAnalytics::isRegNumberUnique(
-    const std::set<std::string, std::less<>>& existing,
-    std::string_view regNumber) {
-    return existing.find(regNumber) == existing.end();
+std::set<std::string>
+TransportAnalytics::getUniqueRegNumbers(const Collection<Vehicle>& vehicles) {
+    std::set<std::string> nums;
+    for (const auto& v : vehicles) {
+        nums.insert(std::string(v->getRegNumber()));
+    }
+    return nums;
 }
 
-std::vector<std::shared_ptr<Vehicle>> TransportAnalytics::sortByMetric(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles) {
-    std::vector<std::shared_ptr<Vehicle>> sorted = vehicles;
+std::vector<std::shared_ptr<Vehicle>>
+TransportAnalytics::findTopN(const Collection<Vehicle>& vehicles, size_t n) {
+    std::vector<std::shared_ptr<Vehicle>> sorted;
+    for (const auto& v : vehicles) {
+        sorted.push_back(v);
+    }
 
     std::sort(sorted.begin(), sorted.end(),
-        [](const std::shared_ptr<Vehicle>& a,
-           const std::shared_ptr<Vehicle>& b) {
+        [](const std::shared_ptr<Vehicle>& a, const std::shared_ptr<Vehicle>& b) {
             return a->calculateMetric() > b->calculateMetric();
         });
 
+    if (sorted.size() > n) {
+        sorted.resize(n);
+    }
     return sorted;
 }
 
 std::pair<std::shared_ptr<Vehicle>, std::shared_ptr<Vehicle>>
-TransportAnalytics::findMinMaxMetric(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles) {
+TransportAnalytics::findMinMaxMetric(const Collection<Vehicle>& vehicles) {
     if (vehicles.empty()) return {nullptr, nullptr};
 
     auto [minIt, maxIt] = std::minmax_element(vehicles.begin(), vehicles.end(),
-        [](const std::shared_ptr<Vehicle>& a,
-           const std::shared_ptr<Vehicle>& b) {
+        [](const std::shared_ptr<Vehicle>& a, const std::shared_ptr<Vehicle>& b) {
             return a->calculateMetric() < b->calculateMetric();
         });
 
     return {*minIt, *maxIt};
 }
 
-size_t TransportAnalytics::countByPredicate(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles,
-    const std::function<bool(const std::shared_ptr<Vehicle>&)>& pred) {
-    return std::count_if(vehicles.begin(), vehicles.end(), pred);
-}
-
-std::shared_ptr<Vehicle> TransportAnalytics::findVehicle(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles,
-    const std::function<bool(const std::shared_ptr<Vehicle>&)>& pred) {
-    auto it = std::find_if(vehicles.begin(), vehicles.end(), pred);
-    return (it != vehicles.end()) ? *it : nullptr;
-}
-
-double TransportAnalytics::averageMetric(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles) {
-    if (vehicles.empty()) return 0.0;
-
-    double sum = std::accumulate(vehicles.begin(), vehicles.end(), 0.0,
-        [](double acc, const std::shared_ptr<Vehicle>& v) {
-            return acc + v->calculateMetric();
+size_t TransportAnalytics::countByCapacity(const Collection<Vehicle>& vehicles, int minCapacity) {
+    return std::count_if(vehicles.begin(), vehicles.end(),
+        [minCapacity](const std::shared_ptr<Vehicle>& v) {
+            return v->getCapacity() > minCapacity;
         });
-
-    return sum / vehicles.size();
 }
 
-std::vector<std::shared_ptr<Vehicle>> TransportAnalytics::findTopN(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles, size_t n) {
-    auto sorted = sortByMetric(vehicles);
-    if (sorted.size() > n) sorted.resize(n);
-    return sorted;
-}
-
-std::vector<std::shared_ptr<Vehicle>> TransportAnalytics::filterByPredicate(
-    const std::vector<std::shared_ptr<Vehicle>>& vehicles,
-    const std::function<bool(const std::shared_ptr<Vehicle>&)>& pred) {
+std::vector<std::shared_ptr<Vehicle>>
+TransportAnalytics::filterByYear(const Collection<Vehicle>& vehicles, int minYear) {
     std::vector<std::shared_ptr<Vehicle>> result;
-    std::copy_if(vehicles.begin(), vehicles.end(),
-                  std::back_inserter(result), pred);
+    std::copy_if(vehicles.begin(), vehicles.end(), std::back_inserter(result),
+        [minYear](const std::shared_ptr<Vehicle>& v) {
+            return v->getYear() >= minYear;
+        });
     return result;
+}
+
+int TransportAnalytics::sumCapacity(const Collection<Vehicle>& vehicles) {
+    return std::accumulate(vehicles.begin(), vehicles.end(), 0,
+        [](int acc, const std::shared_ptr<Vehicle>& v) {
+            return acc + v->getCapacity();
+        });
+}
+
+std::vector<std::shared_ptr<Vehicle>>
+TransportAnalytics::sortByTwoCriteria(const Collection<Vehicle>& vehicles) {
+    std::vector<std::shared_ptr<Vehicle>> sorted;
+    for (const auto& v : vehicles) {
+        sorted.push_back(v);
+    }
+
+    std::sort(sorted.begin(), sorted.end(),
+        [](const std::shared_ptr<Vehicle>& a, const std::shared_ptr<Vehicle>& b) {
+            if (a->getCapacity() != b->getCapacity()) {
+                return a->getCapacity() > b->getCapacity();
+            }
+            return a->getYear() > b->getYear();
+        });
+    return sorted;
 }
