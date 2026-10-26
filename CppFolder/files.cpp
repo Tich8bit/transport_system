@@ -272,16 +272,9 @@ void StorageManager::generateReport(const std::string& reportFilename, const Tra
     ofs << "ОТЧЁТ О СОСТОЯНИИ ТРАНСПОРТНОЙ СИСТЕМЫ\n";
     ofs << "=====================================\n\n";
 
-    Collection<Driver> driversColl;
-    for (const auto& d : system.getDrivers()) driversColl.add(d);
-    Collection<Vehicle> vehiclesColl;
-    for (const auto& v : system.getVehicles()) vehiclesColl.add(v);
-    Collection<Route> routesColl;
-    for (const auto& r : system.getRoutes()) routesColl.add(r);
-
-    reportDrivers(ofs, driversColl);
-    reportVehicles(ofs, vehiclesColl);
-    reportRoutes(ofs, routesColl);
+    reportDrivers(ofs, system.getDrivers());
+    reportVehicles(ofs, system.getVehicles());
+    reportRoutes(ofs, system.getRoutes());
 }
 
 void StorageManager::reportDrivers(std::ofstream& ofs, const Collection<Driver>& drivers) {

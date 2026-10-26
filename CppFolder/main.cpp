@@ -155,13 +155,9 @@ void demoAddNewDriver(TransportSystem& system) {
     string name = inputString("Введите ФИО водителя: ");
     int experience = inputNumber<int>("Введите стаж (лет): ", 0, 60);
 
-    try {
-        auto newDriver = make_shared<Driver>(name, experience);
-        system.addDriver(newDriver);
-        cout << "Успешно добавлен водитель: " << name << "\n";
-    } catch (const TransportException& e) {
-        cout << "ОШИБКА: " << e.what() << "\n";
-    }
+    auto newDriver = make_shared<Driver>(name, experience);
+    system.addDriver(newDriver);
+    cout << "Успешно добавлен водитель: " << name << "\n";
 }
 
 void demoAddNewVehicle(TransportSystem& system) {
@@ -170,22 +166,13 @@ void demoAddNewVehicle(TransportSystem& system) {
     int type = inputNumber<int>("Выберите тип ТС: ", 1, 3);
 
     shared_ptr<Vehicle> newVehicle = nullptr;
+    if (type == 1) newVehicle = make_shared<Bus>("A000AA", "Default", 2020, 50, nullptr, "Diesel", 100.0);
+    else if (type == 2) newVehicle = make_shared<Trolleybus>("A000AA", "Default", 2020, 50, nullptr, 550, 50.0);
+    else if (type == 3) newVehicle = make_shared<Tram>("A000AA", "Default", 2020, 50, nullptr, 1524, 60.0);
 
-    if (type == 1) {
-        newVehicle = make_shared<Bus>("A000AA", "Default", 2020, 50, nullptr, "Diesel", 100.0);
-    } else if (type == 2) {
-        newVehicle = make_shared<Trolleybus>("A000AA", "Default", 2020, 50, nullptr, 550, 50.0);
-    } else if (type == 3) {
-        newVehicle = make_shared<Tram>("A000AA", "Default", 2020, 50, nullptr, 1524, 60.0);
-    }
-
-    try {
-        newVehicle->inputVehicle();
-        system.addVehicle(newVehicle);
-        cout << "Успешно добавлено ТС: " << newVehicle->getType() << " " << newVehicle->getRegNumber() << "\n";
-    } catch (const TransportException& e) {
-        cout << "ОШИБКА: " << e.what() << "\n";
-    }
+    newVehicle->inputVehicle();
+    system.addVehicle(newVehicle);
+    cout << "Успешно добавлено ТС: " << newVehicle->getType() << " " << newVehicle->getRegNumber() << "\n";
 }
 
 void demoAddNewRoute(TransportSystem& system) {
@@ -196,13 +183,9 @@ void demoAddNewRoute(TransportSystem& system) {
     string endStop = inputString("Введите конечную остановку: ");
     int minCapacity = inputNumber<int>("Введите минимальную вместимость: ", 1, 500);
 
-    try {
-        auto newRoute = make_shared<Route>(number, name, startStop, endStop, minCapacity);
-        system += newRoute;
-        cout << "Успешно добавлен маршрут №" << number << " \"" << name << "\"\n";
-    } catch (const TransportException& e) {
-        cout << "ОШИБКА: " << e.what() << "\n";
-    }
+    auto newRoute = make_shared<Route>(number, name, startStop, endStop, minCapacity);
+    system += newRoute;
+    cout << "Успешно добавлен маршрут №" << number << " \"" << name << "\"\n";
 }
 
 void demoLinkVehicleDriver(const TransportSystem& system) {
@@ -261,13 +244,9 @@ void demoAssignVehicleToRoute(const TransportSystem& system) {
     }
     int vIdx = inputNumber<int>("Выберите индекс ТС: ", 0, vehicles.size() - 1);
 
-    try {
-        *routes.get(rIdx) += vehicles.get(vIdx);
-        cout << "ТС " << vehicles.get(vIdx)->getRegNumber() 
-             << " успешно закреплено за маршрутом №" << routes.get(rIdx)->getNumber() << ".\n";
-    } catch (const TransportException& e) {
-        cout << "ОШИБКА: " << e.what() << "\n";
-    }
+    *routes.get(rIdx) += vehicles.get(vIdx);
+    cout << "ТС " << vehicles.get(vIdx)->getRegNumber() 
+         << " успешно закреплено за маршрутом №" << routes.get(rIdx)->getNumber() << ".\n";
 }
 
 void demoClearSystem(TransportSystem& system) {
