@@ -2,20 +2,20 @@
 #include <algorithm>
 #include <numeric>
 
-std::map<std::string, std::vector<std::shared_ptr<Vehicle>>>
+std::map<std::string, std::vector<std::shared_ptr<Vehicle>>, std::less<>>
 TransportAnalytics::groupByType(const Collection<Vehicle>& vehicles) {
-    std::map<std::string, std::vector<std::shared_ptr<Vehicle>>> groups;
+    std::map<std::string, std::vector<std::shared_ptr<Vehicle>>, std::less<>> groups;
     for (const auto& v : vehicles) {
         groups[v->getType()].push_back(v);
     }
     return groups;
 }
 
-std::set<std::string>
+std::set<std::string, std::less<>>
 TransportAnalytics::getUniqueRegNumbers(const Collection<Vehicle>& vehicles) {
-    std::set<std::string> nums;
+    std::set<std::string, std::less<>> nums;
     for (const auto& v : vehicles) {
-        nums.insert(std::string(v->getRegNumber()));
+        nums.emplace(v->getRegNumber());
     }
     return nums;
 }

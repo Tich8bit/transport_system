@@ -11,10 +11,10 @@
 
 class TransportAnalytics {
 public:
-    static std::map<std::string, std::vector<std::shared_ptr<Vehicle>>>
+    static std::map<std::string, std::vector<std::shared_ptr<Vehicle>>, std::less<>>
     groupByType(const Collection<Vehicle>& vehicles);
 
-    static std::set<std::string>
+    static std::set<std::string, std::less<>>
     getUniqueRegNumbers(const Collection<Vehicle>& vehicles);
 
     static std::vector<std::shared_ptr<Vehicle>>

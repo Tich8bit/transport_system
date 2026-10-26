@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <numeric>
 #include <windows.h>
+
 #include "driver.h"
 #include "vehicle.h"
 #include "bus.h"
@@ -158,7 +159,7 @@ void demoAddNewDriver(TransportSystem& system) {
         auto newDriver = make_shared<Driver>(name, experience);
         system.addDriver(newDriver);
         cout << "Успешно добавлен водитель: " << name << "\n";
-    } catch (const exception& e) {
+    } catch (const TransportException& e) {
         cout << "ОШИБКА: " << e.what() << "\n";
     }
 }
@@ -182,7 +183,7 @@ void demoAddNewVehicle(TransportSystem& system) {
         newVehicle->inputVehicle();
         system.addVehicle(newVehicle);
         cout << "Успешно добавлено ТС: " << newVehicle->getType() << " " << newVehicle->getRegNumber() << "\n";
-    } catch (const exception& e) {
+    } catch (const TransportException& e) {
         cout << "ОШИБКА: " << e.what() << "\n";
     }
 }
@@ -199,12 +200,12 @@ void demoAddNewRoute(TransportSystem& system) {
         auto newRoute = make_shared<Route>(number, name, startStop, endStop, minCapacity);
         system += newRoute;
         cout << "Успешно добавлен маршрут №" << number << " \"" << name << "\"\n";
-    } catch (const exception& e) {
+    } catch (const TransportException& e) {
         cout << "ОШИБКА: " << e.what() << "\n";
     }
 }
 
-void demoLinkVehicleDriver(TransportSystem& system) {
+void demoLinkVehicleDriver(const TransportSystem& system) {
     cout << "=== Связывание ТС с водителем ===\n";
     const auto& vehicles = system.getVehicles();
     const auto& drivers = system.getDrivers();
@@ -235,7 +236,7 @@ void demoLinkVehicleDriver(TransportSystem& system) {
          << " закреплен за ТС " << vehicles.get(vIdx)->getRegNumber() << ".\n";
 }
 
-void demoAssignVehicleToRoute(TransportSystem& system) {
+void demoAssignVehicleToRoute(const TransportSystem& system) {
     cout << "=== Закрепление ТС за маршрутом ===\n";
     const auto& routes = system.getRoutes();
     const auto& vehicles = system.getVehicles();
@@ -264,7 +265,7 @@ void demoAssignVehicleToRoute(TransportSystem& system) {
         *routes.get(rIdx) += vehicles.get(vIdx);
         cout << "ТС " << vehicles.get(vIdx)->getRegNumber() 
              << " успешно закреплено за маршрутом №" << routes.get(rIdx)->getNumber() << ".\n";
-    } catch (const exception& e) {
+    } catch (const TransportException& e) {
         cout << "ОШИБКА: " << e.what() << "\n";
     }
 }
@@ -409,7 +410,7 @@ void demoTopN(const TransportSystem& system) {
 }
 
 int main() {
-    SetConsoleOutputCP(CP_UTF8); 
+    SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     setlocale(LC_ALL, "ru_RU.UTF-8");
 
@@ -428,7 +429,7 @@ int main() {
         try {
             StorageManager::loadState(filename, system);
             cout << "Система загружена из " << filename << "\n";
-        } catch (const exception& e) {
+        } catch (const TransportException& e) {
             cout << "ОШИБКА загрузки: " << e.what() << "\nБудет создана тестовая система.\n";
             createTestSystem(system);
         }

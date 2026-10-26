@@ -12,8 +12,9 @@ void TransportSystem::addDriver(std::shared_ptr<Driver> driver) {
 
 bool TransportSystem::removeDriver(std::shared_ptr<Driver> driver) {
     if (!driver) throw InvalidDataException("пустой указатель на водителя");
-    size_t removed = _drivers.removeIf([&driver](const std::shared_ptr<Driver>& d) { return d == driver; });
-    if (removed == 0) throw ObjectNotFoundException("Водитель не найден в системе");
+    if (size_t removed = _drivers.removeIf([&driver](const std::shared_ptr<Driver>& d) { return d == driver; }); removed == 0) {
+        throw ObjectNotFoundException("Водитель не найден в системе");
+    }
     return true;
 }
 
@@ -30,8 +31,9 @@ void TransportSystem::addVehicle(std::shared_ptr<Vehicle> vehicle) {
 
 bool TransportSystem::removeVehicle(std::shared_ptr<Vehicle> vehicle) {
     if (!vehicle) throw InvalidDataException("пустой указатель на ТС");
-    size_t removed = _vehicles.removeIf([&vehicle](const std::shared_ptr<Vehicle>& v) { return v == vehicle; });
-    if (removed == 0) throw ObjectNotFoundException("ТС с госномером " + std::string(vehicle->getRegNumber()) + " не найдено");
+    if (size_t removed = _vehicles.removeIf([&vehicle](const std::shared_ptr<Vehicle>& v) { return v == vehicle; }); removed == 0) {
+        throw ObjectNotFoundException("ТС с госномером " + std::string(vehicle->getRegNumber()) + " не найдено");
+    }
     return true;
 }
 
@@ -54,8 +56,9 @@ TransportSystem& TransportSystem::operator+=(std::shared_ptr<Route> route) {
 
 TransportSystem& TransportSystem::operator-=(std::shared_ptr<Route> route) {
     if (!route) throw InvalidDataException("пустой указатель на маршрут");
-    size_t removed = _routes.removeIf([&route](const std::shared_ptr<Route>& r) { return r == route; });
-    if (removed == 0) throw ObjectNotFoundException("Маршрут №" + std::to_string(route->getNumber()) + " не найден");
+    if (size_t removed = _routes.removeIf([&route](const std::shared_ptr<Route>& r) { return r == route; }); removed == 0) {
+        throw ObjectNotFoundException("Маршрут №" + std::to_string(route->getNumber()) + " не найден");
+    }
     return *this;
 }
 
