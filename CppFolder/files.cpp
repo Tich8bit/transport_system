@@ -12,15 +12,15 @@
 
 namespace {
     int findDriverIndex(const Collection<Driver>& drivers, const std::shared_ptr<Driver>& target) {
-        for (size_t j = 0; j < drivers.size(); ++j) {
-            if (drivers.get(j) == target) return static_cast<int>(j);
+        for (int j = 0; j < drivers.size(); ++j) {
+            if (drivers.get(j) == target) return j;
         }
         return -1;
     }
 
     int findVehicleIndex(const Collection<Vehicle>& vehicles, const std::shared_ptr<Vehicle>& target) {
-        for (size_t j = 0; j < vehicles.size(); ++j) {
-            if (vehicles.get(j) == target) return static_cast<int>(j);
+        for (int j = 0; j < vehicles.size(); ++j) {
+            if (vehicles.get(j) == target) return j;
         }
         return -1;
     }
