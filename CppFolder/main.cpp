@@ -447,13 +447,6 @@ int main() {
                 default: cout << "Неверный пункт.\n"; break;
             }
         }
-        catch (const InvalidDataException& e) { cout << "ОШИБКА (данные): " << e.what() << '\n'; }
-        catch (const LimitExceededException& e) { cout << "ОШИБКА (лимит): " << e.what() << '\n'; }
-        catch (const DuplicateIdException& e) { cout << "ОШИБКА (дубликат): " << e.what() << '\n'; }
-        catch (const ObjectNotFoundException& e) { cout << "ОШИБКА (не найдено): " << e.what() << '\n'; }
-        catch (const OutOfRangeException& e) { cout << "ОШИБКА (границы): " << e.what() << '\n'; }
-        catch (const InvalidOperationException& e) { cout << "ОШИБКА (операция): " << e.what() << '\n'; }
-        catch (const RelationException& e) { cout << "ОШИБКА (связь): " << e.what() << '\n'; }
         catch (const TransportException& e) { cout << "ОШИБКА: " << e.what() << '\n'; }
 
     } while (choice != 0);
