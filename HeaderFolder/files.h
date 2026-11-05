@@ -14,16 +14,21 @@ public:
 
 private:
     static void saveDrivers(std::ofstream& ofs, const TransportSystem& system);
-    static void saveVehicles(std::ofstream& ofs, const TransportSystem& system);
     static void saveRoutes(std::ofstream& ofs, const TransportSystem& system);
+    static void saveVehicles(std::ofstream& ofs, const TransportSystem& system);
+    
+    static void saveBuses(std::ofstream& ofs, const TransportSystem& system);
+    static void saveTrolleybuses(std::ofstream& ofs, const TransportSystem& system);
+    static void saveTrams(std::ofstream& ofs, const TransportSystem& system);
 
-    static void loadDrivers(std::ifstream& ifs, TransportSystem& system);
-    static void loadVehicles(std::ifstream& ifs, TransportSystem& system);
-    static void loadRoutes(std::ifstream& ifs, TransportSystem& system);
+    static void loadDriver(std::ifstream& ifs, TransportSystem& system);
 
-    static void loadDriverLine(const std::string& line, TransportSystem& system);
-    static void loadVehicleLine(const std::string& line, TransportSystem& system);
-    static void loadRouteLine(const std::string& line, TransportSystem& system);
+    static void loadVehicle(std::ifstream& ifs, TransportSystem& system);
+    static void loadBus(std::ifstream& ifs, TransportSystem& system);
+    static void loadTrolleybus(std::ifstream& ifs, TransportSystem& system);
+    static void loadTram(std::ifstream& ifs, TransportSystem& system);
+
+    static void loadRoute(std::ifstream& ifs, TransportSystem& system);
 
     static void reportDrivers(std::ofstream& ofs, const Collection<Driver>& drivers);
     static void reportVehicles(std::ofstream& ofs, const Collection<Vehicle>& vehicles);
