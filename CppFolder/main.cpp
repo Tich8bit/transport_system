@@ -294,7 +294,7 @@ void demoFindRouteByNumber(const TransportSystem& system) {
 
 void demoUniqueRegNumbers(const TransportSystem& system) {
     cout << "=== Уникальные госномера (set) ===\n";
-    set<string, less<>> regNumbers;
+    set<string> regNumbers;
 
     for (const auto& v : system.getVehicles()) {
         regNumbers.emplace(v->getRegNumber());
@@ -308,7 +308,7 @@ void demoUniqueRegNumbers(const TransportSystem& system) {
 
 void demoGroupByType(const TransportSystem& system) {
     cout << "=== Группировка ТС по типу ===\n";
-    map<string, vector<shared_ptr<Vehicle>>, less<>> groups;
+    map<string, vector<shared_ptr<Vehicle>>> groups;
 
     for_each(system.getVehicles().begin(), system.getVehicles().end(),
         [&groups](const shared_ptr<Vehicle>& v) {
